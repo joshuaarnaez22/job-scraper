@@ -30,16 +30,18 @@ src/
 
 ## Supported Sites
 
-| ID | Site | Method | Rate Limit |
-|----|------|--------|------------|
-| `onlinejobs` | OnlineJobs.ph | HTML | 2s |
-| `jobstreet` | Jobstreet PH | HTML | 2s |
-| `kalibrr` | Kalibrr | HTML | 2s |
-| `linkedin` | LinkedIn | HTML | 5s ⚠️ |
-| `indeed` | Indeed PH | HTML | 3s |
-| `weworkremotely` | WWR | HTML | 2s |
-| `remoteok` | RemoteOK | JSON API | 1s |
-| `upwork` | Upwork | RSS | 1s |
+| ID | Site | Method | Rate Limit | Status |
+|----|------|--------|------------|--------|
+| `onlinejobs` | OnlineJobs.ph | HTML | 2s | **Enabled** |
+| `jobstreet` | Jobstreet PH | HTML | 2s | Disabled |
+| `kalibrr` | Kalibrr | HTML | 2s | Disabled |
+| `linkedin` | LinkedIn | HTML | 5s | Disabled |
+| `indeed` | Indeed PH | HTML | 3s | Disabled |
+| `weworkremotely` | WWR | HTML | 2s | Disabled |
+| `remoteok` | RemoteOK | JSON API | 1s | Disabled |
+| `upwork` | Upwork | RSS | 1s | Disabled |
+
+> **Note:** Only OnlineJobs.ph is currently enabled. Other sites can be enabled in `src/config/sites.ts`.
 
 ## Database Models (Key Fields)
 
@@ -76,10 +78,16 @@ applyFilters(jobs, config)
   .requireSkills()
 ```
 
+## Dashboard Features
+
+- **URL-based filters** - All filters sync to URL for SEO and shareability
+  - `/dashboard?site=onlinejobs&status=new&days=7`
+- **Posted date filter** - Filters by `postedAt` (when job was posted, not added to DB)
+
 ## Critical Gotchas
 
 1. **JSON fields** - Parse with `JSON.parse()` when reading from DB
-2. **LinkedIn blocks aggressively** - Use 5s+ delays, limit to 3 pages
+2. **OnlineJobs full fetch** - Scraper fetches each job page for complete description
 3. **Salary formats vary** - `₱25,000` vs `PHP 30k` vs `50000-80000 USD/yr`
 4. **Date parsing varies** - "2 hours ago" vs "2024-01-15" vs "Jan 15"
 5. **Unique constraint** - `site + externalId` prevents duplicates per site

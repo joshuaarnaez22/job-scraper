@@ -1,0 +1,155 @@
+// Prisma schema for Job Scraper
+// Using Neon PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ===========================================
+// Job Model
+// ===========================================
+
+model Job {
+  id              String    @id @default(cuid())
+  externalId      String // Original job ID from source site
+  site            String // onlinejobs, jobstreet, linkedin, etc.
+  title           String
+  company         String
+  salary          String?
+  salaryMin       Int? // Parsed minimum salary
+  salaryMax       Int? // Parsed maximum salary
+  salaryCurrency  String? // PHP, USD, EUR
+  description     String
+  url             String
+  jobType         String? // full-time, part-time, contract, freelance
+  experienceLevel String? // entry, mid, senior
+  workArrangement String? // remote, hybrid, onsite
+  skills          String? // JSON array of skills/tags
+  location        String?
+  postedAt        DateTime?
+  scrapedAt       DateTime  @default(now())
+  status          String    @default("new") // new, viewed, applied, hidden, expired
+  aiScore         Float? // OpenAI relevance score (0-1)
+  aiSummary       String? // AI-generated summary
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  generatedEmails GeneratedEmail[]
+
+  @@unique([site, externalId]) // Prevent duplicates per site
+  @@index([site])
+  @@index([status])
+  @@index([postedAt])
+  @@index([createdAt])
+}
+
+// ===========================================
+// Search Configuration
+// ===========================================
+
+model SearchConfig {
+  id              String @id @default("default")
+  keywords        String // JSON array
+  excludeKeywords String // JSON array
+  enabledSites    String // JSON array of enabled site IDs
+
+  // Date Filter
+  daysPosted Int? // Filter by days since posted
+
+  // Salary Filters
+  salaryMin      Int?
+  salaryMax      Int?
+  salaryCurrency String @default("PHP")
+
+  // Job Filters (JSON arrays)
+  jobTypes         String // JSON array: full-time, part-time, etc.
+  experienceLevels String // JSON array: entry, mid, senior
+  workArrangements String // JSON array: remote, hybrid, onsite
+  excludeCompanies String // JSON array
+
+  // Skills (JSON arrays)
+  requiredSkills  String // JSON array
+  preferredSkills String // JSON array
+
+  // AI & Notifications
+  useAIMatching   Boolean @default(false)
+  aiThreshold     Float   @default(0.7)
+  digestMode      Boolean @default(true)
+  maxEmailsPerRun Int     @default(10)
+
+  updatedAt DateTime @updatedAt
+}
+
+// ===========================================
+// Scrape Logs
+// ===========================================
+
+model ScrapeLog {
+  id        String    @id @default(cuid())
+  site      String // Which site was scraped
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+  jobsFound Int       @default(0)
+  newJobs   Int       @default(0)
+  filtered  Int       @default(0) // Jobs filtered out
+  status    String // success, error, partial
+  error     String?
+  duration  Int? // Duration in ms
+
+  @@index([site])
+  @@index([startedAt])
+}
+
+// ===========================================
+// Site Configuration
+// ===========================================
+
+model SiteConfig {
+  id          String    @id // onlinejobs, jobstreet, etc.
+  enabled     Boolean   @default(true)
+  rateLimit   Int       @default(2000) // ms between requests
+  maxPages    Int       @default(5)
+  lastScraped DateTime?
+  settings    String? // JSON for site-specific settings
+  updatedAt   DateTime  @updatedAt
+}
+
+// ===========================================
+// User Profile (for cover letter generation)
+// ===========================================
+
+model UserProfile {
+  id           String   @id @default("default")
+  name         String
+  title        String? // Current job title
+  summary      String? // Professional summary/bio
+  skills       String // JSON array of skills
+  experience   String // JSON array of work experience
+  education    String?
+  portfolioUrl String?
+  linkedinUrl  String?
+  preferences  String // JSON: { tone, length, customInstructions }
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ===========================================
+// Generated Emails (cover letters)
+// ===========================================
+
+model GeneratedEmail {
+  id        String   @id @default(cuid())
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  content   String // Generated email content
+  version   Int      @default(1) // Track regenerations
+  createdAt DateTime @default(now())
+
+  @@index([jobId])
+}

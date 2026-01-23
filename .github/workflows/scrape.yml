@@ -1,0 +1,41 @@
+name: Scrape Jobs
+
+on:
+  schedule:
+    # Run at 8am, 2pm, and 8pm UTC
+    - cron: '0 8,14,20 * * *'
+  workflow_dispatch:
+    inputs:
+      sites:
+        description: 'Comma-separated list of sites to scrape (leave empty for all)'
+        required: false
+        default: ''
+      dryRun:
+        description: 'Dry run (true/false)'
+        required: false
+        default: 'false'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger scrape
+        run: |
+          SITES="${{ github.event.inputs.sites }}"
+          DRY_RUN="${{ github.event.inputs.dryRun }}"
+
+          URL="${{ secrets.APP_URL }}/api/cron/scrape"
+
+          if [ -n "$SITES" ]; then
+            URL="${URL}?sites=${SITES}"
+          fi
+
+          if [ "$DRY_RUN" = "true" ]; then
+            URL="${URL}${SITES:+&}${SITES:-?}dryRun=true"
+          fi
+
+          echo "Calling: $URL"
+
+          curl -X POST "$URL" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json"
