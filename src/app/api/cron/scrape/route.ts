@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const sitesParam = searchParams.get('sites');
     const dryRun = searchParams.get('dryRun') === 'true';
+    const daysPostedParam = searchParams.get('daysPosted');
 
     // Get search config
     const configRecord = await prisma.searchConfig.findUnique({
@@ -79,6 +80,7 @@ export async function POST(request: NextRequest) {
 
     console.log(`[Cron] Starting scrape for sites: ${sites.join(', ')}`);
     console.log(`[Cron] Keywords: ${config.keywords.join(', ')}`);
+    console.log(`[Cron] Days posted filter: ${daysPostedParam || config.daysPosted || 'none'}`);
     console.log(`[Cron] Dry run: ${dryRun}`);
 
     // Run scrapers
@@ -92,9 +94,10 @@ export async function POST(request: NextRequest) {
     const allJobs: Job[] = scrapeResults.results.flatMap((r) => r.jobs);
     console.log(`[Cron] Total jobs scraped: ${allJobs.length}`);
 
-    // Apply filters
+    // Apply filters (use query param if provided, otherwise use config)
+    const effectiveDaysPosted = daysPostedParam ? parseInt(daysPostedParam) : config.daysPosted;
     const filterConfig: FilterConfig = {
-      daysPosted: config.daysPosted,
+      daysPosted: effectiveDaysPosted,
       salaryMin: config.salaryMin,
       salaryMax: config.salaryMax,
       salaryCurrency: config.salaryCurrency,

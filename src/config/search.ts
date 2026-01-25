@@ -61,7 +61,7 @@ export const defaultSearchConfig: SearchConfig = {
     'principal',
   ],
 
-  // Job Sites to Scrape
+  // Job Sites to Scrape (shows in UI, actual enabled status from sites.ts)
   enabledSites: [
     'onlinejobs',
     'jobstreet',

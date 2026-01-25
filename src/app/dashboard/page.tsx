@@ -8,6 +8,7 @@ import { FilterPanel, type FilterState } from '@/components/FilterPanel';
 import { StatsOverview } from '@/components/StatsCard';
 import { ProfileForm, type UserProfileData } from '@/components/ProfileForm';
 import { CoverLetterModal } from '@/components/CoverLetterModal';
+import { ScrapeStatusModal } from '@/components/ScrapeStatusModal';
 import type { JobData } from '@/components/JobCard';
 
 type ActiveView = 'jobs' | 'profile' | 'settings';
@@ -31,7 +32,7 @@ function DashboardSkeleton() {
 function getFiltersFromParams(searchParams: URLSearchParams): FilterState {
   return {
     search: searchParams.get('search') || '',
-    site: searchParams.get('site') || '',
+    site: searchParams.get('site') || 'onlinejobs',
     status: searchParams.get('status') || '',
     days: searchParams.get('days') || '',
     sortBy: searchParams.get('sortBy') || 'createdAt',
@@ -42,7 +43,7 @@ function getFiltersFromParams(searchParams: URLSearchParams): FilterState {
 function filtersToParams(filters: FilterState): URLSearchParams {
   const params = new URLSearchParams();
   if (filters.search) params.set('search', filters.search);
-  if (filters.site) params.set('site', filters.site);
+  if (filters.site && filters.site !== 'onlinejobs') params.set('site', filters.site);
   if (filters.status) params.set('status', filters.status);
   if (filters.days) params.set('days', filters.days);
   if (filters.sortBy !== 'createdAt') params.set('sortBy', filters.sortBy);
@@ -123,6 +124,7 @@ function DashboardContent() {
 
   const [selectedJob, setSelectedJob] = useState<JobData | null>(null);
   const [isCoverLetterOpen, setIsCoverLetterOpen] = useState(false);
+  const [isScrapeModalOpen, setIsScrapeModalOpen] = useState(false);
   const [activeView, setActiveView] = useState<ActiveView>('jobs');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -180,22 +182,14 @@ function DashboardContent() {
     },
   });
 
-  const scrapeMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch('/api/cron/scrape', { method: 'POST' });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
-      return data;
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['jobs'] });
-      queryClient.invalidateQueries({ queryKey: ['stats'] });
-      alert(`Scrape complete! Found ${data.newJobs} new jobs.`);
-    },
-    onError: (error) => {
-      alert(`Scrape failed: ${error.message}`);
-    },
-  });
+  const handleScrapeComplete = (result: { newJobs: number; error?: string }) => {
+    queryClient.invalidateQueries({ queryKey: ['jobs'] });
+    queryClient.invalidateQueries({ queryKey: ['stats'] });
+  };
+
+  const handleOpenScrapeModal = () => {
+    setIsScrapeModalOpen(true);
+  };
 
   const handleStatusChange = (id: string, status: string) => {
     updateStatusMutation.mutate({ id, status });
@@ -250,11 +244,10 @@ function DashboardContent() {
           {/* Scrape Button */}
           <div className="border-t-4 border-foreground p-4">
             <button
-              onClick={() => scrapeMutation.mutate()}
-              disabled={scrapeMutation.isPending}
-              className="retro-btn w-full px-4 py-2 bg-accent text-accent-foreground font-retro text-xs disabled:opacity-50"
+              onClick={handleOpenScrapeModal}
+              className="retro-btn w-full px-4 py-2 bg-accent text-accent-foreground font-retro text-xs"
             >
-              {scrapeMutation.isPending ? 'LOADING...' : 'RUN SCRAPE'}
+              RUN SCRAPE
             </button>
           </div>
         </div>
@@ -273,11 +266,10 @@ function DashboardContent() {
         <span className="font-retro text-xs">JOBSCOUT</span>
         <div className="ml-auto">
           <button
-            onClick={() => scrapeMutation.mutate()}
-            disabled={scrapeMutation.isPending}
+            onClick={handleOpenScrapeModal}
             className="retro-btn px-3 py-1 bg-accent text-accent-foreground font-retro text-[10px]"
           >
-            {scrapeMutation.isPending ? '...' : 'SCRAPE'}
+            SCRAPE
           </button>
         </div>
       </div>
@@ -352,7 +344,6 @@ function DashboardContent() {
                       setFilters(newFilters);
                       setShowMobileFilters(false);
                     }}
-                    availableSites={availableSites}
                   />
                 </div>
 
@@ -445,6 +436,12 @@ function DashboardContent() {
           setIsCoverLetterOpen(false);
           setSelectedJob(null);
         }}
+      />
+
+      <ScrapeStatusModal
+        isOpen={isScrapeModalOpen}
+        onClose={() => setIsScrapeModalOpen(false)}
+        onComplete={handleScrapeComplete}
       />
     </div>
   );

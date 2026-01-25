@@ -15,6 +15,7 @@ async function clearDatabase() {
     prisma.job.deleteMany(),
     prisma.scrapeLog.deleteMany(),
     prisma.siteConfig.deleteMany(),
+    prisma.searchConfig.deleteMany(),
   ]);
 
   console.log('✅ Cleared:');
@@ -22,6 +23,7 @@ async function clearDatabase() {
   console.log(`   - ${deleted[1].count} jobs`);
   console.log(`   - ${deleted[2].count} scrape logs`);
   console.log(`   - ${deleted[3].count} site configs`);
+  console.log(`   - ${deleted[4].count} search configs`);
 
   console.log('\n🎉 Database cleared! Ready for fresh scrape.');
 }

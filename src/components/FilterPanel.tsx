@@ -14,10 +14,9 @@ export interface FilterState {
 interface FilterPanelProps {
   filters: FilterState;
   onFilterChange: (filters: FilterState) => void;
-  availableSites: string[];
 }
 
-export function FilterPanel({ filters, onFilterChange, availableSites }: FilterPanelProps) {
+export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
   const [localSearch, setLocalSearch] = useState(filters.search);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -33,7 +32,7 @@ export function FilterPanel({ filters, onFilterChange, availableSites }: FilterP
     setLocalSearch('');
     onFilterChange({
       search: '',
-      site: '',
+      site: 'onlinejobs',
       status: '',
       days: '',
       sortBy: 'createdAt',
@@ -41,8 +40,7 @@ export function FilterPanel({ filters, onFilterChange, availableSites }: FilterP
     });
   };
 
-  const hasActiveFilters =
-    filters.search || filters.site || filters.status || filters.days;
+  const hasActiveFilters = filters.search || filters.status || filters.days;
 
   return (
     <div className="pixel-border bg-card p-5 space-y-5">
@@ -77,36 +75,6 @@ export function FilterPanel({ filters, onFilterChange, availableSites }: FilterP
             GO
           </button>
         </form>
-      </div>
-
-      {/* Site Filter */}
-      <div>
-        <label className="text-[10px] font-retro text-muted-foreground block mb-2">SITE</label>
-        <div className="flex flex-wrap gap-1">
-          <button
-            onClick={() => updateFilter('site', '')}
-            className={`px-2 py-1 text-xs border-2 transition-colors ${
-              filters.site === ''
-                ? 'bg-primary text-primary-foreground border-primary'
-                : 'bg-secondary border-foreground/20 hover:border-foreground'
-            }`}
-          >
-            ALL
-          </button>
-          {availableSites.map((site) => (
-            <button
-              key={site}
-              onClick={() => updateFilter('site', site)}
-              className={`px-2 py-1 text-xs border-2 transition-colors uppercase ${
-                filters.site === site
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'bg-secondary border-foreground/20 hover:border-foreground'
-              }`}
-            >
-              {site}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Status Filter */}

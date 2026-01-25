@@ -34,6 +34,8 @@ export interface ScraperConfig {
   rateLimit: number;       // ms between requests
   maxPages: number;
   keywords: string[];
+  fetchFullDetails?: boolean;  // Whether to fetch individual job pages for full description
+  onJobFound?: (job: Job) => void;  // Callback for streaming - called when each job is found
   // Site-specific settings can be added via extension
   [key: string]: unknown;
 }

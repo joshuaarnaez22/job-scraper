@@ -22,6 +22,8 @@ export async function scrapeOnlineJobs(
   config: ScraperConfig
 ): Promise<Job[]> {
   const jobs: Job[] = [];
+  const seenIds = new Set<string>();
+  const fetchFullDetails = config.fetchFullDetails ?? false;
 
   for (const keyword of keywords) {
     for (let page = 1; page <= config.maxPages; page++) {
@@ -32,14 +34,28 @@ export async function scrapeOnlineJobs(
 
         if (pageJobs.length === 0) break; // No more results
 
-        // Fetch full details for each job to get complete description
         for (const job of pageJobs) {
-          try {
-            const fullJob = await fetchJobDetails(job, config.rateLimit);
-            jobs.push(fullJob);
-          } catch (error) {
-            console.error(`[${SITE_ID}] Error fetching details for job ${job.externalId}:`, error);
-            jobs.push(job); // Fallback to basic job data
+          // Skip duplicates (same job can appear for multiple keywords)
+          if (seenIds.has(job.externalId)) continue;
+          seenIds.add(job.externalId);
+
+          let finalJob = job;
+
+          // Only fetch full details if enabled
+          if (fetchFullDetails) {
+            try {
+              finalJob = await fetchJobDetails(job, config.rateLimit);
+            } catch (error) {
+              console.error(`[${SITE_ID}] Error fetching details for job ${job.externalId}:`, error);
+              // Fall back to basic job data
+            }
+          }
+
+          jobs.push(finalJob);
+
+          // Stream the job if callback is provided
+          if (config.onJobFound) {
+            config.onJobFound(finalJob);
           }
         }
 
@@ -51,7 +67,7 @@ export async function scrapeOnlineJobs(
     }
   }
 
-  return deduplicateJobs(jobs);
+  return jobs;
 }
 
 async function fetchJobDetails(job: Job, rateLimit: number): Promise<Job> {
@@ -159,11 +175,3 @@ function parseJobListings(html: string): Job[] {
   return jobs;
 }
 
-function deduplicateJobs(jobs: Job[]): Job[] {
-  const seen = new Set<string>();
-  return jobs.filter((job) => {
-    if (seen.has(job.externalId)) return false;
-    seen.add(job.externalId);
-    return true;
-  });
-}

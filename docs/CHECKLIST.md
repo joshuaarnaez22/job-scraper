@@ -4,16 +4,21 @@
 
 ## 🚀 Initial Setup
 
-- [ ] Clone repo
-- [ ] `npm install`
-- [ ] Copy `.env.example` → `.env.local`
-- [ ] Add `RESEND_API_KEY`
-- [ ] Add `NOTIFICATION_EMAIL`
-- [ ] Add `CRON_SECRET` (generate: `openssl rand -base64 32`)
-- [ ] (Optional) Add `OPENAI_API_KEY`
-- [ ] Add `DATABASE_URL` (Neon PostgreSQL connection string)
-- [ ] `npx prisma generate && npx prisma db push`
-- [ ] `npm run dev`
+### Required ✅
+- [x] Clone repo
+- [x] `npm install`
+- [x] Copy `.env.example` → `.env.local`
+- [x] Add `DATABASE_URL` (Neon PostgreSQL connection string)
+- [x] Add `CRON_SECRET`
+- [x] `npx prisma generate && npx prisma db push`
+- [x] `npm run dev`
+
+### For Email Notifications
+- [ ] Add `RESEND_API_KEY` (from resend.com)
+- [ ] Add `NOTIFICATION_EMAIL` (your email address)
+
+### For AI Features (Optional)
+- [ ] Add `OPENAI_API_KEY` (for job scoring & cover letters)
 
 ---
 
@@ -236,105 +241,47 @@ jobs:
 
 ---
 
-## ✉️ AI Cover Letter Generator
+## ✉️ AI Cover Letter Generator (Implemented)
 
-### 1. Add UserProfile model to Prisma
+### 1. Add UserProfile model to Prisma ✅
 ```prisma
-// prisma/schema.prisma
-model UserProfile {
-  id              String   @id @default("default")
-  name            String
-  title           String?
-  summary         String?
-  skills          String   // JSON array
-  experience      String   // JSON array
-  education       String?
-  portfolioUrl    String?
-  linkedinUrl     String?
-  preferences     String   // JSON: { tone, length, customInstructions }
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model GeneratedEmail {
-  id          String   @id @default(cuid())
-  jobId       String
-  job         Job      @relation(fields: [jobId], references: [id])
-  content     String
-  version     Int      @default(1)
-  createdAt   DateTime @default(now())
-}
+// prisma/schema.prisma - DONE
+model UserProfile { ... }
+model GeneratedEmail { ... }
 ```
 
-### 2. Create profile API
+### 2. Create profile API ✅
 ```typescript
-// src/app/api/profile/route.ts
+// src/app/api/profile/route.ts - DONE
 // GET - fetch user profile
 // PUT - update user profile (name, skills, experience, preferences)
 ```
 
-### 3. Create cover letter generation API
+### 3. Create cover letter generation API ✅
 ```typescript
-// src/app/api/jobs/[id]/generate-email/route.ts
-import { generateCoverLetter } from '@/lib/ai';
-
+// src/app/api/jobs/[id]/generate-email/route.ts - DONE
 // POST - generate new cover letter for job
 // Request: { regenerate?: boolean }
 // Response: { content: string, version: number }
 ```
 
-### 4. Implement AI generation function
+### 4. Implement AI generation function ✅
 ```typescript
-// src/lib/ai.ts
-export async function generateCoverLetter(
-  job: Job,
-  profile: UserProfile
-): Promise<string> {
-  const prompt = `
-    Generate a professional cover letter/application email.
-
-    JOB DETAILS:
-    Title: ${job.title}
-    Company: ${job.company}
-    Description: ${job.description}
-
-    CANDIDATE PROFILE:
-    Name: ${profile.name}
-    Title: ${profile.title}
-    Summary: ${profile.summary}
-    Skills: ${JSON.parse(profile.skills).join(', ')}
-    Experience: ${profile.experience}
-
-    PREFERENCES:
-    Tone: ${prefs.tone}
-    Length: ${prefs.length}
-    ${prefs.customInstructions || ''}
-
-    Write a compelling, personalized email that highlights relevant experience.
-  `;
-
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4',
-    messages: [{ role: 'user', content: prompt }],
-  });
-
-  return response.choices[0].message.content;
-}
+// src/lib/ai.ts - DONE
+// generateCoverLetter() - Creates tailored cover letter
+// improveCoverLetter() - Refines based on feedback
 ```
 
-### 5. Build UI components
+### 5. Build UI components ✅
 ```tsx
-// src/components/ProfileForm.tsx - Edit experience/skills
-// src/components/CoverLetterModal.tsx - Generate/edit/copy email
-// src/components/CoverLetterPreview.tsx - Display generated email
+// src/components/ProfileForm.tsx - DONE
+// src/components/CoverLetterModal.tsx - DONE (includes preview)
 ```
 
-### 6. Add to JobCard
+### 6. Add to JobCard ✅
 ```tsx
-// src/components/JobCard.tsx
-<Button onClick={() => openCoverLetterModal(job)}>
-  Generate Cover Letter
-</Button>
+// src/components/JobCard.tsx - DONE
+// onGenerateCoverLetter prop integrated
 ```
 
 ### 7. Test the flow
@@ -352,28 +299,161 @@ curl -X POST localhost:3000/api/jobs/abc123/generate-email
 
 ---
 
+## 🔴 Real-time Streaming Scraper ✅
+
+### Features (Implemented)
+- [x] SSE endpoint `/api/cron/scrape/stream` streams jobs as they're found
+- [x] Jobs appear 1-by-1 in UI modal during scrape
+- [x] "Fetch Full Details" toggle - OFF is faster (listing data only), ON fetches each job page
+- [x] Live stats: NEW / DUPES / FILTERED / TOTAL counts update in real-time
+- [x] Auto-scroll job feed as new jobs arrive
+- [x] Clickable job links in results
+- [x] ScrapeStatusModal component (src/components/ScrapeStatusModal.tsx)
+
+### How It Works
+1. User clicks "RUN SCRAPE" → opens modal with options
+2. Toggle "Fetch Full Details" (default: OFF for speed)
+3. Select date range filter
+4. Click "START SCRAPE"
+5. Modal connects to SSE stream
+6. Jobs stream in real-time as they're found & saved to DB
+7. Stats update live (new/duplicates/filtered)
+8. On complete, shows summary with clickable job links
+
+### API Events
+| Event | Data |
+|-------|------|
+| `start` | `{ keywords, sites, fetchFullDetails }` |
+| `site-start` | `{ site }` |
+| `job` | Full job object (new job saved) |
+| `job-filtered` | `{ externalId, title, reason }` |
+| `job-duplicate` | `{ externalId, title }` |
+| `site-complete` | `{ site }` |
+| `complete` | `{ totalFound, newJobs, filtered }` |
+| `error` | `{ message }` |
+
+---
+
 ## 🧪 Testing Checklist
 
+> ⚠️ **No automated tests exist.** All testing must be done manually.
+
+### Scraper Tests (Manual)
 - [ ] All scrapers return jobs (dry run)
-- [ ] Duplicate jobs not re-added
-- [ ] Filters exclude correctly
-- [ ] Email sends with new jobs
-- [ ] AI scoring works (if enabled)
-- [ ] Dashboard displays jobs
-- [ ] Status updates persist
-- [ ] Cron triggers successfully
+- [ ] Duplicate jobs not re-added (unique constraint works)
+- [ ] Date parsing works for various formats
+- [ ] Salary parsing extracts min/max/currency
+- [x] Real-time streaming scraper shows jobs 1-by-1
+- [x] Fetch Full Details toggle controls scraper behavior
+
+### Filter Tests (Manual)
+- [ ] Filters exclude correctly (days posted, salary, job type, etc.)
+- [ ] Exclude keywords filter works
+- [ ] Exclude companies filter works
+- [ ] Required skills filter works
+
+### Dashboard Tests (Manual)
+- [ ] Dashboard displays jobs correctly
+- [ ] Status updates persist (new → viewed → applied)
+- [ ] URL-based filters sync correctly
+- [ ] Pagination works
+- [ ] Settings UI (currently WIP placeholder - API-only)
+
+### Email & Notifications (Manual)
+- [ ] Email sends with new jobs (Resend integration)
+- [ ] Digest mode batches emails correctly
+
+### AI Features (Manual)
+- [ ] AI scoring works (if OPENAI_API_KEY set)
+- [ ] AI threshold filtering works
 - [ ] User profile saves/updates correctly
 - [ ] Cover letter generates with job + profile context
 - [ ] Cover letter regeneration creates new version
 - [ ] Generated emails saved to database
+- [ ] improveCoverLetter() works with feedback
+
+### Cron & Deployment (Manual)
+- [ ] Cron triggers successfully
+- [ ] Authorization header validation works
 
 ---
 
 ## 🚢 Deployment Checklist
 
 - [ ] All env vars set in hosting platform
-- [ ] Neon database accessible
-- [ ] Cron configured
-- [ ] Test scrape endpoint works
+  - [ ] `DATABASE_URL` (Neon PostgreSQL)
+  - [ ] `RESEND_API_KEY`
+  - [ ] `NOTIFICATION_EMAIL`
+  - [ ] `CRON_SECRET`
+  - [ ] `OPENAI_API_KEY` (optional)
+- [ ] Run `npx prisma db push` on production database
+- [ ] Neon database accessible from deployment platform
+- [ ] Cron configured (Vercel/GitHub Actions/cron-job.org)
+- [ ] Test scrape endpoint works with auth
 - [ ] Test email delivery
 - [ ] Monitor first few automated runs
+
+---
+
+## 🔴 Unimplemented Features
+
+### Code Not Written
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Automated Tests | ❌ Not started | No `.test.ts` or `.spec.ts` files exist |
+| Settings UI | ⚠️ WIP | Dashboard shows placeholder; API works |
+
+### Setup Required (Code Complete)
+| Feature | Status | Action Required |
+|---------|--------|-----------------|
+| Email Notifications | ✅ Code ready | Add `RESEND_API_KEY` + `NOTIFICATION_EMAIL` |
+| AI Features | ✅ Code ready | Add `OPENAI_API_KEY` |
+
+---
+
+## 📋 Next Phase: Testing & Deployment
+
+The core features are now implemented:
+- ✅ Real-time Streaming Scraper
+- ✅ AI Cover Letter Generator
+- ✅ Job Filtering Pipeline
+- ✅ Dashboard with URL-based filters
+- ✅ Email notifications (code complete)
+- ✅ User profile management
+- ⚠️ Settings UI (WIP - API only)
+- ❌ Automated tests
+
+### Priority 1: Local Testing
+1. Run a full scrape cycle with OnlineJobs.ph
+2. Verify jobs appear in dashboard
+3. Test status updates (new → viewed → applied)
+4. Test cover letter generation flow
+
+### Priority 2: Email Integration
+1. Set up Resend API key
+2. Test email sending with new jobs
+3. Verify digest mode works
+
+### Priority 3: AI Features (Optional)
+1. Set up OpenAI API key
+2. Test job relevance scoring
+3. Test AI threshold filtering
+
+### Priority 4: Build Settings UI
+1. Create settings form component
+2. Wire up to existing `/api/settings` endpoint
+3. Replace "WIP" placeholder in dashboard
+
+### Priority 5: Write Automated Tests
+1. Unit tests for filter pipeline
+2. Integration tests for scraper workflow
+3. API route tests
+4. Component tests (optional)
+
+### Priority 6: Deployment (Later)
+> Deferred until local testing is complete
+
+1. Deploy to Vercel
+2. Set up production database
+3. Configure cron jobs
+4. Monitor production scrapes

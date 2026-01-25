@@ -30,24 +30,42 @@ interface ProfileFormProps {
   onSave: (data: UserProfileData) => Promise<void>;
 }
 
+const defaultProfile: UserProfileData = {
+  name: '',
+  title: '',
+  summary: '',
+  skills: [],
+  experience: [],
+  education: '',
+  portfolioUrl: '',
+  linkedinUrl: '',
+  preferences: {
+    tone: 'professional',
+    length: 'medium',
+    customInstructions: '',
+  },
+};
+
 export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
-  const [profile, setProfile] = useState<UserProfileData>(
-    initialData || {
-      name: '',
-      title: '',
-      summary: '',
-      skills: [],
-      experience: [],
-      education: '',
-      portfolioUrl: '',
-      linkedinUrl: '',
+  const [profile, setProfile] = useState<UserProfileData>(() => {
+    if (!initialData) return defaultProfile;
+    // Merge with defaults to convert null values to empty strings
+    return {
+      name: initialData.name ?? '',
+      title: initialData.title ?? '',
+      summary: initialData.summary ?? '',
+      skills: initialData.skills ?? [],
+      experience: initialData.experience ?? [],
+      education: initialData.education ?? '',
+      portfolioUrl: initialData.portfolioUrl ?? '',
+      linkedinUrl: initialData.linkedinUrl ?? '',
       preferences: {
-        tone: 'professional',
-        length: 'medium',
-        customInstructions: '',
+        tone: initialData.preferences?.tone ?? 'professional',
+        length: initialData.preferences?.length ?? 'medium',
+        customInstructions: initialData.preferences?.customInstructions ?? '',
       },
-    }
-  );
+    };
+  });
 
   const [newSkill, setNewSkill] = useState('');
   const [isSaving, setIsSaving] = useState(false);
