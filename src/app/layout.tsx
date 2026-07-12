@@ -18,6 +18,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "JobScout - 8-bit Job Search",
   description: "Retro-styled multi-site job scraper with AI-powered matching",
+  icons: {
+    icon: [
+      { url: "/favicon.ico?v=2", sizes: "any" },
+      { url: "/icons/favicon-32.png?v=2", sizes: "32x32", type: "image/png" },
+      { url: "/icon.png?v=2", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png?v=2", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export const viewport: Viewport = {

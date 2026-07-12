@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { UserButton } from '@clerk/nextjs';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { BrandLogo } from '@/components/BrandLogo';
 import { JobList } from '@/components/JobList';
 import { FilterPanel, type FilterState } from '@/components/FilterPanel';
 import { StatsOverview } from '@/components/StatsCard';
@@ -221,7 +222,7 @@ function DashboardContent() {
           {/* Logo */}
           <div className="flex h-14 items-center border-b-4 border-foreground px-4">
             <a href="/" className="flex items-center gap-2">
-              <span className="font-retro text-sm">JOBSCOUT</span>
+              <BrandLogo size={24} wordmarkClassName="font-retro text-sm" />
             </a>
           </div>
 
@@ -268,7 +269,7 @@ function DashboardContent() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        <span className="font-retro text-xs">JOBSCOUT</span>
+        <BrandLogo size={22} wordmarkClassName="font-retro text-xs" />
         <div className="ml-auto flex items-center gap-2">
           <button
             onClick={handleOpenScrapeModal}

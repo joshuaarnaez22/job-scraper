@@ -6,6 +6,7 @@ import {
   UserButton,
 } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
+import { BrandLogo } from '@/components/BrandLogo';
 
 export default async function Home() {
   const { userId } = await auth();
@@ -16,7 +17,7 @@ export default async function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="flex h-14 items-center justify-between border-b-4 border-foreground bg-card px-4 md:px-6">
-        <span className="font-retro text-sm">JOBSCOUT</span>
+        <BrandLogo size={28} />
         <div className="flex items-center gap-2">
           <Show when="signed-out">
             <SignInButton mode="redirect" forceRedirectUrl="/dashboard">
@@ -37,9 +38,11 @@ export default async function Home() {
       </header>
 
       <main className="flex flex-1 flex-col items-center justify-center gap-6 p-6 text-center">
-        <h1 className="font-retro text-xl md:text-2xl leading-relaxed">
-          JOBSCOUT
-        </h1>
+        <BrandLogo
+          size={72}
+          wordmarkClassName="font-retro text-xl md:text-2xl leading-relaxed"
+          className="flex-col gap-4"
+        />
         <p className="max-w-md text-sm text-muted-foreground">
           Multi-site job scraping with AI matching and cover letters. Sign up to
           open your dashboard.
