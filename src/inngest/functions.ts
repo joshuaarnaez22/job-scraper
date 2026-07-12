@@ -1,12 +1,19 @@
 import { inngest } from './client';
 import { runFullScrapePipeline } from '@/lib/scrape-pipeline';
 
+type ScrapePayload = {
+  sites?: string[];
+  keywords?: string[];
+  dryRun?: boolean;
+  daysPosted?: number | null;
+  onlyUserId?: string;
+  source?: string;
+};
+
 /**
  * Durable scrape orchestrator.
- * Triggered by cron or dashboard via `scrape/requested`.
- *
- * Uses a single pipeline step (retries as a unit). Per-site fan-out can be
- * split later once job payloads are serialization-safe.
+ * - Event: dashboard / Vercel cron via `scrape/requested`
+ * - Cron: Inngest Cloud schedule (08:00 Asia/Manila) when not in INNGEST_DEV
  */
 export const scrapeRequested = inngest.createFunction(
   {
@@ -14,17 +21,19 @@ export const scrapeRequested = inngest.createFunction(
     name: 'Scrape requested',
     retries: 2,
     concurrency: [{ limit: 1 }],
-    triggers: [{ event: 'scrape/requested' }],
+    triggers: [
+      { event: 'scrape/requested' },
+      // Matches vercel.json cron intent; Inngest Cloud runs this in production
+      { cron: 'TZ=Asia/Manila 0 8 * * *' },
+    ],
   },
   async ({ event, step }) => {
-    const data = (event.data ?? {}) as {
-      sites?: string[];
-      keywords?: string[];
-      dryRun?: boolean;
-      daysPosted?: number | null;
-      onlyUserId?: string;
-      source?: string;
-    };
+    const data = (event.data ?? {}) as ScrapePayload;
+    const source =
+      data.source ??
+      (event.name?.startsWith('inngest/scheduled.') || !event.data
+        ? 'inngest-cron'
+        : 'manual');
 
     const result = await step.run('run-scrape-pipeline', async () => {
       return runFullScrapePipeline({
@@ -38,7 +47,7 @@ export const scrapeRequested = inngest.createFunction(
 
     return {
       success: true,
-      source: data.source ?? 'manual',
+      source,
       ...result,
     };
   }

@@ -1,10 +1,6 @@
-/**
- * Cron Scrape API
- * POST /api/cron/scrape — enqueue Inngest scrape (falls back to sync if enqueue fails)
- */
-
 import { NextRequest, NextResponse } from 'next/server';
 import { inngest } from '@/inngest/client';
+import { assertInngestCloudReady, isInngestDevMode } from '@/lib/inngest-env';
 import { runFullScrapePipeline } from '@/lib/scrape-pipeline';
 
 export const maxDuration = 300;
@@ -59,17 +55,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         queued: true,
         eventIds: ids,
-        message: 'Scrape enqueued via Inngest',
+        mode: isInngestDevMode() ? 'dev' : 'cloud',
+        message: isInngestDevMode()
+          ? 'Scrape enqueued via Inngest Dev Server'
+          : 'Scrape enqueued via Inngest Cloud',
       });
     } catch (enqueueError) {
       console.warn(
         '[Cron] Inngest enqueue failed, running sync fallback:',
         enqueueError
       );
+      const cloud = assertInngestCloudReady();
       const result = await runFullScrapePipeline(payload);
       return NextResponse.json({
         queued: false,
         fallback: true,
+        inngestHint: cloud.ok ? undefined : cloud.reason,
         ...result,
       });
     }

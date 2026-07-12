@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { filterEnabledSiteIds, getEnabledSiteIds } from '@/config/sites';
 import { AuthRequiredError, requireCurrentUser } from '@/lib/auth-user';
 import { inngest } from '@/inngest/client';
+import { isInngestDevMode } from '@/lib/inngest-env';
 import { withServiceRls, withUserRls } from '@/lib/rls';
 import { runFullScrapePipeline } from '@/lib/scrape-pipeline';
 
@@ -56,6 +57,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         queued: true,
         eventIds: ids,
+        mode: isInngestDevMode() ? 'dev' : 'cloud',
         enqueuedAt: new Date().toISOString(),
       });
     } catch (enqueueError) {
