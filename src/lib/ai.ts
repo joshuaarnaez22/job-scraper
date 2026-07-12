@@ -1,17 +1,24 @@
 /**
  * AI Integration
- * OpenAI-powered job matching and cover letter generation
+ * DeepSeek — job relevance scoring
+ * Mistral — cover letter generation
  */
 
 import OpenAI from 'openai';
 import type { Job } from './scrapers/base';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const deepseek = new OpenAI({
+  apiKey: process.env.DEEPSEEK_API_KEY,
+  baseURL: 'https://api.deepseek.com',
+});
+
+const mistral = new OpenAI({
+  apiKey: process.env.MISTRAL_API_KEY,
+  baseURL: 'https://api.mistral.ai/v1',
 });
 
 // ===========================================
-// Job Matching
+// Job Matching (DeepSeek)
 // ===========================================
 
 export interface MatchingConfig {
@@ -22,23 +29,23 @@ export interface MatchingConfig {
 }
 
 export interface JobScore {
-  score: number;      // 0-1 relevance score
-  summary: string;    // Brief summary of the job
-  reasons: string[];  // Why it matched/didn't match
+  score: number; // 0-1 relevance score
+  summary: string; // Brief summary of the job
+  reasons: string[]; // Why it matched/didn't match
 }
 
 /**
- * Score a job's relevance using OpenAI
+ * Score a job's relevance using DeepSeek
  */
 export async function scoreJobRelevance(
   job: Job,
   config: MatchingConfig
 ): Promise<JobScore> {
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.DEEPSEEK_API_KEY) {
     return {
       score: 0,
       summary: '',
-      reasons: ['OpenAI API key not configured'],
+      reasons: ['DeepSeek API key not configured'],
     };
   }
 
@@ -68,8 +75,8 @@ Respond in JSON format:
 `;
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+    const response = await deepseek.chat.completions.create({
+      model: 'deepseek-chat',
       messages: [{ role: 'user', content: prompt }],
       response_format: { type: 'json_object' },
       max_tokens: 500,
@@ -77,7 +84,7 @@ Respond in JSON format:
 
     const content = response.choices[0]?.message?.content;
     if (!content) {
-      throw new Error('No response from OpenAI');
+      throw new Error('No response from DeepSeek');
     }
 
     const result = JSON.parse(content) as JobScore;
@@ -115,7 +122,6 @@ export async function scoreJobs(
       onProgress(i + 1, jobs.length);
     }
 
-    // Small delay to avoid rate limiting
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
 
@@ -123,7 +129,7 @@ export async function scoreJobs(
 }
 
 // ===========================================
-// Cover Letter Generation
+// Cover Letter Generation (Mistral)
 // ===========================================
 
 export interface UserProfile {
@@ -152,14 +158,14 @@ export interface CoverLetterPreferences {
 }
 
 /**
- * Generate a tailored cover letter for a job
+ * Generate a tailored cover letter for a job using Mistral
  */
 export async function generateCoverLetter(
   job: Job,
   profile: UserProfile
 ): Promise<string> {
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error('OpenAI API key not configured');
+  if (!process.env.MISTRAL_API_KEY) {
+    throw new Error('Mistral API key not configured');
   }
 
   const lengthGuide = {
@@ -175,10 +181,12 @@ export async function generateCoverLetter(
   };
 
   const experienceText = profile.experience
-    .map((exp) => `
+    .map(
+      (exp) => `
       - ${exp.role} at ${exp.company} (${exp.duration})
         ${exp.highlights.map((h) => `• ${h}`).join('\n        ')}
-    `)
+    `
+    )
     .join('\n');
 
   const prompt = `
@@ -221,15 +229,15 @@ Make it specific to this job and candidate.
 `;
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
+    const response = await mistral.chat.completions.create({
+      model: 'mistral-small-latest',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 1000,
     });
 
     const content = response.choices[0]?.message?.content;
     if (!content) {
-      throw new Error('No response from OpenAI');
+      throw new Error('No response from Mistral');
     }
 
     return content.trim();
@@ -240,14 +248,14 @@ Make it specific to this job and candidate.
 }
 
 /**
- * Improve an existing cover letter
+ * Improve an existing cover letter using Mistral
  */
 export async function improveCoverLetter(
   currentLetter: string,
   feedback: string
 ): Promise<string> {
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error('OpenAI API key not configured');
+  if (!process.env.MISTRAL_API_KEY) {
+    throw new Error('Mistral API key not configured');
   }
 
   const prompt = `
@@ -263,15 +271,15 @@ Rewrite the cover letter incorporating the feedback while maintaining the overal
 `;
 
   try {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
+    const response = await mistral.chat.completions.create({
+      model: 'mistral-small-latest',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 1000,
     });
 
     const content = response.choices[0]?.message?.content;
     if (!content) {
-      throw new Error('No response from OpenAI');
+      throw new Error('No response from Mistral');
     }
 
     return content.trim();

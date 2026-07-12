@@ -1,16 +1,17 @@
 /**
  * Jobs API
- * GET /api/jobs - List jobs with filters
+ * GET /api/jobs - List the current user's matched jobs
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { AuthRequiredError, requireCurrentUser } from '@/lib/auth-user';
+import { withUserRls } from '@/lib/rls';
 
 export async function GET(request: NextRequest) {
   try {
+    const user = await requireCurrentUser();
     const { searchParams } = new URL(request.url);
 
-    // Parse query parameters
     const site = searchParams.get('site');
     const status = searchParams.get('status');
     const days = searchParams.get('days');
@@ -18,64 +19,84 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
     const sortBy = searchParams.get('sortBy') || 'createdAt';
-    const sortOrder = searchParams.get('sortOrder') || 'desc';
+    const sortOrder = (searchParams.get('sortOrder') || 'desc') as 'asc' | 'desc';
 
-    // Build where clause
-    const where: Record<string, unknown> = {};
-
-    if (site) {
-      where.site = site;
-    }
-
-    if (status) {
-      where.status = status;
-    }
-
+    const jobWhere: Record<string, unknown> = {};
+    if (site) jobWhere.site = site;
     if (days) {
       const daysAgo = new Date();
       daysAgo.setDate(daysAgo.getDate() - parseInt(days));
-      where.postedAt = { gte: daysAgo };
+      jobWhere.postedAt = { gte: daysAgo };
     }
-
     if (search) {
-      where.OR = [
+      jobWhere.OR = [
         { title: { contains: search, mode: 'insensitive' } },
         { company: { contains: search, mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } },
       ];
     }
 
-    // Get total count
-    const total = await prisma.job.count({ where });
+    const userJobWhere: Record<string, unknown> = {
+      userId: user.id,
+      ...(status ? { status } : {}),
+      ...(Object.keys(jobWhere).length > 0 ? { job: jobWhere } : {}),
+    };
 
-    // Get paginated jobs
-    const jobs = await prisma.job.findMany({
-      where,
-      orderBy: { [sortBy]: sortOrder },
-      skip: (page - 1) * limit,
-      take: limit,
-      include: {
-        generatedEmails: {
-          orderBy: { createdAt: 'desc' },
-          take: 1,
+    const orderBy =
+      sortBy === 'postedAt' || sortBy === 'createdAt' || sortBy === 'aiScore'
+        ? sortBy === 'aiScore'
+          ? { aiScore: sortOrder }
+          : sortBy === 'postedAt'
+            ? { job: { postedAt: sortOrder } }
+            : { createdAt: sortOrder }
+        : { createdAt: sortOrder };
+
+    return await withUserRls(user.id, async (tx) => {
+      const total = await tx.userJob.count({ where: userJobWhere });
+
+      const userJobs = await tx.userJob.findMany({
+        where: userJobWhere,
+        orderBy,
+        skip: (page - 1) * limit,
+        take: limit,
+        include: {
+          job: {
+            include: {
+              generatedEmails: {
+                where: { userId: user.id },
+                orderBy: { createdAt: 'desc' },
+                take: 1,
+              },
+            },
+          },
         },
-      },
-    });
+      });
 
-    return NextResponse.json({
-      jobs,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
+      const jobs = userJobs.map((uj) => ({
+        ...uj.job,
+        status: uj.status,
+        aiScore: uj.aiScore,
+        aiSummary: uj.aiSummary,
+        userJobId: uj.id,
+        matchedAt: uj.createdAt,
+        generatedEmails: uj.job.generatedEmails,
+      }));
+
+      return NextResponse.json({
+        jobs,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      });
     });
   } catch (error) {
+    if (error instanceof AuthRequiredError) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     console.error('[API] Error fetching jobs:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch jobs' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 });
   }
 }

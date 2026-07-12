@@ -1,79 +1,80 @@
 /**
  * Streaming Scrape API (Server-Sent Events)
- * GET /api/cron/scrape/stream - Stream job results in real-time
+ * GET /api/cron/scrape/stream - Stream job results for the authenticated user
  */
 
 import { NextRequest } from 'next/server';
-import { prisma } from '@/lib/db';
 import { scrapers, type Job } from '@/lib/scrapers';
 import { applyFilters, type FilterConfig } from '@/lib/filters';
 import { getSiteConfig } from '@/config/sites';
+import { AuthRequiredError, requireCurrentUser } from '@/lib/auth-user';
+import { withServiceRls, withUserRls } from '@/lib/rls';
 
-export const maxDuration = 300; // 5 minutes max for Vercel
+export const maxDuration = 300;
 
 export async function GET(request: NextRequest) {
-  // Verify authorization
-  const referer = request.headers.get('referer') || '';
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  const isInternalRequest = referer.startsWith(appUrl) || referer.includes('localhost');
-
-  if (!isInternalRequest) {
-    return new Response('Unauthorized', { status: 401 });
+  let user;
+  try {
+    user = await requireCurrentUser();
+  } catch (error) {
+    if (error instanceof AuthRequiredError) {
+      return new Response('Unauthorized', { status: 401 });
+    }
+    throw error;
   }
 
   const { searchParams } = new URL(request.url);
   const daysPosted = searchParams.get('daysPosted');
   const fetchFullDetails = searchParams.get('fetchFullDetails') === 'true';
 
-  // Create SSE stream
+  const configRecord = await withUserRls(user.id, async (tx) =>
+    tx.searchConfig.findUnique({ where: { userId: user.id } })
+  );
+
+  if (!configRecord) {
+    return new Response('Search config not found', { status: 400 });
+  }
+
+  const config = {
+    keywords: JSON.parse(configRecord.keywords) as string[],
+    excludeKeywords: JSON.parse(configRecord.excludeKeywords) as string[],
+    enabledSites: JSON.parse(configRecord.enabledSites) as string[],
+    daysPosted: daysPosted ? parseInt(daysPosted) : configRecord.daysPosted,
+    salaryMin: configRecord.salaryMin,
+    salaryMax: configRecord.salaryMax,
+    salaryCurrency: configRecord.salaryCurrency,
+    jobTypes: JSON.parse(configRecord.jobTypes) as string[],
+    experienceLevels: JSON.parse(configRecord.experienceLevels) as string[],
+    workArrangements: JSON.parse(configRecord.workArrangements) as string[],
+    excludeCompanies: JSON.parse(configRecord.excludeCompanies) as string[],
+    requiredSkills: JSON.parse(configRecord.requiredSkills) as string[],
+  };
+
+  const filterConfig: FilterConfig = {
+    daysPosted: config.daysPosted,
+    salaryMin: config.salaryMin,
+    salaryMax: config.salaryMax,
+    salaryCurrency: config.salaryCurrency,
+    jobTypes: config.jobTypes,
+    experienceLevels: config.experienceLevels,
+    workArrangements: config.workArrangements,
+    excludeCompanies: config.excludeCompanies,
+    excludeKeywords: config.excludeKeywords,
+    requiredSkills: config.requiredSkills,
+  };
+
   const encoder = new TextEncoder();
+  const userId = user.id;
+
   const stream = new ReadableStream({
     async start(controller) {
       const sendEvent = (event: string, data: unknown) => {
-        controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+        controller.enqueue(
+          encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)
+        );
       };
 
       try {
-        // Get search config
-        const configRecord = await prisma.searchConfig.findUnique({
-          where: { id: 'default' },
-        });
-
-        if (!configRecord) {
-          sendEvent('error', { message: 'Search config not found' });
-          controller.close();
-          return;
-        }
-
-        const config = {
-          keywords: JSON.parse(configRecord.keywords) as string[],
-          excludeKeywords: JSON.parse(configRecord.excludeKeywords) as string[],
-          enabledSites: JSON.parse(configRecord.enabledSites) as string[],
-          daysPosted: daysPosted ? parseInt(daysPosted) : configRecord.daysPosted,
-          salaryMin: configRecord.salaryMin,
-          salaryMax: configRecord.salaryMax,
-          salaryCurrency: configRecord.salaryCurrency,
-          jobTypes: JSON.parse(configRecord.jobTypes) as string[],
-          experienceLevels: JSON.parse(configRecord.experienceLevels) as string[],
-          workArrangements: JSON.parse(configRecord.workArrangements) as string[],
-          excludeCompanies: JSON.parse(configRecord.excludeCompanies) as string[],
-          requiredSkills: JSON.parse(configRecord.requiredSkills) as string[],
-        };
-
-        const filterConfig: FilterConfig = {
-          daysPosted: config.daysPosted,
-          salaryMin: config.salaryMin,
-          salaryMax: config.salaryMax,
-          salaryCurrency: config.salaryCurrency,
-          jobTypes: config.jobTypes,
-          experienceLevels: config.experienceLevels,
-          workArrangements: config.workArrangements,
-          excludeCompanies: config.excludeCompanies,
-          excludeKeywords: config.excludeKeywords,
-          requiredSkills: config.requiredSkills,
-        };
-
-        // Send start event
         sendEvent('start', {
           keywords: config.keywords,
           sites: config.enabledSites,
@@ -83,7 +84,6 @@ export async function GET(request: NextRequest) {
         let totalFound = 0;
         let newJobsCount = 0;
 
-        // Process each enabled site
         for (const siteId of config.enabledSites) {
           const scraper = scrapers[siteId];
           const siteConfig = getSiteConfig(siteId);
@@ -102,7 +102,6 @@ export async function GET(request: NextRequest) {
               onJobFound: async (job: Job) => {
                 totalFound++;
 
-                // Apply filters
                 const filtered = applyFilters([job], filterConfig);
                 if (filtered.length === 0) {
                   sendEvent('job-filtered', {
@@ -113,17 +112,67 @@ export async function GET(request: NextRequest) {
                   return;
                 }
 
-                // Check if job already exists
-                const existing = await prisma.job.findUnique({
-                  where: {
-                    site_externalId: {
-                      site: job.site,
-                      externalId: job.externalId,
+                const saved = await withServiceRls(async (tx) => {
+                  let catalogJob = await tx.job.findUnique({
+                    where: {
+                      site_externalId: {
+                        site: job.site,
+                        externalId: job.externalId,
+                      },
                     },
-                  },
+                  });
+
+                  const isNewCatalog = !catalogJob;
+
+                  if (!catalogJob) {
+                    catalogJob = await tx.job.create({
+                      data: {
+                        externalId: job.externalId,
+                        site: job.site,
+                        title: job.title,
+                        company: job.company,
+                        salary: job.salary,
+                        salaryMin: job.salaryMin,
+                        salaryMax: job.salaryMax,
+                        salaryCurrency: job.salaryCurrency,
+                        description: job.description,
+                        url: job.url,
+                        jobType: job.jobType,
+                        experienceLevel: job.experienceLevel,
+                        workArrangement: job.workArrangement,
+                        skills: job.skills ? JSON.stringify(job.skills) : null,
+                        location: job.location,
+                        postedAt: job.postedAt,
+                      },
+                    });
+                  }
+
+                  const existingMatch = await tx.userJob.findUnique({
+                    where: {
+                      userId_jobId: { userId, jobId: catalogJob.id },
+                    },
+                  });
+
+                  if (existingMatch) {
+                    return { duplicate: true as const };
+                  }
+
+                  await tx.userJob.create({
+                    data: {
+                      userId,
+                      jobId: catalogJob.id,
+                      status: 'new',
+                    },
+                  });
+
+                  return {
+                    duplicate: false as const,
+                    isNewCatalog,
+                    savedJob: catalogJob,
+                  };
                 });
 
-                if (existing) {
+                if (saved.duplicate) {
                   sendEvent('job-duplicate', {
                     externalId: job.externalId,
                     title: job.title,
@@ -131,33 +180,9 @@ export async function GET(request: NextRequest) {
                   return;
                 }
 
-                // Save to database
-                const savedJob = await prisma.job.create({
-                  data: {
-                    externalId: job.externalId,
-                    site: job.site,
-                    title: job.title,
-                    company: job.company,
-                    salary: job.salary,
-                    salaryMin: job.salaryMin,
-                    salaryMax: job.salaryMax,
-                    salaryCurrency: job.salaryCurrency,
-                    description: job.description,
-                    url: job.url,
-                    jobType: job.jobType,
-                    experienceLevel: job.experienceLevel,
-                    workArrangement: job.workArrangement,
-                    skills: job.skills ? JSON.stringify(job.skills) : null,
-                    location: job.location,
-                    postedAt: job.postedAt,
-                  },
-                });
-
                 newJobsCount++;
-
-                // Stream the new job to the client
                 sendEvent('job', {
-                  id: savedJob.id,
+                  id: saved.savedJob.id,
                   externalId: job.externalId,
                   site: job.site,
                   title: job.title,
@@ -179,7 +204,6 @@ export async function GET(request: NextRequest) {
           }
         }
 
-        // Send completion event
         sendEvent('complete', {
           totalFound,
           newJobs: newJobsCount,
@@ -200,7 +224,7 @@ export async function GET(request: NextRequest) {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
     },
   });
 }

@@ -11,79 +11,127 @@ datasource db {
 }
 
 // ===========================================
-// Job Model
+// User (synced from Clerk)
+// ===========================================
+
+model User {
+  id               String   @id @default(cuid())
+  clerkId          String   @unique
+  email            String
+  plan             String   @default("free") // free, pro, pro_plus
+  stripeCustomerId String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  searchConfig    SearchConfig?
+  profile         UserProfile?
+  userJobs        UserJob[]
+  generatedEmails GeneratedEmail[]
+  subscription    Subscription?
+
+  @@index([clerkId])
+  @@index([email])
+}
+
+// ===========================================
+// Job Catalog (shared across users)
 // ===========================================
 
 model Job {
   id              String    @id @default(cuid())
-  externalId      String    // Original job ID from source site
-  site            String    // onlinejobs, jobstreet, linkedin, etc.
+  externalId      String // Original job ID from source site
+  site            String // onlinejobs, jobstreet, linkedin, etc.
   title           String
   company         String
   salary          String?
-  salaryMin       Int?      // Parsed minimum salary
-  salaryMax       Int?      // Parsed maximum salary
-  salaryCurrency  String?   // PHP, USD, EUR
+  salaryMin       Int? // Parsed minimum salary
+  salaryMax       Int? // Parsed maximum salary
+  salaryCurrency  String? // PHP, USD, EUR
   description     String
   url             String
-  jobType         String?   // full-time, part-time, contract, freelance
-  experienceLevel String?   // entry, mid, senior
-  workArrangement String?   // remote, hybrid, onsite
-  skills          String?   // JSON array of skills/tags
+  jobType         String? // full-time, part-time, contract, freelance
+  experienceLevel String? // entry, mid, senior
+  workArrangement String? // remote, hybrid, onsite
+  skills          String? // JSON array of skills/tags
   location        String?
   postedAt        DateTime?
   scrapedAt       DateTime  @default(now())
-  status          String    @default("new") // new, viewed, applied, hidden, expired
-  aiScore         Float?    // OpenAI relevance score (0-1)
-  aiSummary       String?   // AI-generated summary
+  catalogStatus   String    @default("active") // active, expired
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  // Relations
+  userJobs        UserJob[]
   generatedEmails GeneratedEmail[]
 
   @@unique([site, externalId]) // Prevent duplicates per site
   @@index([site])
-  @@index([status])
+  @@index([catalogStatus])
   @@index([postedAt])
   @@index([createdAt])
 }
 
 // ===========================================
-// Search Configuration
+// Per-user job match / status
+// ===========================================
+
+model UserJob {
+  id        String   @id @default(cuid())
+  userId    String
+  jobId     String
+  status    String   @default("new") // new, viewed, applied, hidden, expired
+  aiScore   Float? // DeepSeek relevance score (0-1)
+  aiSummary String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId])
+  @@index([jobId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ===========================================
+// Search Configuration (per user)
 // ===========================================
 
 model SearchConfig {
-  id               String   @id @default("default")
-  keywords         String   // JSON array
-  excludeKeywords  String   // JSON array
-  enabledSites     String   // JSON array of enabled site IDs
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  keywords        String // JSON array
+  excludeKeywords String // JSON array
+  enabledSites    String // JSON array of enabled site IDs
 
   // Date Filter
-  daysPosted       Int?     // Filter by days since posted
+  daysPosted Int? // Filter by days since posted
 
   // Salary Filters
-  salaryMin        Int?
-  salaryMax        Int?
-  salaryCurrency   String   @default("PHP")
+  salaryMin      Int?
+  salaryMax      Int?
+  salaryCurrency String @default("PHP")
 
   // Job Filters (JSON arrays)
-  jobTypes         String   // JSON array: full-time, part-time, etc.
-  experienceLevels String   // JSON array: entry, mid, senior
-  workArrangements String   // JSON array: remote, hybrid, onsite
-  excludeCompanies String   // JSON array
+  jobTypes         String // JSON array: full-time, part-time, etc.
+  experienceLevels String // JSON array: entry, mid, senior
+  workArrangements String // JSON array: remote, hybrid, onsite
+  excludeCompanies String // JSON array
 
   // Skills (JSON arrays)
-  requiredSkills   String   // JSON array
-  preferredSkills  String   // JSON array
+  requiredSkills  String // JSON array
+  preferredSkills String // JSON array
 
   // AI & Notifications
-  useAIMatching    Boolean  @default(false)
-  aiThreshold      Float    @default(0.7)
-  digestMode       Boolean  @default(true)
-  maxEmailsPerRun  Int      @default(10)
+  useAIMatching   Boolean @default(false)
+  aiThreshold     Float   @default(0.7)
+  digestMode      Boolean @default(true)
+  maxEmailsPerRun Int     @default(10)
 
-  updatedAt        DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
 // ===========================================
@@ -92,15 +140,15 @@ model SearchConfig {
 
 model ScrapeLog {
   id        String    @id @default(cuid())
-  site      String    // Which site was scraped
+  site      String // Which site was scraped
   startedAt DateTime  @default(now())
   endedAt   DateTime?
   jobsFound Int       @default(0)
   newJobs   Int       @default(0)
   filtered  Int       @default(0) // Jobs filtered out
-  status    String    // success, error, partial
+  status    String // success, error, partial
   error     String?
-  duration  Int?      // Duration in ms
+  duration  Int? // Duration in ms
 
   @@index([site])
   @@index([startedAt])
@@ -116,7 +164,7 @@ model SiteConfig {
   rateLimit   Int       @default(2000) // ms between requests
   maxPages    Int       @default(5)
   lastScraped DateTime?
-  settings    String?   // JSON for site-specific settings
+  settings    String? // JSON for site-specific settings
   updatedAt   DateTime  @updatedAt
 }
 
@@ -125,16 +173,19 @@ model SiteConfig {
 // ===========================================
 
 model UserProfile {
-  id           String   @id @default("default")
-  name         String
-  title        String?  // Current job title
-  summary      String?  // Professional summary/bio
-  skills       String   // JSON array of skills
-  experience   String   // JSON array of work experience
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name         String   @default("")
+  title        String? // Current job title
+  summary      String? // Professional summary/bio
+  skills       String // JSON array of skills
+  experience   String // JSON array of work experience
   education    String?
   portfolioUrl String?
   linkedinUrl  String?
-  preferences  String   // JSON: { tone, length, customInstructions }
+  preferences  String // JSON: { tone, length, customInstructions }
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -144,12 +195,31 @@ model UserProfile {
 // ===========================================
 
 model GeneratedEmail {
-  id        String   @id @default(cuid())
-  jobId     String
-  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  content   String   // Generated email content
-  version   Int      @default(1) // Track regenerations
+  id      String @id @default(cuid())
+  userId  String
+  jobId   String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job     Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  content String // Generated email content
+  version Int    @default(1) // Track regenerations
   createdAt DateTime @default(now())
 
   @@index([jobId])
+  @@index([userId])
+}
+
+// ===========================================
+// Subscription (Stripe stub for Phase 2)
+// ===========================================
+
+model Subscription {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan             String    @default("free") // free, pro, pro_plus
+  status           String    @default("inactive") // inactive, active, canceled, past_due
+  stripeSubId      String?
+  periodEnd        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }

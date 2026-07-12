@@ -120,6 +120,16 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  clerkId: 'clerkId',
+  email: 'email',
+  plan: 'plan',
+  stripeCustomerId: 'stripeCustomerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.JobScalarFieldEnum = {
   id: 'id',
   externalId: 'externalId',
@@ -139,6 +149,15 @@ exports.Prisma.JobScalarFieldEnum = {
   location: 'location',
   postedAt: 'postedAt',
   scrapedAt: 'scrapedAt',
+  catalogStatus: 'catalogStatus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserJobScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  jobId: 'jobId',
   status: 'status',
   aiScore: 'aiScore',
   aiSummary: 'aiSummary',
@@ -148,6 +167,7 @@ exports.Prisma.JobScalarFieldEnum = {
 
 exports.Prisma.SearchConfigScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   keywords: 'keywords',
   excludeKeywords: 'excludeKeywords',
   enabledSites: 'enabledSites',
@@ -193,6 +213,7 @@ exports.Prisma.SiteConfigScalarFieldEnum = {
 
 exports.Prisma.UserProfileScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   name: 'name',
   title: 'title',
   summary: 'summary',
@@ -208,10 +229,22 @@ exports.Prisma.UserProfileScalarFieldEnum = {
 
 exports.Prisma.GeneratedEmailScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   jobId: 'jobId',
   content: 'content',
   version: 'version',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.SubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  plan: 'plan',
+  status: 'status',
+  stripeSubId: 'stripeSubId',
+  periodEnd: 'periodEnd',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -231,12 +264,15 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
+  User: 'User',
   Job: 'Job',
+  UserJob: 'UserJob',
   SearchConfig: 'SearchConfig',
   ScrapeLog: 'ScrapeLog',
   SiteConfig: 'SiteConfig',
   UserProfile: 'UserProfile',
-  GeneratedEmail: 'GeneratedEmail'
+  GeneratedEmail: 'GeneratedEmail',
+  Subscription: 'Subscription'
 };
 
 /**

@@ -14,10 +14,20 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
+ * Model User
+ * 
+ */
+export type User = $Result.DefaultSelection<Prisma.$UserPayload>
+/**
  * Model Job
  * 
  */
 export type Job = $Result.DefaultSelection<Prisma.$JobPayload>
+/**
+ * Model UserJob
+ * 
+ */
+export type UserJob = $Result.DefaultSelection<Prisma.$UserJobPayload>
 /**
  * Model SearchConfig
  * 
@@ -43,6 +53,11 @@ export type UserProfile = $Result.DefaultSelection<Prisma.$UserProfilePayload>
  * 
  */
 export type GeneratedEmail = $Result.DefaultSelection<Prisma.$GeneratedEmailPayload>
+/**
+ * Model Subscription
+ * 
+ */
+export type Subscription = $Result.DefaultSelection<Prisma.$SubscriptionPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -51,8 +66,8 @@ export type GeneratedEmail = $Result.DefaultSelection<Prisma.$GeneratedEmailPayl
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Jobs
- * const jobs = await prisma.job.findMany()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
  * ```
  *
  *
@@ -72,8 +87,8 @@ export class PrismaClient<
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more Jobs
-   * const jobs = await prisma.job.findMany()
+   * // Fetch zero or more Users
+   * const users = await prisma.user.findMany()
    * ```
    *
    *
@@ -162,6 +177,16 @@ export class PrismaClient<
   }>>
 
       /**
+   * `prisma.user`: Exposes CRUD operations for the **User** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Users
+    * const users = await prisma.user.findMany()
+    * ```
+    */
+  get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.job`: Exposes CRUD operations for the **Job** model.
     * Example usage:
     * ```ts
@@ -170,6 +195,16 @@ export class PrismaClient<
     * ```
     */
   get job(): Prisma.JobDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userJob`: Exposes CRUD operations for the **UserJob** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserJobs
+    * const userJobs = await prisma.userJob.findMany()
+    * ```
+    */
+  get userJob(): Prisma.UserJobDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.searchConfig`: Exposes CRUD operations for the **SearchConfig** model.
@@ -220,6 +255,16 @@ export class PrismaClient<
     * ```
     */
   get generatedEmail(): Prisma.GeneratedEmailDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.subscription`: Exposes CRUD operations for the **Subscription** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Subscriptions
+    * const subscriptions = await prisma.subscription.findMany()
+    * ```
+    */
+  get subscription(): Prisma.SubscriptionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -654,12 +699,15 @@ export namespace Prisma {
 
 
   export const ModelName: {
+    User: 'User',
     Job: 'Job',
+    UserJob: 'UserJob',
     SearchConfig: 'SearchConfig',
     ScrapeLog: 'ScrapeLog',
     SiteConfig: 'SiteConfig',
     UserProfile: 'UserProfile',
-    GeneratedEmail: 'GeneratedEmail'
+    GeneratedEmail: 'GeneratedEmail',
+    Subscription: 'Subscription'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -675,10 +723,84 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "job" | "searchConfig" | "scrapeLog" | "siteConfig" | "userProfile" | "generatedEmail"
+      modelProps: "user" | "job" | "userJob" | "searchConfig" | "scrapeLog" | "siteConfig" | "userProfile" | "generatedEmail" | "subscription"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
+      User: {
+        payload: Prisma.$UserPayload<ExtArgs>
+        fields: Prisma.UserFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          findFirst: {
+            args: Prisma.UserFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          findMany: {
+            args: Prisma.UserFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>[]
+          }
+          create: {
+            args: Prisma.UserCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          createMany: {
+            args: Prisma.UserCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>[]
+          }
+          delete: {
+            args: Prisma.UserDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          update: {
+            args: Prisma.UserUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          aggregate: {
+            args: Prisma.UserAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUser>
+          }
+          groupBy: {
+            args: Prisma.UserGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserCountArgs<ExtArgs>
+            result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
       Job: {
         payload: Prisma.$JobPayload<ExtArgs>
         fields: Prisma.JobFieldRefs
@@ -750,6 +872,80 @@ export namespace Prisma {
           count: {
             args: Prisma.JobCountArgs<ExtArgs>
             result: $Utils.Optional<JobCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserJob: {
+        payload: Prisma.$UserJobPayload<ExtArgs>
+        fields: Prisma.UserJobFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserJobFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserJobFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload>
+          }
+          findFirst: {
+            args: Prisma.UserJobFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserJobFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload>
+          }
+          findMany: {
+            args: Prisma.UserJobFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload>[]
+          }
+          create: {
+            args: Prisma.UserJobCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload>
+          }
+          createMany: {
+            args: Prisma.UserJobCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserJobCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload>[]
+          }
+          delete: {
+            args: Prisma.UserJobDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload>
+          }
+          update: {
+            args: Prisma.UserJobUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserJobDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserJobUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserJobUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserJobUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserJobPayload>
+          }
+          aggregate: {
+            args: Prisma.UserJobAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserJob>
+          }
+          groupBy: {
+            args: Prisma.UserJobGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserJobGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserJobCountArgs<ExtArgs>
+            result: $Utils.Optional<UserJobCountAggregateOutputType> | number
           }
         }
       }
@@ -1123,6 +1319,80 @@ export namespace Prisma {
           }
         }
       }
+      Subscription: {
+        payload: Prisma.$SubscriptionPayload<ExtArgs>
+        fields: Prisma.SubscriptionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SubscriptionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SubscriptionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+          }
+          findFirst: {
+            args: Prisma.SubscriptionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SubscriptionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+          }
+          findMany: {
+            args: Prisma.SubscriptionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload>[]
+          }
+          create: {
+            args: Prisma.SubscriptionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+          }
+          createMany: {
+            args: Prisma.SubscriptionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SubscriptionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload>[]
+          }
+          delete: {
+            args: Prisma.SubscriptionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+          }
+          update: {
+            args: Prisma.SubscriptionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+          }
+          deleteMany: {
+            args: Prisma.SubscriptionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SubscriptionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SubscriptionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload>[]
+          }
+          upsert: {
+            args: Prisma.SubscriptionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SubscriptionPayload>
+          }
+          aggregate: {
+            args: Prisma.SubscriptionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSubscription>
+          }
+          groupBy: {
+            args: Prisma.SubscriptionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SubscriptionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SubscriptionCountArgs<ExtArgs>
+            result: $Utils.Optional<SubscriptionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1231,12 +1501,15 @@ export namespace Prisma {
     comments?: runtime.SqlCommenterPlugin[]
   }
   export type GlobalOmitConfig = {
+    user?: UserOmit
     job?: JobOmit
+    userJob?: UserJobOmit
     searchConfig?: SearchConfigOmit
     scrapeLog?: ScrapeLogOmit
     siteConfig?: SiteConfigOmit
     userProfile?: UserProfileOmit
     generatedEmail?: GeneratedEmailOmit
+    subscription?: SubscriptionOmit
   }
 
   /* Types for Logging */
@@ -1313,14 +1586,56 @@ export namespace Prisma {
 
 
   /**
+   * Count Type UserCountOutputType
+   */
+
+  export type UserCountOutputType = {
+    userJobs: number
+    generatedEmails: number
+  }
+
+  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    userJobs?: boolean | UserCountOutputTypeCountUserJobsArgs
+    generatedEmails?: boolean | UserCountOutputTypeCountGeneratedEmailsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCountOutputType
+     */
+    select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountUserJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserJobWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountGeneratedEmailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GeneratedEmailWhereInput
+  }
+
+
+  /**
    * Count Type JobCountOutputType
    */
 
   export type JobCountOutputType = {
+    userJobs: number
     generatedEmails: number
   }
 
   export type JobCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    userJobs?: boolean | JobCountOutputTypeCountUserJobsArgs
     generatedEmails?: boolean | JobCountOutputTypeCountGeneratedEmailsArgs
   }
 
@@ -1338,6 +1653,13 @@ export namespace Prisma {
   /**
    * JobCountOutputType without action
    */
+  export type JobCountOutputTypeCountUserJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserJobWhereInput
+  }
+
+  /**
+   * JobCountOutputType without action
+   */
   export type JobCountOutputTypeCountGeneratedEmailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GeneratedEmailWhereInput
   }
@@ -1346,6 +1668,1199 @@ export namespace Prisma {
   /**
    * Models
    */
+
+  /**
+   * Model User
+   */
+
+  export type AggregateUser = {
+    _count: UserCountAggregateOutputType | null
+    _min: UserMinAggregateOutputType | null
+    _max: UserMaxAggregateOutputType | null
+  }
+
+  export type UserMinAggregateOutputType = {
+    id: string | null
+    clerkId: string | null
+    email: string | null
+    plan: string | null
+    stripeCustomerId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserMaxAggregateOutputType = {
+    id: string | null
+    clerkId: string | null
+    email: string | null
+    plan: string | null
+    stripeCustomerId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserCountAggregateOutputType = {
+    id: number
+    clerkId: number
+    email: number
+    plan: number
+    stripeCustomerId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UserMinAggregateInputType = {
+    id?: true
+    clerkId?: true
+    email?: true
+    plan?: true
+    stripeCustomerId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserMaxAggregateInputType = {
+    id?: true
+    clerkId?: true
+    email?: true
+    plan?: true
+    stripeCustomerId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserCountAggregateInputType = {
+    id?: true
+    clerkId?: true
+    email?: true
+    plan?: true
+    stripeCustomerId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UserAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which User to aggregate.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Users
+    **/
+    _count?: true | UserCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserMaxAggregateInputType
+  }
+
+  export type GetUserAggregateType<T extends UserAggregateArgs> = {
+        [P in keyof T & keyof AggregateUser]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUser[P]>
+      : GetScalarType<T[P], AggregateUser[P]>
+  }
+
+
+
+
+  export type UserGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithAggregationInput | UserOrderByWithAggregationInput[]
+    by: UserScalarFieldEnum[] | UserScalarFieldEnum
+    having?: UserScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserCountAggregateInputType | true
+    _min?: UserMinAggregateInputType
+    _max?: UserMaxAggregateInputType
+  }
+
+  export type UserGroupByOutputType = {
+    id: string
+    clerkId: string
+    email: string
+    plan: string
+    stripeCustomerId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: UserCountAggregateOutputType | null
+    _min: UserMinAggregateOutputType | null
+    _max: UserMaxAggregateOutputType | null
+  }
+
+  type GetUserGroupByPayload<T extends UserGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserGroupByOutputType[P]>
+            : GetScalarType<T[P], UserGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clerkId?: boolean
+    email?: boolean
+    plan?: boolean
+    stripeCustomerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    searchConfig?: boolean | User$searchConfigArgs<ExtArgs>
+    profile?: boolean | User$profileArgs<ExtArgs>
+    userJobs?: boolean | User$userJobsArgs<ExtArgs>
+    generatedEmails?: boolean | User$generatedEmailsArgs<ExtArgs>
+    subscription?: boolean | User$subscriptionArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["user"]>
+
+  export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clerkId?: boolean
+    email?: boolean
+    plan?: boolean
+    stripeCustomerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["user"]>
+
+  export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clerkId?: boolean
+    email?: boolean
+    plan?: boolean
+    stripeCustomerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["user"]>
+
+  export type UserSelectScalar = {
+    id?: boolean
+    clerkId?: boolean
+    email?: boolean
+    plan?: boolean
+    stripeCustomerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clerkId" | "email" | "plan" | "stripeCustomerId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    searchConfig?: boolean | User$searchConfigArgs<ExtArgs>
+    profile?: boolean | User$profileArgs<ExtArgs>
+    userJobs?: boolean | User$userJobsArgs<ExtArgs>
+    generatedEmails?: boolean | User$generatedEmailsArgs<ExtArgs>
+    subscription?: boolean | User$subscriptionArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "User"
+    objects: {
+      searchConfig: Prisma.$SearchConfigPayload<ExtArgs> | null
+      profile: Prisma.$UserProfilePayload<ExtArgs> | null
+      userJobs: Prisma.$UserJobPayload<ExtArgs>[]
+      generatedEmails: Prisma.$GeneratedEmailPayload<ExtArgs>[]
+      subscription: Prisma.$SubscriptionPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      clerkId: string
+      email: string
+      plan: string
+      stripeCustomerId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["user"]>
+    composites: {}
+  }
+
+  type UserGetPayload<S extends boolean | null | undefined | UserDefaultArgs> = $Result.GetResult<Prisma.$UserPayload, S>
+
+  type UserCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserCountAggregateInputType | true
+    }
+
+  export interface UserDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['User'], meta: { name: 'User' } }
+    /**
+     * Find zero or one User that matches the filter.
+     * @param {UserFindUniqueArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserFindUniqueArgs>(args: SelectSubset<T, UserFindUniqueArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one User that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserFindUniqueOrThrowArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserFindUniqueOrThrowArgs>(args: SelectSubset<T, UserFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first User that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindFirstArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserFindFirstArgs>(args?: SelectSubset<T, UserFindFirstArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first User that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindFirstOrThrowArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserFindFirstOrThrowArgs>(args?: SelectSubset<T, UserFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Users that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Users
+     * const users = await prisma.user.findMany()
+     * 
+     * // Get first 10 Users
+     * const users = await prisma.user.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userWithIdOnly = await prisma.user.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserFindManyArgs>(args?: SelectSubset<T, UserFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a User.
+     * @param {UserCreateArgs} args - Arguments to create a User.
+     * @example
+     * // Create one User
+     * const User = await prisma.user.create({
+     *   data: {
+     *     // ... data to create a User
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserCreateArgs>(args: SelectSubset<T, UserCreateArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Users.
+     * @param {UserCreateManyArgs} args - Arguments to create many Users.
+     * @example
+     * // Create many Users
+     * const user = await prisma.user.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserCreateManyArgs>(args?: SelectSubset<T, UserCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Users and returns the data saved in the database.
+     * @param {UserCreateManyAndReturnArgs} args - Arguments to create many Users.
+     * @example
+     * // Create many Users
+     * const user = await prisma.user.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Users and only return the `id`
+     * const userWithIdOnly = await prisma.user.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserCreateManyAndReturnArgs>(args?: SelectSubset<T, UserCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a User.
+     * @param {UserDeleteArgs} args - Arguments to delete one User.
+     * @example
+     * // Delete one User
+     * const User = await prisma.user.delete({
+     *   where: {
+     *     // ... filter to delete one User
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserDeleteArgs>(args: SelectSubset<T, UserDeleteArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one User.
+     * @param {UserUpdateArgs} args - Arguments to update one User.
+     * @example
+     * // Update one User
+     * const user = await prisma.user.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserUpdateArgs>(args: SelectSubset<T, UserUpdateArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Users.
+     * @param {UserDeleteManyArgs} args - Arguments to filter Users to delete.
+     * @example
+     * // Delete a few Users
+     * const { count } = await prisma.user.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserDeleteManyArgs>(args?: SelectSubset<T, UserDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Users.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Users
+     * const user = await prisma.user.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserUpdateManyArgs>(args: SelectSubset<T, UserUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Users and returns the data updated in the database.
+     * @param {UserUpdateManyAndReturnArgs} args - Arguments to update many Users.
+     * @example
+     * // Update many Users
+     * const user = await prisma.user.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Users and only return the `id`
+     * const userWithIdOnly = await prisma.user.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserUpdateManyAndReturnArgs>(args: SelectSubset<T, UserUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one User.
+     * @param {UserUpsertArgs} args - Arguments to update or create a User.
+     * @example
+     * // Update or create a User
+     * const user = await prisma.user.upsert({
+     *   create: {
+     *     // ... data to create a User
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the User we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserUpsertArgs>(args: SelectSubset<T, UserUpsertArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Users.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCountArgs} args - Arguments to filter Users to count.
+     * @example
+     * // Count the number of Users
+     * const count = await prisma.user.count({
+     *   where: {
+     *     // ... the filter for the Users we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserCountArgs>(
+      args?: Subset<T, UserCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a User.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserAggregateArgs>(args: Subset<T, UserAggregateArgs>): Prisma.PrismaPromise<GetUserAggregateType<T>>
+
+    /**
+     * Group by User.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserGroupByArgs['orderBy'] }
+        : { orderBy?: UserGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the User model
+   */
+  readonly fields: UserFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for User.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    searchConfig<T extends User$searchConfigArgs<ExtArgs> = {}>(args?: Subset<T, User$searchConfigArgs<ExtArgs>>): Prisma__SearchConfigClient<$Result.GetResult<Prisma.$SearchConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    profile<T extends User$profileArgs<ExtArgs> = {}>(args?: Subset<T, User$profileArgs<ExtArgs>>): Prisma__UserProfileClient<$Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    userJobs<T extends User$userJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$userJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    generatedEmails<T extends User$generatedEmailsArgs<ExtArgs> = {}>(args?: Subset<T, User$generatedEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    subscription<T extends User$subscriptionArgs<ExtArgs> = {}>(args?: Subset<T, User$subscriptionArgs<ExtArgs>>): Prisma__SubscriptionClient<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the User model
+   */
+  interface UserFieldRefs {
+    readonly id: FieldRef<"User", 'String'>
+    readonly clerkId: FieldRef<"User", 'String'>
+    readonly email: FieldRef<"User", 'String'>
+    readonly plan: FieldRef<"User", 'String'>
+    readonly stripeCustomerId: FieldRef<"User", 'String'>
+    readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly updatedAt: FieldRef<"User", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * User findUnique
+   */
+  export type UserFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User findUniqueOrThrow
+   */
+  export type UserFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User findFirst
+   */
+  export type UserFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User findFirstOrThrow
+   */
+  export type UserFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User findMany
+   */
+  export type UserFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which Users to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User create
+   */
+  export type UserCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The data needed to create a User.
+     */
+    data: XOR<UserCreateInput, UserUncheckedCreateInput>
+  }
+
+  /**
+   * User createMany
+   */
+  export type UserCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Users.
+     */
+    data: UserCreateManyInput | UserCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * User createManyAndReturn
+   */
+  export type UserCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * The data used to create many Users.
+     */
+    data: UserCreateManyInput | UserCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * User update
+   */
+  export type UserUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The data needed to update a User.
+     */
+    data: XOR<UserUpdateInput, UserUncheckedUpdateInput>
+    /**
+     * Choose, which User to update.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User updateMany
+   */
+  export type UserUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Users.
+     */
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyInput>
+    /**
+     * Filter which Users to update
+     */
+    where?: UserWhereInput
+    /**
+     * Limit how many Users to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * User updateManyAndReturn
+   */
+  export type UserUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * The data used to update Users.
+     */
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyInput>
+    /**
+     * Filter which Users to update
+     */
+    where?: UserWhereInput
+    /**
+     * Limit how many Users to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * User upsert
+   */
+  export type UserUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The filter to search for the User to update in case it exists.
+     */
+    where: UserWhereUniqueInput
+    /**
+     * In case the User found by the `where` argument doesn't exist, create a new User with this data.
+     */
+    create: XOR<UserCreateInput, UserUncheckedCreateInput>
+    /**
+     * In case the User was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserUpdateInput, UserUncheckedUpdateInput>
+  }
+
+  /**
+   * User delete
+   */
+  export type UserDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter which User to delete.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User deleteMany
+   */
+  export type UserDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Users to delete
+     */
+    where?: UserWhereInput
+    /**
+     * Limit how many Users to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * User.searchConfig
+   */
+  export type User$searchConfigArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SearchConfig
+     */
+    select?: SearchConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SearchConfig
+     */
+    omit?: SearchConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
+    where?: SearchConfigWhereInput
+  }
+
+  /**
+   * User.profile
+   */
+  export type User$profileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserProfile
+     */
+    select?: UserProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserProfile
+     */
+    omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    where?: UserProfileWhereInput
+  }
+
+  /**
+   * User.userJobs
+   */
+  export type User$userJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    where?: UserJobWhereInput
+    orderBy?: UserJobOrderByWithRelationInput | UserJobOrderByWithRelationInput[]
+    cursor?: UserJobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserJobScalarFieldEnum | UserJobScalarFieldEnum[]
+  }
+
+  /**
+   * User.generatedEmails
+   */
+  export type User$generatedEmailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GeneratedEmail
+     */
+    select?: GeneratedEmailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GeneratedEmail
+     */
+    omit?: GeneratedEmailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GeneratedEmailInclude<ExtArgs> | null
+    where?: GeneratedEmailWhereInput
+    orderBy?: GeneratedEmailOrderByWithRelationInput | GeneratedEmailOrderByWithRelationInput[]
+    cursor?: GeneratedEmailWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GeneratedEmailScalarFieldEnum | GeneratedEmailScalarFieldEnum[]
+  }
+
+  /**
+   * User.subscription
+   */
+  export type User$subscriptionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+    where?: SubscriptionWhereInput
+  }
+
+  /**
+   * User without action
+   */
+  export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+  }
+
 
   /**
    * Model Job
@@ -1362,13 +2877,11 @@ export namespace Prisma {
   export type JobAvgAggregateOutputType = {
     salaryMin: number | null
     salaryMax: number | null
-    aiScore: number | null
   }
 
   export type JobSumAggregateOutputType = {
     salaryMin: number | null
     salaryMax: number | null
-    aiScore: number | null
   }
 
   export type JobMinAggregateOutputType = {
@@ -1390,9 +2903,7 @@ export namespace Prisma {
     location: string | null
     postedAt: Date | null
     scrapedAt: Date | null
-    status: string | null
-    aiScore: number | null
-    aiSummary: string | null
+    catalogStatus: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1416,9 +2927,7 @@ export namespace Prisma {
     location: string | null
     postedAt: Date | null
     scrapedAt: Date | null
-    status: string | null
-    aiScore: number | null
-    aiSummary: string | null
+    catalogStatus: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1442,9 +2951,7 @@ export namespace Prisma {
     location: number
     postedAt: number
     scrapedAt: number
-    status: number
-    aiScore: number
-    aiSummary: number
+    catalogStatus: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1454,13 +2961,11 @@ export namespace Prisma {
   export type JobAvgAggregateInputType = {
     salaryMin?: true
     salaryMax?: true
-    aiScore?: true
   }
 
   export type JobSumAggregateInputType = {
     salaryMin?: true
     salaryMax?: true
-    aiScore?: true
   }
 
   export type JobMinAggregateInputType = {
@@ -1482,9 +2987,7 @@ export namespace Prisma {
     location?: true
     postedAt?: true
     scrapedAt?: true
-    status?: true
-    aiScore?: true
-    aiSummary?: true
+    catalogStatus?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1508,9 +3011,7 @@ export namespace Prisma {
     location?: true
     postedAt?: true
     scrapedAt?: true
-    status?: true
-    aiScore?: true
-    aiSummary?: true
+    catalogStatus?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1534,9 +3035,7 @@ export namespace Prisma {
     location?: true
     postedAt?: true
     scrapedAt?: true
-    status?: true
-    aiScore?: true
-    aiSummary?: true
+    catalogStatus?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1647,9 +3146,7 @@ export namespace Prisma {
     location: string | null
     postedAt: Date | null
     scrapedAt: Date
-    status: string
-    aiScore: number | null
-    aiSummary: string | null
+    catalogStatus: string
     createdAt: Date
     updatedAt: Date
     _count: JobCountAggregateOutputType | null
@@ -1692,11 +3189,10 @@ export namespace Prisma {
     location?: boolean
     postedAt?: boolean
     scrapedAt?: boolean
-    status?: boolean
-    aiScore?: boolean
-    aiSummary?: boolean
+    catalogStatus?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userJobs?: boolean | Job$userJobsArgs<ExtArgs>
     generatedEmails?: boolean | Job$generatedEmailsArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
@@ -1720,9 +3216,7 @@ export namespace Prisma {
     location?: boolean
     postedAt?: boolean
     scrapedAt?: boolean
-    status?: boolean
-    aiScore?: boolean
-    aiSummary?: boolean
+    catalogStatus?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["job"]>
@@ -1746,9 +3240,7 @@ export namespace Prisma {
     location?: boolean
     postedAt?: boolean
     scrapedAt?: boolean
-    status?: boolean
-    aiScore?: boolean
-    aiSummary?: boolean
+    catalogStatus?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["job"]>
@@ -1772,15 +3264,14 @@ export namespace Prisma {
     location?: boolean
     postedAt?: boolean
     scrapedAt?: boolean
-    status?: boolean
-    aiScore?: boolean
-    aiSummary?: boolean
+    catalogStatus?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "externalId" | "site" | "title" | "company" | "salary" | "salaryMin" | "salaryMax" | "salaryCurrency" | "description" | "url" | "jobType" | "experienceLevel" | "workArrangement" | "skills" | "location" | "postedAt" | "scrapedAt" | "status" | "aiScore" | "aiSummary" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "externalId" | "site" | "title" | "company" | "salary" | "salaryMin" | "salaryMax" | "salaryCurrency" | "description" | "url" | "jobType" | "experienceLevel" | "workArrangement" | "skills" | "location" | "postedAt" | "scrapedAt" | "catalogStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    userJobs?: boolean | Job$userJobsArgs<ExtArgs>
     generatedEmails?: boolean | Job$generatedEmailsArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -1790,6 +3281,7 @@ export namespace Prisma {
   export type $JobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Job"
     objects: {
+      userJobs: Prisma.$UserJobPayload<ExtArgs>[]
       generatedEmails: Prisma.$GeneratedEmailPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -1811,9 +3303,7 @@ export namespace Prisma {
       location: string | null
       postedAt: Date | null
       scrapedAt: Date
-      status: string
-      aiScore: number | null
-      aiSummary: string | null
+      catalogStatus: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["job"]>
@@ -2210,6 +3700,7 @@ export namespace Prisma {
    */
   export interface Prisma__JobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    userJobs<T extends Job$userJobsArgs<ExtArgs> = {}>(args?: Subset<T, Job$userJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     generatedEmails<T extends Job$generatedEmailsArgs<ExtArgs> = {}>(args?: Subset<T, Job$generatedEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GeneratedEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2258,9 +3749,7 @@ export namespace Prisma {
     readonly location: FieldRef<"Job", 'String'>
     readonly postedAt: FieldRef<"Job", 'DateTime'>
     readonly scrapedAt: FieldRef<"Job", 'DateTime'>
-    readonly status: FieldRef<"Job", 'String'>
-    readonly aiScore: FieldRef<"Job", 'Float'>
-    readonly aiSummary: FieldRef<"Job", 'String'>
+    readonly catalogStatus: FieldRef<"Job", 'String'>
     readonly createdAt: FieldRef<"Job", 'DateTime'>
     readonly updatedAt: FieldRef<"Job", 'DateTime'>
   }
@@ -2651,6 +4140,30 @@ export namespace Prisma {
   }
 
   /**
+   * Job.userJobs
+   */
+  export type Job$userJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    where?: UserJobWhereInput
+    orderBy?: UserJobOrderByWithRelationInput | UserJobOrderByWithRelationInput[]
+    cursor?: UserJobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserJobScalarFieldEnum | UserJobScalarFieldEnum[]
+  }
+
+  /**
    * Job.generatedEmails
    */
   export type Job$generatedEmailsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2694,6 +4207,1145 @@ export namespace Prisma {
 
 
   /**
+   * Model UserJob
+   */
+
+  export type AggregateUserJob = {
+    _count: UserJobCountAggregateOutputType | null
+    _avg: UserJobAvgAggregateOutputType | null
+    _sum: UserJobSumAggregateOutputType | null
+    _min: UserJobMinAggregateOutputType | null
+    _max: UserJobMaxAggregateOutputType | null
+  }
+
+  export type UserJobAvgAggregateOutputType = {
+    aiScore: number | null
+  }
+
+  export type UserJobSumAggregateOutputType = {
+    aiScore: number | null
+  }
+
+  export type UserJobMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    jobId: string | null
+    status: string | null
+    aiScore: number | null
+    aiSummary: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserJobMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    jobId: string | null
+    status: string | null
+    aiScore: number | null
+    aiSummary: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserJobCountAggregateOutputType = {
+    id: number
+    userId: number
+    jobId: number
+    status: number
+    aiScore: number
+    aiSummary: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UserJobAvgAggregateInputType = {
+    aiScore?: true
+  }
+
+  export type UserJobSumAggregateInputType = {
+    aiScore?: true
+  }
+
+  export type UserJobMinAggregateInputType = {
+    id?: true
+    userId?: true
+    jobId?: true
+    status?: true
+    aiScore?: true
+    aiSummary?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserJobMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    jobId?: true
+    status?: true
+    aiScore?: true
+    aiSummary?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserJobCountAggregateInputType = {
+    id?: true
+    userId?: true
+    jobId?: true
+    status?: true
+    aiScore?: true
+    aiSummary?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UserJobAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserJob to aggregate.
+     */
+    where?: UserJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserJobs to fetch.
+     */
+    orderBy?: UserJobOrderByWithRelationInput | UserJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserJobs
+    **/
+    _count?: true | UserJobCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserJobAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserJobSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserJobMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserJobMaxAggregateInputType
+  }
+
+  export type GetUserJobAggregateType<T extends UserJobAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserJob]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserJob[P]>
+      : GetScalarType<T[P], AggregateUserJob[P]>
+  }
+
+
+
+
+  export type UserJobGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserJobWhereInput
+    orderBy?: UserJobOrderByWithAggregationInput | UserJobOrderByWithAggregationInput[]
+    by: UserJobScalarFieldEnum[] | UserJobScalarFieldEnum
+    having?: UserJobScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserJobCountAggregateInputType | true
+    _avg?: UserJobAvgAggregateInputType
+    _sum?: UserJobSumAggregateInputType
+    _min?: UserJobMinAggregateInputType
+    _max?: UserJobMaxAggregateInputType
+  }
+
+  export type UserJobGroupByOutputType = {
+    id: string
+    userId: string
+    jobId: string
+    status: string
+    aiScore: number | null
+    aiSummary: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: UserJobCountAggregateOutputType | null
+    _avg: UserJobAvgAggregateOutputType | null
+    _sum: UserJobSumAggregateOutputType | null
+    _min: UserJobMinAggregateOutputType | null
+    _max: UserJobMaxAggregateOutputType | null
+  }
+
+  type GetUserJobGroupByPayload<T extends UserJobGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserJobGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserJobGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserJobGroupByOutputType[P]>
+            : GetScalarType<T[P], UserJobGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    jobId?: boolean
+    status?: boolean
+    aiScore?: boolean
+    aiSummary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userJob"]>
+
+  export type UserJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    jobId?: boolean
+    status?: boolean
+    aiScore?: boolean
+    aiSummary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userJob"]>
+
+  export type UserJobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    jobId?: boolean
+    status?: boolean
+    aiScore?: boolean
+    aiSummary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userJob"]>
+
+  export type UserJobSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    jobId?: boolean
+    status?: boolean
+    aiScore?: boolean
+    aiSummary?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UserJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "jobId" | "status" | "aiScore" | "aiSummary" | "createdAt" | "updatedAt", ExtArgs["result"]["userJob"]>
+  export type UserJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }
+  export type UserJobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }
+  export type UserJobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
+  }
+
+  export type $UserJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserJob"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      job: Prisma.$JobPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      jobId: string
+      status: string
+      aiScore: number | null
+      aiSummary: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["userJob"]>
+    composites: {}
+  }
+
+  type UserJobGetPayload<S extends boolean | null | undefined | UserJobDefaultArgs> = $Result.GetResult<Prisma.$UserJobPayload, S>
+
+  type UserJobCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserJobFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserJobCountAggregateInputType | true
+    }
+
+  export interface UserJobDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserJob'], meta: { name: 'UserJob' } }
+    /**
+     * Find zero or one UserJob that matches the filter.
+     * @param {UserJobFindUniqueArgs} args - Arguments to find a UserJob
+     * @example
+     * // Get one UserJob
+     * const userJob = await prisma.userJob.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserJobFindUniqueArgs>(args: SelectSubset<T, UserJobFindUniqueArgs<ExtArgs>>): Prisma__UserJobClient<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserJob that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserJobFindUniqueOrThrowArgs} args - Arguments to find a UserJob
+     * @example
+     * // Get one UserJob
+     * const userJob = await prisma.userJob.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserJobFindUniqueOrThrowArgs>(args: SelectSubset<T, UserJobFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserJobClient<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserJob that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserJobFindFirstArgs} args - Arguments to find a UserJob
+     * @example
+     * // Get one UserJob
+     * const userJob = await prisma.userJob.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserJobFindFirstArgs>(args?: SelectSubset<T, UserJobFindFirstArgs<ExtArgs>>): Prisma__UserJobClient<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserJob that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserJobFindFirstOrThrowArgs} args - Arguments to find a UserJob
+     * @example
+     * // Get one UserJob
+     * const userJob = await prisma.userJob.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserJobFindFirstOrThrowArgs>(args?: SelectSubset<T, UserJobFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserJobClient<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserJobs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserJobFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserJobs
+     * const userJobs = await prisma.userJob.findMany()
+     * 
+     * // Get first 10 UserJobs
+     * const userJobs = await prisma.userJob.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userJobWithIdOnly = await prisma.userJob.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserJobFindManyArgs>(args?: SelectSubset<T, UserJobFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserJob.
+     * @param {UserJobCreateArgs} args - Arguments to create a UserJob.
+     * @example
+     * // Create one UserJob
+     * const UserJob = await prisma.userJob.create({
+     *   data: {
+     *     // ... data to create a UserJob
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserJobCreateArgs>(args: SelectSubset<T, UserJobCreateArgs<ExtArgs>>): Prisma__UserJobClient<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserJobs.
+     * @param {UserJobCreateManyArgs} args - Arguments to create many UserJobs.
+     * @example
+     * // Create many UserJobs
+     * const userJob = await prisma.userJob.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserJobCreateManyArgs>(args?: SelectSubset<T, UserJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserJobs and returns the data saved in the database.
+     * @param {UserJobCreateManyAndReturnArgs} args - Arguments to create many UserJobs.
+     * @example
+     * // Create many UserJobs
+     * const userJob = await prisma.userJob.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserJobs and only return the `id`
+     * const userJobWithIdOnly = await prisma.userJob.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserJobCreateManyAndReturnArgs>(args?: SelectSubset<T, UserJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserJob.
+     * @param {UserJobDeleteArgs} args - Arguments to delete one UserJob.
+     * @example
+     * // Delete one UserJob
+     * const UserJob = await prisma.userJob.delete({
+     *   where: {
+     *     // ... filter to delete one UserJob
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserJobDeleteArgs>(args: SelectSubset<T, UserJobDeleteArgs<ExtArgs>>): Prisma__UserJobClient<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserJob.
+     * @param {UserJobUpdateArgs} args - Arguments to update one UserJob.
+     * @example
+     * // Update one UserJob
+     * const userJob = await prisma.userJob.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserJobUpdateArgs>(args: SelectSubset<T, UserJobUpdateArgs<ExtArgs>>): Prisma__UserJobClient<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserJobs.
+     * @param {UserJobDeleteManyArgs} args - Arguments to filter UserJobs to delete.
+     * @example
+     * // Delete a few UserJobs
+     * const { count } = await prisma.userJob.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserJobDeleteManyArgs>(args?: SelectSubset<T, UserJobDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserJobUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserJobs
+     * const userJob = await prisma.userJob.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserJobUpdateManyArgs>(args: SelectSubset<T, UserJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserJobs and returns the data updated in the database.
+     * @param {UserJobUpdateManyAndReturnArgs} args - Arguments to update many UserJobs.
+     * @example
+     * // Update many UserJobs
+     * const userJob = await prisma.userJob.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserJobs and only return the `id`
+     * const userJobWithIdOnly = await prisma.userJob.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserJobUpdateManyAndReturnArgs>(args: SelectSubset<T, UserJobUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserJob.
+     * @param {UserJobUpsertArgs} args - Arguments to update or create a UserJob.
+     * @example
+     * // Update or create a UserJob
+     * const userJob = await prisma.userJob.upsert({
+     *   create: {
+     *     // ... data to create a UserJob
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserJob we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserJobUpsertArgs>(args: SelectSubset<T, UserJobUpsertArgs<ExtArgs>>): Prisma__UserJobClient<$Result.GetResult<Prisma.$UserJobPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserJobCountArgs} args - Arguments to filter UserJobs to count.
+     * @example
+     * // Count the number of UserJobs
+     * const count = await prisma.userJob.count({
+     *   where: {
+     *     // ... the filter for the UserJobs we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserJobCountArgs>(
+      args?: Subset<T, UserJobCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserJobCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserJobAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserJobAggregateArgs>(args: Subset<T, UserJobAggregateArgs>): Prisma.PrismaPromise<GetUserJobAggregateType<T>>
+
+    /**
+     * Group by UserJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserJobGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserJobGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserJobGroupByArgs['orderBy'] }
+        : { orderBy?: UserJobGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserJobGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserJobGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserJob model
+   */
+  readonly fields: UserJobFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserJob.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserJob model
+   */
+  interface UserJobFieldRefs {
+    readonly id: FieldRef<"UserJob", 'String'>
+    readonly userId: FieldRef<"UserJob", 'String'>
+    readonly jobId: FieldRef<"UserJob", 'String'>
+    readonly status: FieldRef<"UserJob", 'String'>
+    readonly aiScore: FieldRef<"UserJob", 'Float'>
+    readonly aiSummary: FieldRef<"UserJob", 'String'>
+    readonly createdAt: FieldRef<"UserJob", 'DateTime'>
+    readonly updatedAt: FieldRef<"UserJob", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserJob findUnique
+   */
+  export type UserJobFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    /**
+     * Filter, which UserJob to fetch.
+     */
+    where: UserJobWhereUniqueInput
+  }
+
+  /**
+   * UserJob findUniqueOrThrow
+   */
+  export type UserJobFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    /**
+     * Filter, which UserJob to fetch.
+     */
+    where: UserJobWhereUniqueInput
+  }
+
+  /**
+   * UserJob findFirst
+   */
+  export type UserJobFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    /**
+     * Filter, which UserJob to fetch.
+     */
+    where?: UserJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserJobs to fetch.
+     */
+    orderBy?: UserJobOrderByWithRelationInput | UserJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserJobs.
+     */
+    cursor?: UserJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserJobs.
+     */
+    distinct?: UserJobScalarFieldEnum | UserJobScalarFieldEnum[]
+  }
+
+  /**
+   * UserJob findFirstOrThrow
+   */
+  export type UserJobFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    /**
+     * Filter, which UserJob to fetch.
+     */
+    where?: UserJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserJobs to fetch.
+     */
+    orderBy?: UserJobOrderByWithRelationInput | UserJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserJobs.
+     */
+    cursor?: UserJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserJobs.
+     */
+    distinct?: UserJobScalarFieldEnum | UserJobScalarFieldEnum[]
+  }
+
+  /**
+   * UserJob findMany
+   */
+  export type UserJobFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    /**
+     * Filter, which UserJobs to fetch.
+     */
+    where?: UserJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserJobs to fetch.
+     */
+    orderBy?: UserJobOrderByWithRelationInput | UserJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserJobs.
+     */
+    cursor?: UserJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserJobs.
+     */
+    skip?: number
+    distinct?: UserJobScalarFieldEnum | UserJobScalarFieldEnum[]
+  }
+
+  /**
+   * UserJob create
+   */
+  export type UserJobCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserJob.
+     */
+    data: XOR<UserJobCreateInput, UserJobUncheckedCreateInput>
+  }
+
+  /**
+   * UserJob createMany
+   */
+  export type UserJobCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserJobs.
+     */
+    data: UserJobCreateManyInput | UserJobCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserJob createManyAndReturn
+   */
+  export type UserJobCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserJobs.
+     */
+    data: UserJobCreateManyInput | UserJobCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserJob update
+   */
+  export type UserJobUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserJob.
+     */
+    data: XOR<UserJobUpdateInput, UserJobUncheckedUpdateInput>
+    /**
+     * Choose, which UserJob to update.
+     */
+    where: UserJobWhereUniqueInput
+  }
+
+  /**
+   * UserJob updateMany
+   */
+  export type UserJobUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserJobs.
+     */
+    data: XOR<UserJobUpdateManyMutationInput, UserJobUncheckedUpdateManyInput>
+    /**
+     * Filter which UserJobs to update
+     */
+    where?: UserJobWhereInput
+    /**
+     * Limit how many UserJobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserJob updateManyAndReturn
+   */
+  export type UserJobUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * The data used to update UserJobs.
+     */
+    data: XOR<UserJobUpdateManyMutationInput, UserJobUncheckedUpdateManyInput>
+    /**
+     * Filter which UserJobs to update
+     */
+    where?: UserJobWhereInput
+    /**
+     * Limit how many UserJobs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserJob upsert
+   */
+  export type UserJobUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserJob to update in case it exists.
+     */
+    where: UserJobWhereUniqueInput
+    /**
+     * In case the UserJob found by the `where` argument doesn't exist, create a new UserJob with this data.
+     */
+    create: XOR<UserJobCreateInput, UserJobUncheckedCreateInput>
+    /**
+     * In case the UserJob was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserJobUpdateInput, UserJobUncheckedUpdateInput>
+  }
+
+  /**
+   * UserJob delete
+   */
+  export type UserJobDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+    /**
+     * Filter which UserJob to delete.
+     */
+    where: UserJobWhereUniqueInput
+  }
+
+  /**
+   * UserJob deleteMany
+   */
+  export type UserJobDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserJobs to delete
+     */
+    where?: UserJobWhereInput
+    /**
+     * Limit how many UserJobs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserJob without action
+   */
+  export type UserJobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserJob
+     */
+    select?: UserJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserJob
+     */
+    omit?: UserJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserJobInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model SearchConfig
    */
 
@@ -2723,6 +5375,7 @@ export namespace Prisma {
 
   export type SearchConfigMinAggregateOutputType = {
     id: string | null
+    userId: string | null
     keywords: string | null
     excludeKeywords: string | null
     enabledSites: string | null
@@ -2745,6 +5398,7 @@ export namespace Prisma {
 
   export type SearchConfigMaxAggregateOutputType = {
     id: string | null
+    userId: string | null
     keywords: string | null
     excludeKeywords: string | null
     enabledSites: string | null
@@ -2767,6 +5421,7 @@ export namespace Prisma {
 
   export type SearchConfigCountAggregateOutputType = {
     id: number
+    userId: number
     keywords: number
     excludeKeywords: number
     enabledSites: number
@@ -2807,6 +5462,7 @@ export namespace Prisma {
 
   export type SearchConfigMinAggregateInputType = {
     id?: true
+    userId?: true
     keywords?: true
     excludeKeywords?: true
     enabledSites?: true
@@ -2829,6 +5485,7 @@ export namespace Prisma {
 
   export type SearchConfigMaxAggregateInputType = {
     id?: true
+    userId?: true
     keywords?: true
     excludeKeywords?: true
     enabledSites?: true
@@ -2851,6 +5508,7 @@ export namespace Prisma {
 
   export type SearchConfigCountAggregateInputType = {
     id?: true
+    userId?: true
     keywords?: true
     excludeKeywords?: true
     enabledSites?: true
@@ -2960,6 +5618,7 @@ export namespace Prisma {
 
   export type SearchConfigGroupByOutputType = {
     id: string
+    userId: string
     keywords: string
     excludeKeywords: string
     enabledSites: string
@@ -3001,6 +5660,7 @@ export namespace Prisma {
 
   export type SearchConfigSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     keywords?: boolean
     excludeKeywords?: boolean
     enabledSites?: boolean
@@ -3019,10 +5679,12 @@ export namespace Prisma {
     digestMode?: boolean
     maxEmailsPerRun?: boolean
     updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["searchConfig"]>
 
   export type SearchConfigSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     keywords?: boolean
     excludeKeywords?: boolean
     enabledSites?: boolean
@@ -3041,10 +5703,12 @@ export namespace Prisma {
     digestMode?: boolean
     maxEmailsPerRun?: boolean
     updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["searchConfig"]>
 
   export type SearchConfigSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     keywords?: boolean
     excludeKeywords?: boolean
     enabledSites?: boolean
@@ -3063,10 +5727,12 @@ export namespace Prisma {
     digestMode?: boolean
     maxEmailsPerRun?: boolean
     updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["searchConfig"]>
 
   export type SearchConfigSelectScalar = {
     id?: boolean
+    userId?: boolean
     keywords?: boolean
     excludeKeywords?: boolean
     enabledSites?: boolean
@@ -3087,13 +5753,25 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SearchConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "keywords" | "excludeKeywords" | "enabledSites" | "daysPosted" | "salaryMin" | "salaryMax" | "salaryCurrency" | "jobTypes" | "experienceLevels" | "workArrangements" | "excludeCompanies" | "requiredSkills" | "preferredSkills" | "useAIMatching" | "aiThreshold" | "digestMode" | "maxEmailsPerRun" | "updatedAt", ExtArgs["result"]["searchConfig"]>
+  export type SearchConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "keywords" | "excludeKeywords" | "enabledSites" | "daysPosted" | "salaryMin" | "salaryMax" | "salaryCurrency" | "jobTypes" | "experienceLevels" | "workArrangements" | "excludeCompanies" | "requiredSkills" | "preferredSkills" | "useAIMatching" | "aiThreshold" | "digestMode" | "maxEmailsPerRun" | "updatedAt", ExtArgs["result"]["searchConfig"]>
+  export type SearchConfigInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SearchConfigIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SearchConfigIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
 
   export type $SearchConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SearchConfig"
-    objects: {}
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      userId: string
       keywords: string
       excludeKeywords: string
       enabledSites: string
@@ -3506,6 +6184,7 @@ export namespace Prisma {
    */
   export interface Prisma__SearchConfigClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3536,6 +6215,7 @@ export namespace Prisma {
    */
   interface SearchConfigFieldRefs {
     readonly id: FieldRef<"SearchConfig", 'String'>
+    readonly userId: FieldRef<"SearchConfig", 'String'>
     readonly keywords: FieldRef<"SearchConfig", 'String'>
     readonly excludeKeywords: FieldRef<"SearchConfig", 'String'>
     readonly enabledSites: FieldRef<"SearchConfig", 'String'>
@@ -3571,6 +6251,10 @@ export namespace Prisma {
      */
     omit?: SearchConfigOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
+    /**
      * Filter, which SearchConfig to fetch.
      */
     where: SearchConfigWhereUniqueInput
@@ -3589,6 +6273,10 @@ export namespace Prisma {
      */
     omit?: SearchConfigOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
+    /**
      * Filter, which SearchConfig to fetch.
      */
     where: SearchConfigWhereUniqueInput
@@ -3606,6 +6294,10 @@ export namespace Prisma {
      * Omit specific fields from the SearchConfig
      */
     omit?: SearchConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
     /**
      * Filter, which SearchConfig to fetch.
      */
@@ -3655,6 +6347,10 @@ export namespace Prisma {
      */
     omit?: SearchConfigOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
+    /**
      * Filter, which SearchConfig to fetch.
      */
     where?: SearchConfigWhereInput
@@ -3703,6 +6399,10 @@ export namespace Prisma {
      */
     omit?: SearchConfigOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
+    /**
      * Filter, which SearchConfigs to fetch.
      */
     where?: SearchConfigWhereInput
@@ -3746,6 +6446,10 @@ export namespace Prisma {
      */
     omit?: SearchConfigOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
+    /**
      * The data needed to create a SearchConfig.
      */
     data: XOR<SearchConfigCreateInput, SearchConfigUncheckedCreateInput>
@@ -3779,6 +6483,10 @@ export namespace Prisma {
      */
     data: SearchConfigCreateManyInput | SearchConfigCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3793,6 +6501,10 @@ export namespace Prisma {
      * Omit specific fields from the SearchConfig
      */
     omit?: SearchConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
     /**
      * The data needed to update a SearchConfig.
      */
@@ -3845,6 +6557,10 @@ export namespace Prisma {
      * Limit how many SearchConfigs to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3859,6 +6575,10 @@ export namespace Prisma {
      * Omit specific fields from the SearchConfig
      */
     omit?: SearchConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
     /**
      * The filter to search for the SearchConfig to update in case it exists.
      */
@@ -3885,6 +6605,10 @@ export namespace Prisma {
      * Omit specific fields from the SearchConfig
      */
     omit?: SearchConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
     /**
      * Filter which SearchConfig to delete.
      */
@@ -3917,6 +6641,10 @@ export namespace Prisma {
      * Omit specific fields from the SearchConfig
      */
     omit?: SearchConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SearchConfigInclude<ExtArgs> | null
   }
 
 
@@ -6097,6 +8825,7 @@ export namespace Prisma {
 
   export type UserProfileMinAggregateOutputType = {
     id: string | null
+    userId: string | null
     name: string | null
     title: string | null
     summary: string | null
@@ -6112,6 +8841,7 @@ export namespace Prisma {
 
   export type UserProfileMaxAggregateOutputType = {
     id: string | null
+    userId: string | null
     name: string | null
     title: string | null
     summary: string | null
@@ -6127,6 +8857,7 @@ export namespace Prisma {
 
   export type UserProfileCountAggregateOutputType = {
     id: number
+    userId: number
     name: number
     title: number
     summary: number
@@ -6144,6 +8875,7 @@ export namespace Prisma {
 
   export type UserProfileMinAggregateInputType = {
     id?: true
+    userId?: true
     name?: true
     title?: true
     summary?: true
@@ -6159,6 +8891,7 @@ export namespace Prisma {
 
   export type UserProfileMaxAggregateInputType = {
     id?: true
+    userId?: true
     name?: true
     title?: true
     summary?: true
@@ -6174,6 +8907,7 @@ export namespace Prisma {
 
   export type UserProfileCountAggregateInputType = {
     id?: true
+    userId?: true
     name?: true
     title?: true
     summary?: true
@@ -6262,6 +8996,7 @@ export namespace Prisma {
 
   export type UserProfileGroupByOutputType = {
     id: string
+    userId: string
     name: string
     title: string | null
     summary: string | null
@@ -6294,6 +9029,7 @@ export namespace Prisma {
 
   export type UserProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     name?: boolean
     title?: boolean
     summary?: boolean
@@ -6305,10 +9041,12 @@ export namespace Prisma {
     preferences?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userProfile"]>
 
   export type UserProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     name?: boolean
     title?: boolean
     summary?: boolean
@@ -6320,10 +9058,12 @@ export namespace Prisma {
     preferences?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userProfile"]>
 
   export type UserProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     name?: boolean
     title?: boolean
     summary?: boolean
@@ -6335,10 +9075,12 @@ export namespace Prisma {
     preferences?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userProfile"]>
 
   export type UserProfileSelectScalar = {
     id?: boolean
+    userId?: boolean
     name?: boolean
     title?: boolean
     summary?: boolean
@@ -6352,13 +9094,25 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "title" | "summary" | "skills" | "experience" | "education" | "portfolioUrl" | "linkedinUrl" | "preferences" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+  export type UserProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "title" | "summary" | "skills" | "experience" | "education" | "portfolioUrl" | "linkedinUrl" | "preferences" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+  export type UserProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
 
   export type $UserProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "UserProfile"
-    objects: {}
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      userId: string
       name: string
       title: string | null
       summary: string | null
@@ -6764,6 +9518,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6794,6 +9549,7 @@ export namespace Prisma {
    */
   interface UserProfileFieldRefs {
     readonly id: FieldRef<"UserProfile", 'String'>
+    readonly userId: FieldRef<"UserProfile", 'String'>
     readonly name: FieldRef<"UserProfile", 'String'>
     readonly title: FieldRef<"UserProfile", 'String'>
     readonly summary: FieldRef<"UserProfile", 'String'>
@@ -6822,6 +9578,10 @@ export namespace Prisma {
      */
     omit?: UserProfileOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
      * Filter, which UserProfile to fetch.
      */
     where: UserProfileWhereUniqueInput
@@ -6840,6 +9600,10 @@ export namespace Prisma {
      */
     omit?: UserProfileOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
      * Filter, which UserProfile to fetch.
      */
     where: UserProfileWhereUniqueInput
@@ -6857,6 +9621,10 @@ export namespace Prisma {
      * Omit specific fields from the UserProfile
      */
     omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
     /**
      * Filter, which UserProfile to fetch.
      */
@@ -6906,6 +9674,10 @@ export namespace Prisma {
      */
     omit?: UserProfileOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
      * Filter, which UserProfile to fetch.
      */
     where?: UserProfileWhereInput
@@ -6954,6 +9726,10 @@ export namespace Prisma {
      */
     omit?: UserProfileOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
      * Filter, which UserProfiles to fetch.
      */
     where?: UserProfileWhereInput
@@ -6997,6 +9773,10 @@ export namespace Prisma {
      */
     omit?: UserProfileOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
+    /**
      * The data needed to create a UserProfile.
      */
     data: XOR<UserProfileCreateInput, UserProfileUncheckedCreateInput>
@@ -7030,6 +9810,10 @@ export namespace Prisma {
      */
     data: UserProfileCreateManyInput | UserProfileCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -7044,6 +9828,10 @@ export namespace Prisma {
      * Omit specific fields from the UserProfile
      */
     omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
     /**
      * The data needed to update a UserProfile.
      */
@@ -7096,6 +9884,10 @@ export namespace Prisma {
      * Limit how many UserProfiles to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -7110,6 +9902,10 @@ export namespace Prisma {
      * Omit specific fields from the UserProfile
      */
     omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
     /**
      * The filter to search for the UserProfile to update in case it exists.
      */
@@ -7136,6 +9932,10 @@ export namespace Prisma {
      * Omit specific fields from the UserProfile
      */
     omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
     /**
      * Filter which UserProfile to delete.
      */
@@ -7168,6 +9968,10 @@ export namespace Prisma {
      * Omit specific fields from the UserProfile
      */
     omit?: UserProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserProfileInclude<ExtArgs> | null
   }
 
 
@@ -7193,6 +9997,7 @@ export namespace Prisma {
 
   export type GeneratedEmailMinAggregateOutputType = {
     id: string | null
+    userId: string | null
     jobId: string | null
     content: string | null
     version: number | null
@@ -7201,6 +10006,7 @@ export namespace Prisma {
 
   export type GeneratedEmailMaxAggregateOutputType = {
     id: string | null
+    userId: string | null
     jobId: string | null
     content: string | null
     version: number | null
@@ -7209,6 +10015,7 @@ export namespace Prisma {
 
   export type GeneratedEmailCountAggregateOutputType = {
     id: number
+    userId: number
     jobId: number
     content: number
     version: number
@@ -7227,6 +10034,7 @@ export namespace Prisma {
 
   export type GeneratedEmailMinAggregateInputType = {
     id?: true
+    userId?: true
     jobId?: true
     content?: true
     version?: true
@@ -7235,6 +10043,7 @@ export namespace Prisma {
 
   export type GeneratedEmailMaxAggregateInputType = {
     id?: true
+    userId?: true
     jobId?: true
     content?: true
     version?: true
@@ -7243,6 +10052,7 @@ export namespace Prisma {
 
   export type GeneratedEmailCountAggregateInputType = {
     id?: true
+    userId?: true
     jobId?: true
     content?: true
     version?: true
@@ -7338,6 +10148,7 @@ export namespace Prisma {
 
   export type GeneratedEmailGroupByOutputType = {
     id: string
+    userId: string
     jobId: string
     content: string
     version: number
@@ -7365,57 +10176,69 @@ export namespace Prisma {
 
   export type GeneratedEmailSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     jobId?: boolean
     content?: boolean
     version?: boolean
     createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
     job?: boolean | JobDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["generatedEmail"]>
 
   export type GeneratedEmailSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     jobId?: boolean
     content?: boolean
     version?: boolean
     createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
     job?: boolean | JobDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["generatedEmail"]>
 
   export type GeneratedEmailSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     jobId?: boolean
     content?: boolean
     version?: boolean
     createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
     job?: boolean | JobDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["generatedEmail"]>
 
   export type GeneratedEmailSelectScalar = {
     id?: boolean
+    userId?: boolean
     jobId?: boolean
     content?: boolean
     version?: boolean
     createdAt?: boolean
   }
 
-  export type GeneratedEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "content" | "version" | "createdAt", ExtArgs["result"]["generatedEmail"]>
+  export type GeneratedEmailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "jobId" | "content" | "version" | "createdAt", ExtArgs["result"]["generatedEmail"]>
   export type GeneratedEmailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
     job?: boolean | JobDefaultArgs<ExtArgs>
   }
   export type GeneratedEmailIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
     job?: boolean | JobDefaultArgs<ExtArgs>
   }
   export type GeneratedEmailIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
     job?: boolean | JobDefaultArgs<ExtArgs>
   }
 
   export type $GeneratedEmailPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "GeneratedEmail"
     objects: {
+      user: Prisma.$UserPayload<ExtArgs>
       job: Prisma.$JobPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      userId: string
       jobId: string
       content: string
       version: number
@@ -7814,6 +10637,7 @@ export namespace Prisma {
    */
   export interface Prisma__GeneratedEmailClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7845,6 +10669,7 @@ export namespace Prisma {
    */
   interface GeneratedEmailFieldRefs {
     readonly id: FieldRef<"GeneratedEmail", 'String'>
+    readonly userId: FieldRef<"GeneratedEmail", 'String'>
     readonly jobId: FieldRef<"GeneratedEmail", 'String'>
     readonly content: FieldRef<"GeneratedEmail", 'String'>
     readonly version: FieldRef<"GeneratedEmail", 'Int'>
@@ -8264,6 +11089,1103 @@ export namespace Prisma {
 
 
   /**
+   * Model Subscription
+   */
+
+  export type AggregateSubscription = {
+    _count: SubscriptionCountAggregateOutputType | null
+    _min: SubscriptionMinAggregateOutputType | null
+    _max: SubscriptionMaxAggregateOutputType | null
+  }
+
+  export type SubscriptionMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    plan: string | null
+    status: string | null
+    stripeSubId: string | null
+    periodEnd: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SubscriptionMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    plan: string | null
+    status: string | null
+    stripeSubId: string | null
+    periodEnd: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SubscriptionCountAggregateOutputType = {
+    id: number
+    userId: number
+    plan: number
+    status: number
+    stripeSubId: number
+    periodEnd: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SubscriptionMinAggregateInputType = {
+    id?: true
+    userId?: true
+    plan?: true
+    status?: true
+    stripeSubId?: true
+    periodEnd?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SubscriptionMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    plan?: true
+    status?: true
+    stripeSubId?: true
+    periodEnd?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SubscriptionCountAggregateInputType = {
+    id?: true
+    userId?: true
+    plan?: true
+    status?: true
+    stripeSubId?: true
+    periodEnd?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SubscriptionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Subscription to aggregate.
+     */
+    where?: SubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Subscriptions to fetch.
+     */
+    orderBy?: SubscriptionOrderByWithRelationInput | SubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Subscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Subscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Subscriptions
+    **/
+    _count?: true | SubscriptionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SubscriptionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SubscriptionMaxAggregateInputType
+  }
+
+  export type GetSubscriptionAggregateType<T extends SubscriptionAggregateArgs> = {
+        [P in keyof T & keyof AggregateSubscription]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSubscription[P]>
+      : GetScalarType<T[P], AggregateSubscription[P]>
+  }
+
+
+
+
+  export type SubscriptionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SubscriptionWhereInput
+    orderBy?: SubscriptionOrderByWithAggregationInput | SubscriptionOrderByWithAggregationInput[]
+    by: SubscriptionScalarFieldEnum[] | SubscriptionScalarFieldEnum
+    having?: SubscriptionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SubscriptionCountAggregateInputType | true
+    _min?: SubscriptionMinAggregateInputType
+    _max?: SubscriptionMaxAggregateInputType
+  }
+
+  export type SubscriptionGroupByOutputType = {
+    id: string
+    userId: string
+    plan: string
+    status: string
+    stripeSubId: string | null
+    periodEnd: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SubscriptionCountAggregateOutputType | null
+    _min: SubscriptionMinAggregateOutputType | null
+    _max: SubscriptionMaxAggregateOutputType | null
+  }
+
+  type GetSubscriptionGroupByPayload<T extends SubscriptionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SubscriptionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SubscriptionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SubscriptionGroupByOutputType[P]>
+            : GetScalarType<T[P], SubscriptionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SubscriptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    plan?: boolean
+    status?: boolean
+    stripeSubId?: boolean
+    periodEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["subscription"]>
+
+  export type SubscriptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    plan?: boolean
+    status?: boolean
+    stripeSubId?: boolean
+    periodEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["subscription"]>
+
+  export type SubscriptionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    plan?: boolean
+    status?: boolean
+    stripeSubId?: boolean
+    periodEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["subscription"]>
+
+  export type SubscriptionSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    plan?: boolean
+    status?: boolean
+    stripeSubId?: boolean
+    periodEnd?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SubscriptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "plan" | "status" | "stripeSubId" | "periodEnd" | "createdAt" | "updatedAt", ExtArgs["result"]["subscription"]>
+  export type SubscriptionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SubscriptionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SubscriptionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $SubscriptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Subscription"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      plan: string
+      status: string
+      stripeSubId: string | null
+      periodEnd: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["subscription"]>
+    composites: {}
+  }
+
+  type SubscriptionGetPayload<S extends boolean | null | undefined | SubscriptionDefaultArgs> = $Result.GetResult<Prisma.$SubscriptionPayload, S>
+
+  type SubscriptionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SubscriptionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SubscriptionCountAggregateInputType | true
+    }
+
+  export interface SubscriptionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Subscription'], meta: { name: 'Subscription' } }
+    /**
+     * Find zero or one Subscription that matches the filter.
+     * @param {SubscriptionFindUniqueArgs} args - Arguments to find a Subscription
+     * @example
+     * // Get one Subscription
+     * const subscription = await prisma.subscription.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SubscriptionFindUniqueArgs>(args: SelectSubset<T, SubscriptionFindUniqueArgs<ExtArgs>>): Prisma__SubscriptionClient<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Subscription that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SubscriptionFindUniqueOrThrowArgs} args - Arguments to find a Subscription
+     * @example
+     * // Get one Subscription
+     * const subscription = await prisma.subscription.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SubscriptionFindUniqueOrThrowArgs>(args: SelectSubset<T, SubscriptionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SubscriptionClient<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Subscription that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionFindFirstArgs} args - Arguments to find a Subscription
+     * @example
+     * // Get one Subscription
+     * const subscription = await prisma.subscription.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SubscriptionFindFirstArgs>(args?: SelectSubset<T, SubscriptionFindFirstArgs<ExtArgs>>): Prisma__SubscriptionClient<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Subscription that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionFindFirstOrThrowArgs} args - Arguments to find a Subscription
+     * @example
+     * // Get one Subscription
+     * const subscription = await prisma.subscription.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SubscriptionFindFirstOrThrowArgs>(args?: SelectSubset<T, SubscriptionFindFirstOrThrowArgs<ExtArgs>>): Prisma__SubscriptionClient<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Subscriptions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Subscriptions
+     * const subscriptions = await prisma.subscription.findMany()
+     * 
+     * // Get first 10 Subscriptions
+     * const subscriptions = await prisma.subscription.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const subscriptionWithIdOnly = await prisma.subscription.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SubscriptionFindManyArgs>(args?: SelectSubset<T, SubscriptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Subscription.
+     * @param {SubscriptionCreateArgs} args - Arguments to create a Subscription.
+     * @example
+     * // Create one Subscription
+     * const Subscription = await prisma.subscription.create({
+     *   data: {
+     *     // ... data to create a Subscription
+     *   }
+     * })
+     * 
+     */
+    create<T extends SubscriptionCreateArgs>(args: SelectSubset<T, SubscriptionCreateArgs<ExtArgs>>): Prisma__SubscriptionClient<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Subscriptions.
+     * @param {SubscriptionCreateManyArgs} args - Arguments to create many Subscriptions.
+     * @example
+     * // Create many Subscriptions
+     * const subscription = await prisma.subscription.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SubscriptionCreateManyArgs>(args?: SelectSubset<T, SubscriptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Subscriptions and returns the data saved in the database.
+     * @param {SubscriptionCreateManyAndReturnArgs} args - Arguments to create many Subscriptions.
+     * @example
+     * // Create many Subscriptions
+     * const subscription = await prisma.subscription.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Subscriptions and only return the `id`
+     * const subscriptionWithIdOnly = await prisma.subscription.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SubscriptionCreateManyAndReturnArgs>(args?: SelectSubset<T, SubscriptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Subscription.
+     * @param {SubscriptionDeleteArgs} args - Arguments to delete one Subscription.
+     * @example
+     * // Delete one Subscription
+     * const Subscription = await prisma.subscription.delete({
+     *   where: {
+     *     // ... filter to delete one Subscription
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SubscriptionDeleteArgs>(args: SelectSubset<T, SubscriptionDeleteArgs<ExtArgs>>): Prisma__SubscriptionClient<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Subscription.
+     * @param {SubscriptionUpdateArgs} args - Arguments to update one Subscription.
+     * @example
+     * // Update one Subscription
+     * const subscription = await prisma.subscription.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SubscriptionUpdateArgs>(args: SelectSubset<T, SubscriptionUpdateArgs<ExtArgs>>): Prisma__SubscriptionClient<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Subscriptions.
+     * @param {SubscriptionDeleteManyArgs} args - Arguments to filter Subscriptions to delete.
+     * @example
+     * // Delete a few Subscriptions
+     * const { count } = await prisma.subscription.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SubscriptionDeleteManyArgs>(args?: SelectSubset<T, SubscriptionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Subscriptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Subscriptions
+     * const subscription = await prisma.subscription.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SubscriptionUpdateManyArgs>(args: SelectSubset<T, SubscriptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Subscriptions and returns the data updated in the database.
+     * @param {SubscriptionUpdateManyAndReturnArgs} args - Arguments to update many Subscriptions.
+     * @example
+     * // Update many Subscriptions
+     * const subscription = await prisma.subscription.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Subscriptions and only return the `id`
+     * const subscriptionWithIdOnly = await prisma.subscription.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SubscriptionUpdateManyAndReturnArgs>(args: SelectSubset<T, SubscriptionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Subscription.
+     * @param {SubscriptionUpsertArgs} args - Arguments to update or create a Subscription.
+     * @example
+     * // Update or create a Subscription
+     * const subscription = await prisma.subscription.upsert({
+     *   create: {
+     *     // ... data to create a Subscription
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Subscription we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SubscriptionUpsertArgs>(args: SelectSubset<T, SubscriptionUpsertArgs<ExtArgs>>): Prisma__SubscriptionClient<$Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Subscriptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionCountArgs} args - Arguments to filter Subscriptions to count.
+     * @example
+     * // Count the number of Subscriptions
+     * const count = await prisma.subscription.count({
+     *   where: {
+     *     // ... the filter for the Subscriptions we want to count
+     *   }
+     * })
+    **/
+    count<T extends SubscriptionCountArgs>(
+      args?: Subset<T, SubscriptionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SubscriptionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Subscription.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SubscriptionAggregateArgs>(args: Subset<T, SubscriptionAggregateArgs>): Prisma.PrismaPromise<GetSubscriptionAggregateType<T>>
+
+    /**
+     * Group by Subscription.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubscriptionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SubscriptionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SubscriptionGroupByArgs['orderBy'] }
+        : { orderBy?: SubscriptionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SubscriptionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSubscriptionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Subscription model
+   */
+  readonly fields: SubscriptionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Subscription.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SubscriptionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Subscription model
+   */
+  interface SubscriptionFieldRefs {
+    readonly id: FieldRef<"Subscription", 'String'>
+    readonly userId: FieldRef<"Subscription", 'String'>
+    readonly plan: FieldRef<"Subscription", 'String'>
+    readonly status: FieldRef<"Subscription", 'String'>
+    readonly stripeSubId: FieldRef<"Subscription", 'String'>
+    readonly periodEnd: FieldRef<"Subscription", 'DateTime'>
+    readonly createdAt: FieldRef<"Subscription", 'DateTime'>
+    readonly updatedAt: FieldRef<"Subscription", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Subscription findUnique
+   */
+  export type SubscriptionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which Subscription to fetch.
+     */
+    where: SubscriptionWhereUniqueInput
+  }
+
+  /**
+   * Subscription findUniqueOrThrow
+   */
+  export type SubscriptionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which Subscription to fetch.
+     */
+    where: SubscriptionWhereUniqueInput
+  }
+
+  /**
+   * Subscription findFirst
+   */
+  export type SubscriptionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which Subscription to fetch.
+     */
+    where?: SubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Subscriptions to fetch.
+     */
+    orderBy?: SubscriptionOrderByWithRelationInput | SubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Subscriptions.
+     */
+    cursor?: SubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Subscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Subscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Subscriptions.
+     */
+    distinct?: SubscriptionScalarFieldEnum | SubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * Subscription findFirstOrThrow
+   */
+  export type SubscriptionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which Subscription to fetch.
+     */
+    where?: SubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Subscriptions to fetch.
+     */
+    orderBy?: SubscriptionOrderByWithRelationInput | SubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Subscriptions.
+     */
+    cursor?: SubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Subscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Subscriptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Subscriptions.
+     */
+    distinct?: SubscriptionScalarFieldEnum | SubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * Subscription findMany
+   */
+  export type SubscriptionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter, which Subscriptions to fetch.
+     */
+    where?: SubscriptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Subscriptions to fetch.
+     */
+    orderBy?: SubscriptionOrderByWithRelationInput | SubscriptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Subscriptions.
+     */
+    cursor?: SubscriptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Subscriptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Subscriptions.
+     */
+    skip?: number
+    distinct?: SubscriptionScalarFieldEnum | SubscriptionScalarFieldEnum[]
+  }
+
+  /**
+   * Subscription create
+   */
+  export type SubscriptionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Subscription.
+     */
+    data: XOR<SubscriptionCreateInput, SubscriptionUncheckedCreateInput>
+  }
+
+  /**
+   * Subscription createMany
+   */
+  export type SubscriptionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Subscriptions.
+     */
+    data: SubscriptionCreateManyInput | SubscriptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Subscription createManyAndReturn
+   */
+  export type SubscriptionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Subscriptions.
+     */
+    data: SubscriptionCreateManyInput | SubscriptionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Subscription update
+   */
+  export type SubscriptionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Subscription.
+     */
+    data: XOR<SubscriptionUpdateInput, SubscriptionUncheckedUpdateInput>
+    /**
+     * Choose, which Subscription to update.
+     */
+    where: SubscriptionWhereUniqueInput
+  }
+
+  /**
+   * Subscription updateMany
+   */
+  export type SubscriptionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Subscriptions.
+     */
+    data: XOR<SubscriptionUpdateManyMutationInput, SubscriptionUncheckedUpdateManyInput>
+    /**
+     * Filter which Subscriptions to update
+     */
+    where?: SubscriptionWhereInput
+    /**
+     * Limit how many Subscriptions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Subscription updateManyAndReturn
+   */
+  export type SubscriptionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * The data used to update Subscriptions.
+     */
+    data: XOR<SubscriptionUpdateManyMutationInput, SubscriptionUncheckedUpdateManyInput>
+    /**
+     * Filter which Subscriptions to update
+     */
+    where?: SubscriptionWhereInput
+    /**
+     * Limit how many Subscriptions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Subscription upsert
+   */
+  export type SubscriptionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Subscription to update in case it exists.
+     */
+    where: SubscriptionWhereUniqueInput
+    /**
+     * In case the Subscription found by the `where` argument doesn't exist, create a new Subscription with this data.
+     */
+    create: XOR<SubscriptionCreateInput, SubscriptionUncheckedCreateInput>
+    /**
+     * In case the Subscription was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SubscriptionUpdateInput, SubscriptionUncheckedUpdateInput>
+  }
+
+  /**
+   * Subscription delete
+   */
+  export type SubscriptionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+    /**
+     * Filter which Subscription to delete.
+     */
+    where: SubscriptionWhereUniqueInput
+  }
+
+  /**
+   * Subscription deleteMany
+   */
+  export type SubscriptionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Subscriptions to delete
+     */
+    where?: SubscriptionWhereInput
+    /**
+     * Limit how many Subscriptions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Subscription without action
+   */
+  export type SubscriptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Subscription
+     */
+    select?: SubscriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Subscription
+     */
+    omit?: SubscriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubscriptionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8275,6 +12197,19 @@ export namespace Prisma {
   };
 
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+  export const UserScalarFieldEnum: {
+    id: 'id',
+    clerkId: 'clerkId',
+    email: 'email',
+    plan: 'plan',
+    stripeCustomerId: 'stripeCustomerId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
   export const JobScalarFieldEnum: {
@@ -8296,9 +12231,7 @@ export namespace Prisma {
     location: 'location',
     postedAt: 'postedAt',
     scrapedAt: 'scrapedAt',
-    status: 'status',
-    aiScore: 'aiScore',
-    aiSummary: 'aiSummary',
+    catalogStatus: 'catalogStatus',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -8306,8 +12239,23 @@ export namespace Prisma {
   export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
 
 
+  export const UserJobScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    jobId: 'jobId',
+    status: 'status',
+    aiScore: 'aiScore',
+    aiSummary: 'aiSummary',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UserJobScalarFieldEnum = (typeof UserJobScalarFieldEnum)[keyof typeof UserJobScalarFieldEnum]
+
+
   export const SearchConfigScalarFieldEnum: {
     id: 'id',
+    userId: 'userId',
     keywords: 'keywords',
     excludeKeywords: 'excludeKeywords',
     enabledSites: 'enabledSites',
@@ -8362,6 +12310,7 @@ export namespace Prisma {
 
   export const UserProfileScalarFieldEnum: {
     id: 'id',
+    userId: 'userId',
     name: 'name',
     title: 'title',
     summary: 'summary',
@@ -8380,6 +12329,7 @@ export namespace Prisma {
 
   export const GeneratedEmailScalarFieldEnum: {
     id: 'id',
+    userId: 'userId',
     jobId: 'jobId',
     content: 'content',
     version: 'version',
@@ -8387,6 +12337,20 @@ export namespace Prisma {
   };
 
   export type GeneratedEmailScalarFieldEnum = (typeof GeneratedEmailScalarFieldEnum)[keyof typeof GeneratedEmailScalarFieldEnum]
+
+
+  export const SubscriptionScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    plan: 'plan',
+    status: 'status',
+    stripeSubId: 'stripeSubId',
+    periodEnd: 'periodEnd',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -8433,20 +12397,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -8457,6 +12407,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -8484,6 +12448,83 @@ export namespace Prisma {
    */
 
 
+  export type UserWhereInput = {
+    AND?: UserWhereInput | UserWhereInput[]
+    OR?: UserWhereInput[]
+    NOT?: UserWhereInput | UserWhereInput[]
+    id?: StringFilter<"User"> | string
+    clerkId?: StringFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    plan?: StringFilter<"User"> | string
+    stripeCustomerId?: StringNullableFilter<"User"> | string | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    searchConfig?: XOR<SearchConfigNullableScalarRelationFilter, SearchConfigWhereInput> | null
+    profile?: XOR<UserProfileNullableScalarRelationFilter, UserProfileWhereInput> | null
+    userJobs?: UserJobListRelationFilter
+    generatedEmails?: GeneratedEmailListRelationFilter
+    subscription?: XOR<SubscriptionNullableScalarRelationFilter, SubscriptionWhereInput> | null
+  }
+
+  export type UserOrderByWithRelationInput = {
+    id?: SortOrder
+    clerkId?: SortOrder
+    email?: SortOrder
+    plan?: SortOrder
+    stripeCustomerId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    searchConfig?: SearchConfigOrderByWithRelationInput
+    profile?: UserProfileOrderByWithRelationInput
+    userJobs?: UserJobOrderByRelationAggregateInput
+    generatedEmails?: GeneratedEmailOrderByRelationAggregateInput
+    subscription?: SubscriptionOrderByWithRelationInput
+  }
+
+  export type UserWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    clerkId?: string
+    AND?: UserWhereInput | UserWhereInput[]
+    OR?: UserWhereInput[]
+    NOT?: UserWhereInput | UserWhereInput[]
+    email?: StringFilter<"User"> | string
+    plan?: StringFilter<"User"> | string
+    stripeCustomerId?: StringNullableFilter<"User"> | string | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+    searchConfig?: XOR<SearchConfigNullableScalarRelationFilter, SearchConfigWhereInput> | null
+    profile?: XOR<UserProfileNullableScalarRelationFilter, UserProfileWhereInput> | null
+    userJobs?: UserJobListRelationFilter
+    generatedEmails?: GeneratedEmailListRelationFilter
+    subscription?: XOR<SubscriptionNullableScalarRelationFilter, SubscriptionWhereInput> | null
+  }, "id" | "clerkId">
+
+  export type UserOrderByWithAggregationInput = {
+    id?: SortOrder
+    clerkId?: SortOrder
+    email?: SortOrder
+    plan?: SortOrder
+    stripeCustomerId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UserCountOrderByAggregateInput
+    _max?: UserMaxOrderByAggregateInput
+    _min?: UserMinOrderByAggregateInput
+  }
+
+  export type UserScalarWhereWithAggregatesInput = {
+    AND?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
+    OR?: UserScalarWhereWithAggregatesInput[]
+    NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"User"> | string
+    clerkId?: StringWithAggregatesFilter<"User"> | string
+    email?: StringWithAggregatesFilter<"User"> | string
+    plan?: StringWithAggregatesFilter<"User"> | string
+    stripeCustomerId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
   export type JobWhereInput = {
     AND?: JobWhereInput | JobWhereInput[]
     OR?: JobWhereInput[]
@@ -8506,11 +12547,10 @@ export namespace Prisma {
     location?: StringNullableFilter<"Job"> | string | null
     postedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     scrapedAt?: DateTimeFilter<"Job"> | Date | string
-    status?: StringFilter<"Job"> | string
-    aiScore?: FloatNullableFilter<"Job"> | number | null
-    aiSummary?: StringNullableFilter<"Job"> | string | null
+    catalogStatus?: StringFilter<"Job"> | string
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
+    userJobs?: UserJobListRelationFilter
     generatedEmails?: GeneratedEmailListRelationFilter
   }
 
@@ -8533,11 +12573,10 @@ export namespace Prisma {
     location?: SortOrderInput | SortOrder
     postedAt?: SortOrderInput | SortOrder
     scrapedAt?: SortOrder
-    status?: SortOrder
-    aiScore?: SortOrderInput | SortOrder
-    aiSummary?: SortOrderInput | SortOrder
+    catalogStatus?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userJobs?: UserJobOrderByRelationAggregateInput
     generatedEmails?: GeneratedEmailOrderByRelationAggregateInput
   }
 
@@ -8564,11 +12603,10 @@ export namespace Prisma {
     location?: StringNullableFilter<"Job"> | string | null
     postedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     scrapedAt?: DateTimeFilter<"Job"> | Date | string
-    status?: StringFilter<"Job"> | string
-    aiScore?: FloatNullableFilter<"Job"> | number | null
-    aiSummary?: StringNullableFilter<"Job"> | string | null
+    catalogStatus?: StringFilter<"Job"> | string
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
+    userJobs?: UserJobListRelationFilter
     generatedEmails?: GeneratedEmailListRelationFilter
   }, "id" | "site_externalId">
 
@@ -8591,9 +12629,7 @@ export namespace Prisma {
     location?: SortOrderInput | SortOrder
     postedAt?: SortOrderInput | SortOrder
     scrapedAt?: SortOrder
-    status?: SortOrder
-    aiScore?: SortOrderInput | SortOrder
-    aiSummary?: SortOrderInput | SortOrder
+    catalogStatus?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: JobCountOrderByAggregateInput
@@ -8625,11 +12661,85 @@ export namespace Prisma {
     location?: StringNullableWithAggregatesFilter<"Job"> | string | null
     postedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
     scrapedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
-    status?: StringWithAggregatesFilter<"Job"> | string
-    aiScore?: FloatNullableWithAggregatesFilter<"Job"> | number | null
-    aiSummary?: StringNullableWithAggregatesFilter<"Job"> | string | null
+    catalogStatus?: StringWithAggregatesFilter<"Job"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
+  }
+
+  export type UserJobWhereInput = {
+    AND?: UserJobWhereInput | UserJobWhereInput[]
+    OR?: UserJobWhereInput[]
+    NOT?: UserJobWhereInput | UserJobWhereInput[]
+    id?: StringFilter<"UserJob"> | string
+    userId?: StringFilter<"UserJob"> | string
+    jobId?: StringFilter<"UserJob"> | string
+    status?: StringFilter<"UserJob"> | string
+    aiScore?: FloatNullableFilter<"UserJob"> | number | null
+    aiSummary?: StringNullableFilter<"UserJob"> | string | null
+    createdAt?: DateTimeFilter<"UserJob"> | Date | string
+    updatedAt?: DateTimeFilter<"UserJob"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+  }
+
+  export type UserJobOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    jobId?: SortOrder
+    status?: SortOrder
+    aiScore?: SortOrderInput | SortOrder
+    aiSummary?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    job?: JobOrderByWithRelationInput
+  }
+
+  export type UserJobWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_jobId?: UserJobUserIdJobIdCompoundUniqueInput
+    AND?: UserJobWhereInput | UserJobWhereInput[]
+    OR?: UserJobWhereInput[]
+    NOT?: UserJobWhereInput | UserJobWhereInput[]
+    userId?: StringFilter<"UserJob"> | string
+    jobId?: StringFilter<"UserJob"> | string
+    status?: StringFilter<"UserJob"> | string
+    aiScore?: FloatNullableFilter<"UserJob"> | number | null
+    aiSummary?: StringNullableFilter<"UserJob"> | string | null
+    createdAt?: DateTimeFilter<"UserJob"> | Date | string
+    updatedAt?: DateTimeFilter<"UserJob"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
+  }, "id" | "userId_jobId">
+
+  export type UserJobOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    jobId?: SortOrder
+    status?: SortOrder
+    aiScore?: SortOrderInput | SortOrder
+    aiSummary?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UserJobCountOrderByAggregateInput
+    _avg?: UserJobAvgOrderByAggregateInput
+    _max?: UserJobMaxOrderByAggregateInput
+    _min?: UserJobMinOrderByAggregateInput
+    _sum?: UserJobSumOrderByAggregateInput
+  }
+
+  export type UserJobScalarWhereWithAggregatesInput = {
+    AND?: UserJobScalarWhereWithAggregatesInput | UserJobScalarWhereWithAggregatesInput[]
+    OR?: UserJobScalarWhereWithAggregatesInput[]
+    NOT?: UserJobScalarWhereWithAggregatesInput | UserJobScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserJob"> | string
+    userId?: StringWithAggregatesFilter<"UserJob"> | string
+    jobId?: StringWithAggregatesFilter<"UserJob"> | string
+    status?: StringWithAggregatesFilter<"UserJob"> | string
+    aiScore?: FloatNullableWithAggregatesFilter<"UserJob"> | number | null
+    aiSummary?: StringNullableWithAggregatesFilter<"UserJob"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"UserJob"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UserJob"> | Date | string
   }
 
   export type SearchConfigWhereInput = {
@@ -8637,6 +12747,7 @@ export namespace Prisma {
     OR?: SearchConfigWhereInput[]
     NOT?: SearchConfigWhereInput | SearchConfigWhereInput[]
     id?: StringFilter<"SearchConfig"> | string
+    userId?: StringFilter<"SearchConfig"> | string
     keywords?: StringFilter<"SearchConfig"> | string
     excludeKeywords?: StringFilter<"SearchConfig"> | string
     enabledSites?: StringFilter<"SearchConfig"> | string
@@ -8655,10 +12766,12 @@ export namespace Prisma {
     digestMode?: BoolFilter<"SearchConfig"> | boolean
     maxEmailsPerRun?: IntFilter<"SearchConfig"> | number
     updatedAt?: DateTimeFilter<"SearchConfig"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type SearchConfigOrderByWithRelationInput = {
     id?: SortOrder
+    userId?: SortOrder
     keywords?: SortOrder
     excludeKeywords?: SortOrder
     enabledSites?: SortOrder
@@ -8677,10 +12790,12 @@ export namespace Prisma {
     digestMode?: SortOrder
     maxEmailsPerRun?: SortOrder
     updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
   }
 
   export type SearchConfigWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId?: string
     AND?: SearchConfigWhereInput | SearchConfigWhereInput[]
     OR?: SearchConfigWhereInput[]
     NOT?: SearchConfigWhereInput | SearchConfigWhereInput[]
@@ -8702,10 +12817,12 @@ export namespace Prisma {
     digestMode?: BoolFilter<"SearchConfig"> | boolean
     maxEmailsPerRun?: IntFilter<"SearchConfig"> | number
     updatedAt?: DateTimeFilter<"SearchConfig"> | Date | string
-  }, "id">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
 
   export type SearchConfigOrderByWithAggregationInput = {
     id?: SortOrder
+    userId?: SortOrder
     keywords?: SortOrder
     excludeKeywords?: SortOrder
     enabledSites?: SortOrder
@@ -8736,6 +12853,7 @@ export namespace Prisma {
     OR?: SearchConfigScalarWhereWithAggregatesInput[]
     NOT?: SearchConfigScalarWhereWithAggregatesInput | SearchConfigScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"SearchConfig"> | string
+    userId?: StringWithAggregatesFilter<"SearchConfig"> | string
     keywords?: StringWithAggregatesFilter<"SearchConfig"> | string
     excludeKeywords?: StringWithAggregatesFilter<"SearchConfig"> | string
     enabledSites?: StringWithAggregatesFilter<"SearchConfig"> | string
@@ -8904,6 +13022,7 @@ export namespace Prisma {
     OR?: UserProfileWhereInput[]
     NOT?: UserProfileWhereInput | UserProfileWhereInput[]
     id?: StringFilter<"UserProfile"> | string
+    userId?: StringFilter<"UserProfile"> | string
     name?: StringFilter<"UserProfile"> | string
     title?: StringNullableFilter<"UserProfile"> | string | null
     summary?: StringNullableFilter<"UserProfile"> | string | null
@@ -8915,10 +13034,12 @@ export namespace Prisma {
     preferences?: StringFilter<"UserProfile"> | string
     createdAt?: DateTimeFilter<"UserProfile"> | Date | string
     updatedAt?: DateTimeFilter<"UserProfile"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type UserProfileOrderByWithRelationInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     title?: SortOrderInput | SortOrder
     summary?: SortOrderInput | SortOrder
@@ -8930,10 +13051,12 @@ export namespace Prisma {
     preferences?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
   }
 
   export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId?: string
     AND?: UserProfileWhereInput | UserProfileWhereInput[]
     OR?: UserProfileWhereInput[]
     NOT?: UserProfileWhereInput | UserProfileWhereInput[]
@@ -8948,10 +13071,12 @@ export namespace Prisma {
     preferences?: StringFilter<"UserProfile"> | string
     createdAt?: DateTimeFilter<"UserProfile"> | Date | string
     updatedAt?: DateTimeFilter<"UserProfile"> | Date | string
-  }, "id">
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
 
   export type UserProfileOrderByWithAggregationInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     title?: SortOrderInput | SortOrder
     summary?: SortOrderInput | SortOrder
@@ -8973,6 +13098,7 @@ export namespace Prisma {
     OR?: UserProfileScalarWhereWithAggregatesInput[]
     NOT?: UserProfileScalarWhereWithAggregatesInput | UserProfileScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"UserProfile"> | string
+    userId?: StringWithAggregatesFilter<"UserProfile"> | string
     name?: StringWithAggregatesFilter<"UserProfile"> | string
     title?: StringNullableWithAggregatesFilter<"UserProfile"> | string | null
     summary?: StringNullableWithAggregatesFilter<"UserProfile"> | string | null
@@ -8991,19 +13117,23 @@ export namespace Prisma {
     OR?: GeneratedEmailWhereInput[]
     NOT?: GeneratedEmailWhereInput | GeneratedEmailWhereInput[]
     id?: StringFilter<"GeneratedEmail"> | string
+    userId?: StringFilter<"GeneratedEmail"> | string
     jobId?: StringFilter<"GeneratedEmail"> | string
     content?: StringFilter<"GeneratedEmail"> | string
     version?: IntFilter<"GeneratedEmail"> | number
     createdAt?: DateTimeFilter<"GeneratedEmail"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
   }
 
   export type GeneratedEmailOrderByWithRelationInput = {
     id?: SortOrder
+    userId?: SortOrder
     jobId?: SortOrder
     content?: SortOrder
     version?: SortOrder
     createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
     job?: JobOrderByWithRelationInput
   }
 
@@ -9012,15 +13142,18 @@ export namespace Prisma {
     AND?: GeneratedEmailWhereInput | GeneratedEmailWhereInput[]
     OR?: GeneratedEmailWhereInput[]
     NOT?: GeneratedEmailWhereInput | GeneratedEmailWhereInput[]
+    userId?: StringFilter<"GeneratedEmail"> | string
     jobId?: StringFilter<"GeneratedEmail"> | string
     content?: StringFilter<"GeneratedEmail"> | string
     version?: IntFilter<"GeneratedEmail"> | number
     createdAt?: DateTimeFilter<"GeneratedEmail"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
   }, "id">
 
   export type GeneratedEmailOrderByWithAggregationInput = {
     id?: SortOrder
+    userId?: SortOrder
     jobId?: SortOrder
     content?: SortOrder
     version?: SortOrder
@@ -9037,10 +13170,171 @@ export namespace Prisma {
     OR?: GeneratedEmailScalarWhereWithAggregatesInput[]
     NOT?: GeneratedEmailScalarWhereWithAggregatesInput | GeneratedEmailScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"GeneratedEmail"> | string
+    userId?: StringWithAggregatesFilter<"GeneratedEmail"> | string
     jobId?: StringWithAggregatesFilter<"GeneratedEmail"> | string
     content?: StringWithAggregatesFilter<"GeneratedEmail"> | string
     version?: IntWithAggregatesFilter<"GeneratedEmail"> | number
     createdAt?: DateTimeWithAggregatesFilter<"GeneratedEmail"> | Date | string
+  }
+
+  export type SubscriptionWhereInput = {
+    AND?: SubscriptionWhereInput | SubscriptionWhereInput[]
+    OR?: SubscriptionWhereInput[]
+    NOT?: SubscriptionWhereInput | SubscriptionWhereInput[]
+    id?: StringFilter<"Subscription"> | string
+    userId?: StringFilter<"Subscription"> | string
+    plan?: StringFilter<"Subscription"> | string
+    status?: StringFilter<"Subscription"> | string
+    stripeSubId?: StringNullableFilter<"Subscription"> | string | null
+    periodEnd?: DateTimeNullableFilter<"Subscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"Subscription"> | Date | string
+    updatedAt?: DateTimeFilter<"Subscription"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type SubscriptionOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    plan?: SortOrder
+    status?: SortOrder
+    stripeSubId?: SortOrderInput | SortOrder
+    periodEnd?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type SubscriptionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: SubscriptionWhereInput | SubscriptionWhereInput[]
+    OR?: SubscriptionWhereInput[]
+    NOT?: SubscriptionWhereInput | SubscriptionWhereInput[]
+    plan?: StringFilter<"Subscription"> | string
+    status?: StringFilter<"Subscription"> | string
+    stripeSubId?: StringNullableFilter<"Subscription"> | string | null
+    periodEnd?: DateTimeNullableFilter<"Subscription"> | Date | string | null
+    createdAt?: DateTimeFilter<"Subscription"> | Date | string
+    updatedAt?: DateTimeFilter<"Subscription"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type SubscriptionOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    plan?: SortOrder
+    status?: SortOrder
+    stripeSubId?: SortOrderInput | SortOrder
+    periodEnd?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SubscriptionCountOrderByAggregateInput
+    _max?: SubscriptionMaxOrderByAggregateInput
+    _min?: SubscriptionMinOrderByAggregateInput
+  }
+
+  export type SubscriptionScalarWhereWithAggregatesInput = {
+    AND?: SubscriptionScalarWhereWithAggregatesInput | SubscriptionScalarWhereWithAggregatesInput[]
+    OR?: SubscriptionScalarWhereWithAggregatesInput[]
+    NOT?: SubscriptionScalarWhereWithAggregatesInput | SubscriptionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Subscription"> | string
+    userId?: StringWithAggregatesFilter<"Subscription"> | string
+    plan?: StringWithAggregatesFilter<"Subscription"> | string
+    status?: StringWithAggregatesFilter<"Subscription"> | string
+    stripeSubId?: StringNullableWithAggregatesFilter<"Subscription"> | string | null
+    periodEnd?: DateTimeNullableWithAggregatesFilter<"Subscription"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Subscription"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Subscription"> | Date | string
+  }
+
+  export type UserCreateInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    searchConfig?: SearchConfigCreateNestedOneWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    userJobs?: UserJobCreateNestedManyWithoutUserInput
+    generatedEmails?: GeneratedEmailCreateNestedManyWithoutUserInput
+    subscription?: SubscriptionCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    searchConfig?: SearchConfigUncheckedCreateNestedOneWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userJobs?: UserJobUncheckedCreateNestedManyWithoutUserInput
+    generatedEmails?: GeneratedEmailUncheckedCreateNestedManyWithoutUserInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchConfig?: SearchConfigUpdateOneWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    userJobs?: UserJobUpdateManyWithoutUserNestedInput
+    generatedEmails?: GeneratedEmailUpdateManyWithoutUserNestedInput
+    subscription?: SubscriptionUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchConfig?: SearchConfigUncheckedUpdateOneWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userJobs?: UserJobUncheckedUpdateManyWithoutUserNestedInput
+    generatedEmails?: GeneratedEmailUncheckedUpdateManyWithoutUserNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserCreateManyInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobCreateInput = {
@@ -9062,11 +13356,10 @@ export namespace Prisma {
     location?: string | null
     postedAt?: Date | string | null
     scrapedAt?: Date | string
-    status?: string
-    aiScore?: number | null
-    aiSummary?: string | null
+    catalogStatus?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    userJobs?: UserJobCreateNestedManyWithoutJobInput
     generatedEmails?: GeneratedEmailCreateNestedManyWithoutJobInput
   }
 
@@ -9089,11 +13382,10 @@ export namespace Prisma {
     location?: string | null
     postedAt?: Date | string | null
     scrapedAt?: Date | string
-    status?: string
-    aiScore?: number | null
-    aiSummary?: string | null
+    catalogStatus?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    userJobs?: UserJobUncheckedCreateNestedManyWithoutJobInput
     generatedEmails?: GeneratedEmailUncheckedCreateNestedManyWithoutJobInput
   }
 
@@ -9116,11 +13408,10 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
-    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    catalogStatus?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userJobs?: UserJobUpdateManyWithoutJobNestedInput
     generatedEmails?: GeneratedEmailUpdateManyWithoutJobNestedInput
   }
 
@@ -9143,11 +13434,10 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
-    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    catalogStatus?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userJobs?: UserJobUncheckedUpdateManyWithoutJobNestedInput
     generatedEmails?: GeneratedEmailUncheckedUpdateManyWithoutJobNestedInput
   }
 
@@ -9170,9 +13460,7 @@ export namespace Prisma {
     location?: string | null
     postedAt?: Date | string | null
     scrapedAt?: Date | string
-    status?: string
-    aiScore?: number | null
-    aiSummary?: string | null
+    catalogStatus?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -9196,9 +13484,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
-    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    catalogStatus?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9222,6 +13508,79 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    catalogStatus?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserJobCreateInput = {
+    id?: string
+    status?: string
+    aiScore?: number | null
+    aiSummary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutUserJobsInput
+    job: JobCreateNestedOneWithoutUserJobsInput
+  }
+
+  export type UserJobUncheckedCreateInput = {
+    id?: string
+    userId: string
+    jobId: string
+    status?: string
+    aiScore?: number | null
+    aiSummary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserJobUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutUserJobsNestedInput
+    job?: JobUpdateOneRequiredWithoutUserJobsNestedInput
+  }
+
+  export type UserJobUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserJobCreateManyInput = {
+    id?: string
+    userId: string
+    jobId: string
+    status?: string
+    aiScore?: number | null
+    aiSummary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserJobUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserJobUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
     aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
@@ -9249,10 +13608,12 @@ export namespace Prisma {
     digestMode?: boolean
     maxEmailsPerRun?: number
     updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutSearchConfigInput
   }
 
   export type SearchConfigUncheckedCreateInput = {
     id?: string
+    userId: string
     keywords: string
     excludeKeywords: string
     enabledSites: string
@@ -9293,10 +13654,12 @@ export namespace Prisma {
     digestMode?: BoolFieldUpdateOperationsInput | boolean
     maxEmailsPerRun?: IntFieldUpdateOperationsInput | number
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSearchConfigNestedInput
   }
 
   export type SearchConfigUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     keywords?: StringFieldUpdateOperationsInput | string
     excludeKeywords?: StringFieldUpdateOperationsInput | string
     enabledSites?: StringFieldUpdateOperationsInput | string
@@ -9319,6 +13682,7 @@ export namespace Prisma {
 
   export type SearchConfigCreateManyInput = {
     id?: string
+    userId: string
     keywords: string
     excludeKeywords: string
     enabledSites: string
@@ -9363,6 +13727,7 @@ export namespace Prisma {
 
   export type SearchConfigUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     keywords?: StringFieldUpdateOperationsInput | string
     excludeKeywords?: StringFieldUpdateOperationsInput | string
     enabledSites?: StringFieldUpdateOperationsInput | string
@@ -9546,7 +13911,7 @@ export namespace Prisma {
 
   export type UserProfileCreateInput = {
     id?: string
-    name: string
+    name?: string
     title?: string | null
     summary?: string | null
     skills: string
@@ -9557,11 +13922,13 @@ export namespace Prisma {
     preferences: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutProfileInput
   }
 
   export type UserProfileUncheckedCreateInput = {
     id?: string
-    name: string
+    userId: string
+    name?: string
     title?: string | null
     summary?: string | null
     skills: string
@@ -9587,10 +13954,12 @@ export namespace Prisma {
     preferences?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutProfileNestedInput
   }
 
   export type UserProfileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     summary?: NullableStringFieldUpdateOperationsInput | string | null
@@ -9606,7 +13975,8 @@ export namespace Prisma {
 
   export type UserProfileCreateManyInput = {
     id?: string
-    name: string
+    userId: string
+    name?: string
     title?: string | null
     summary?: string | null
     skills: string
@@ -9636,6 +14006,7 @@ export namespace Prisma {
 
   export type UserProfileUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     title?: NullableStringFieldUpdateOperationsInput | string | null
     summary?: NullableStringFieldUpdateOperationsInput | string | null
@@ -9654,11 +14025,13 @@ export namespace Prisma {
     content: string
     version?: number
     createdAt?: Date | string
+    user: UserCreateNestedOneWithoutGeneratedEmailsInput
     job: JobCreateNestedOneWithoutGeneratedEmailsInput
   }
 
   export type GeneratedEmailUncheckedCreateInput = {
     id?: string
+    userId: string
     jobId: string
     content: string
     version?: number
@@ -9670,11 +14043,13 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutGeneratedEmailsNestedInput
     job?: JobUpdateOneRequiredWithoutGeneratedEmailsNestedInput
   }
 
   export type GeneratedEmailUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     version?: IntFieldUpdateOperationsInput | number
@@ -9683,6 +14058,7 @@ export namespace Prisma {
 
   export type GeneratedEmailCreateManyInput = {
     id?: string
+    userId: string
     jobId: string
     content: string
     version?: number
@@ -9698,10 +14074,87 @@ export namespace Prisma {
 
   export type GeneratedEmailUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionCreateInput = {
+    id?: string
+    plan?: string
+    status?: string
+    stripeSubId?: string | null
+    periodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutSubscriptionInput
+  }
+
+  export type SubscriptionUncheckedCreateInput = {
+    id?: string
+    userId: string
+    plan?: string
+    status?: string
+    stripeSubId?: string | null
+    periodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SubscriptionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    stripeSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSubscriptionNestedInput
+  }
+
+  export type SubscriptionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    stripeSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionCreateManyInput = {
+    id?: string
+    userId: string
+    plan?: string
+    status?: string
+    stripeSubId?: string | null
+    periodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SubscriptionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    stripeSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    stripeSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -9734,28 +14187,6 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -9767,15 +14198,20 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  export type SearchConfigNullableScalarRelationFilter = {
+    is?: SearchConfigWhereInput | null
+    isNot?: SearchConfigWhereInput | null
+  }
+
+  export type UserProfileNullableScalarRelationFilter = {
+    is?: UserProfileWhereInput | null
+    isNot?: UserProfileWhereInput | null
+  }
+
+  export type UserJobListRelationFilter = {
+    every?: UserJobWhereInput
+    some?: UserJobWhereInput
+    none?: UserJobWhereInput
   }
 
   export type GeneratedEmailListRelationFilter = {
@@ -9784,108 +14220,52 @@ export namespace Prisma {
     none?: GeneratedEmailWhereInput
   }
 
+  export type SubscriptionNullableScalarRelationFilter = {
+    is?: SubscriptionWhereInput | null
+    isNot?: SubscriptionWhereInput | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type UserJobOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type GeneratedEmailOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type JobSiteExternalIdCompoundUniqueInput = {
-    site: string
-    externalId: string
-  }
-
-  export type JobCountOrderByAggregateInput = {
+  export type UserCountOrderByAggregateInput = {
     id?: SortOrder
-    externalId?: SortOrder
-    site?: SortOrder
-    title?: SortOrder
-    company?: SortOrder
-    salary?: SortOrder
-    salaryMin?: SortOrder
-    salaryMax?: SortOrder
-    salaryCurrency?: SortOrder
-    description?: SortOrder
-    url?: SortOrder
-    jobType?: SortOrder
-    experienceLevel?: SortOrder
-    workArrangement?: SortOrder
-    skills?: SortOrder
-    location?: SortOrder
-    postedAt?: SortOrder
-    scrapedAt?: SortOrder
-    status?: SortOrder
-    aiScore?: SortOrder
-    aiSummary?: SortOrder
+    clerkId?: SortOrder
+    email?: SortOrder
+    plan?: SortOrder
+    stripeCustomerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type JobAvgOrderByAggregateInput = {
-    salaryMin?: SortOrder
-    salaryMax?: SortOrder
-    aiScore?: SortOrder
-  }
-
-  export type JobMaxOrderByAggregateInput = {
+  export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
-    externalId?: SortOrder
-    site?: SortOrder
-    title?: SortOrder
-    company?: SortOrder
-    salary?: SortOrder
-    salaryMin?: SortOrder
-    salaryMax?: SortOrder
-    salaryCurrency?: SortOrder
-    description?: SortOrder
-    url?: SortOrder
-    jobType?: SortOrder
-    experienceLevel?: SortOrder
-    workArrangement?: SortOrder
-    skills?: SortOrder
-    location?: SortOrder
-    postedAt?: SortOrder
-    scrapedAt?: SortOrder
-    status?: SortOrder
-    aiScore?: SortOrder
-    aiSummary?: SortOrder
+    clerkId?: SortOrder
+    email?: SortOrder
+    plan?: SortOrder
+    stripeCustomerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type JobMinOrderByAggregateInput = {
+  export type UserMinOrderByAggregateInput = {
     id?: SortOrder
-    externalId?: SortOrder
-    site?: SortOrder
-    title?: SortOrder
-    company?: SortOrder
-    salary?: SortOrder
-    salaryMin?: SortOrder
-    salaryMax?: SortOrder
-    salaryCurrency?: SortOrder
-    description?: SortOrder
-    url?: SortOrder
-    jobType?: SortOrder
-    experienceLevel?: SortOrder
-    workArrangement?: SortOrder
-    skills?: SortOrder
-    location?: SortOrder
-    postedAt?: SortOrder
-    scrapedAt?: SortOrder
-    status?: SortOrder
-    aiScore?: SortOrder
-    aiSummary?: SortOrder
+    clerkId?: SortOrder
+    email?: SortOrder
+    plan?: SortOrder
+    stripeCustomerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type JobSumOrderByAggregateInput = {
-    salaryMin?: SortOrder
-    salaryMax?: SortOrder
-    aiScore?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -9924,6 +14304,129 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type JobSiteExternalIdCompoundUniqueInput = {
+    site: string
+    externalId: string
+  }
+
+  export type JobCountOrderByAggregateInput = {
+    id?: SortOrder
+    externalId?: SortOrder
+    site?: SortOrder
+    title?: SortOrder
+    company?: SortOrder
+    salary?: SortOrder
+    salaryMin?: SortOrder
+    salaryMax?: SortOrder
+    salaryCurrency?: SortOrder
+    description?: SortOrder
+    url?: SortOrder
+    jobType?: SortOrder
+    experienceLevel?: SortOrder
+    workArrangement?: SortOrder
+    skills?: SortOrder
+    location?: SortOrder
+    postedAt?: SortOrder
+    scrapedAt?: SortOrder
+    catalogStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobAvgOrderByAggregateInput = {
+    salaryMin?: SortOrder
+    salaryMax?: SortOrder
+  }
+
+  export type JobMaxOrderByAggregateInput = {
+    id?: SortOrder
+    externalId?: SortOrder
+    site?: SortOrder
+    title?: SortOrder
+    company?: SortOrder
+    salary?: SortOrder
+    salaryMin?: SortOrder
+    salaryMax?: SortOrder
+    salaryCurrency?: SortOrder
+    description?: SortOrder
+    url?: SortOrder
+    jobType?: SortOrder
+    experienceLevel?: SortOrder
+    workArrangement?: SortOrder
+    skills?: SortOrder
+    location?: SortOrder
+    postedAt?: SortOrder
+    scrapedAt?: SortOrder
+    catalogStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobMinOrderByAggregateInput = {
+    id?: SortOrder
+    externalId?: SortOrder
+    site?: SortOrder
+    title?: SortOrder
+    company?: SortOrder
+    salary?: SortOrder
+    salaryMin?: SortOrder
+    salaryMax?: SortOrder
+    salaryCurrency?: SortOrder
+    description?: SortOrder
+    url?: SortOrder
+    jobType?: SortOrder
+    experienceLevel?: SortOrder
+    workArrangement?: SortOrder
+    skills?: SortOrder
+    location?: SortOrder
+    postedAt?: SortOrder
+    scrapedAt?: SortOrder
+    catalogStatus?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobSumOrderByAggregateInput = {
+    salaryMin?: SortOrder
+    salaryMax?: SortOrder
+  }
+
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -9954,18 +14457,71 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type JobScalarRelationFilter = {
+    is?: JobWhereInput
+    isNot?: JobWhereInput
+  }
+
+  export type UserJobUserIdJobIdCompoundUniqueInput = {
+    userId: string
+    jobId: string
+  }
+
+  export type UserJobCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    jobId?: SortOrder
+    status?: SortOrder
+    aiScore?: SortOrder
+    aiSummary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserJobAvgOrderByAggregateInput = {
+    aiScore?: SortOrder
+  }
+
+  export type UserJobMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    jobId?: SortOrder
+    status?: SortOrder
+    aiScore?: SortOrder
+    aiSummary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserJobMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    jobId?: SortOrder
+    status?: SortOrder
+    aiScore?: SortOrder
+    aiSummary?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserJobSumOrderByAggregateInput = {
+    aiScore?: SortOrder
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -10013,6 +14569,7 @@ export namespace Prisma {
 
   export type SearchConfigCountOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     keywords?: SortOrder
     excludeKeywords?: SortOrder
     enabledSites?: SortOrder
@@ -10043,6 +14600,7 @@ export namespace Prisma {
 
   export type SearchConfigMaxOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     keywords?: SortOrder
     excludeKeywords?: SortOrder
     enabledSites?: SortOrder
@@ -10065,6 +14623,7 @@ export namespace Prisma {
 
   export type SearchConfigMinOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     keywords?: SortOrder
     excludeKeywords?: SortOrder
     enabledSites?: SortOrder
@@ -10228,6 +14787,7 @@ export namespace Prisma {
 
   export type UserProfileCountOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     title?: SortOrder
     summary?: SortOrder
@@ -10243,6 +14803,7 @@ export namespace Prisma {
 
   export type UserProfileMaxOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     title?: SortOrder
     summary?: SortOrder
@@ -10258,6 +14819,7 @@ export namespace Prisma {
 
   export type UserProfileMinOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     title?: SortOrder
     summary?: SortOrder
@@ -10271,13 +14833,9 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type JobScalarRelationFilter = {
-    is?: JobWhereInput
-    isNot?: JobWhereInput
-  }
-
   export type GeneratedEmailCountOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     jobId?: SortOrder
     content?: SortOrder
     version?: SortOrder
@@ -10290,6 +14848,7 @@ export namespace Prisma {
 
   export type GeneratedEmailMaxOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     jobId?: SortOrder
     content?: SortOrder
     version?: SortOrder
@@ -10298,6 +14857,7 @@ export namespace Prisma {
 
   export type GeneratedEmailMinOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     jobId?: SortOrder
     content?: SortOrder
     version?: SortOrder
@@ -10308,18 +14868,101 @@ export namespace Prisma {
     version?: SortOrder
   }
 
-  export type GeneratedEmailCreateNestedManyWithoutJobInput = {
-    create?: XOR<GeneratedEmailCreateWithoutJobInput, GeneratedEmailUncheckedCreateWithoutJobInput> | GeneratedEmailCreateWithoutJobInput[] | GeneratedEmailUncheckedCreateWithoutJobInput[]
-    connectOrCreate?: GeneratedEmailCreateOrConnectWithoutJobInput | GeneratedEmailCreateOrConnectWithoutJobInput[]
-    createMany?: GeneratedEmailCreateManyJobInputEnvelope
+  export type SubscriptionCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    plan?: SortOrder
+    status?: SortOrder
+    stripeSubId?: SortOrder
+    periodEnd?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SubscriptionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    plan?: SortOrder
+    status?: SortOrder
+    stripeSubId?: SortOrder
+    periodEnd?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SubscriptionMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    plan?: SortOrder
+    status?: SortOrder
+    stripeSubId?: SortOrder
+    periodEnd?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SearchConfigCreateNestedOneWithoutUserInput = {
+    create?: XOR<SearchConfigCreateWithoutUserInput, SearchConfigUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SearchConfigCreateOrConnectWithoutUserInput
+    connect?: SearchConfigWhereUniqueInput
+  }
+
+  export type UserProfileCreateNestedOneWithoutUserInput = {
+    create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
+    connect?: UserProfileWhereUniqueInput
+  }
+
+  export type UserJobCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserJobCreateWithoutUserInput, UserJobUncheckedCreateWithoutUserInput> | UserJobCreateWithoutUserInput[] | UserJobUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserJobCreateOrConnectWithoutUserInput | UserJobCreateOrConnectWithoutUserInput[]
+    createMany?: UserJobCreateManyUserInputEnvelope
+    connect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+  }
+
+  export type GeneratedEmailCreateNestedManyWithoutUserInput = {
+    create?: XOR<GeneratedEmailCreateWithoutUserInput, GeneratedEmailUncheckedCreateWithoutUserInput> | GeneratedEmailCreateWithoutUserInput[] | GeneratedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: GeneratedEmailCreateOrConnectWithoutUserInput | GeneratedEmailCreateOrConnectWithoutUserInput[]
+    createMany?: GeneratedEmailCreateManyUserInputEnvelope
     connect?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
   }
 
-  export type GeneratedEmailUncheckedCreateNestedManyWithoutJobInput = {
-    create?: XOR<GeneratedEmailCreateWithoutJobInput, GeneratedEmailUncheckedCreateWithoutJobInput> | GeneratedEmailCreateWithoutJobInput[] | GeneratedEmailUncheckedCreateWithoutJobInput[]
-    connectOrCreate?: GeneratedEmailCreateOrConnectWithoutJobInput | GeneratedEmailCreateOrConnectWithoutJobInput[]
-    createMany?: GeneratedEmailCreateManyJobInputEnvelope
+  export type SubscriptionCreateNestedOneWithoutUserInput = {
+    create?: XOR<SubscriptionCreateWithoutUserInput, SubscriptionUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SubscriptionCreateOrConnectWithoutUserInput
+    connect?: SubscriptionWhereUniqueInput
+  }
+
+  export type SearchConfigUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<SearchConfigCreateWithoutUserInput, SearchConfigUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SearchConfigCreateOrConnectWithoutUserInput
+    connect?: SearchConfigWhereUniqueInput
+  }
+
+  export type UserProfileUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
+    connect?: UserProfileWhereUniqueInput
+  }
+
+  export type UserJobUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserJobCreateWithoutUserInput, UserJobUncheckedCreateWithoutUserInput> | UserJobCreateWithoutUserInput[] | UserJobUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserJobCreateOrConnectWithoutUserInput | UserJobCreateOrConnectWithoutUserInput[]
+    createMany?: UserJobCreateManyUserInputEnvelope
+    connect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+  }
+
+  export type GeneratedEmailUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<GeneratedEmailCreateWithoutUserInput, GeneratedEmailUncheckedCreateWithoutUserInput> | GeneratedEmailCreateWithoutUserInput[] | GeneratedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: GeneratedEmailCreateOrConnectWithoutUserInput | GeneratedEmailCreateOrConnectWithoutUserInput[]
+    createMany?: GeneratedEmailCreateManyUserInputEnvelope
     connect?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
+  }
+
+  export type SubscriptionUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<SubscriptionCreateWithoutUserInput, SubscriptionUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SubscriptionCreateOrConnectWithoutUserInput
+    connect?: SubscriptionWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -10328,6 +14971,154 @@ export namespace Prisma {
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type SearchConfigUpdateOneWithoutUserNestedInput = {
+    create?: XOR<SearchConfigCreateWithoutUserInput, SearchConfigUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SearchConfigCreateOrConnectWithoutUserInput
+    upsert?: SearchConfigUpsertWithoutUserInput
+    disconnect?: SearchConfigWhereInput | boolean
+    delete?: SearchConfigWhereInput | boolean
+    connect?: SearchConfigWhereUniqueInput
+    update?: XOR<XOR<SearchConfigUpdateToOneWithWhereWithoutUserInput, SearchConfigUpdateWithoutUserInput>, SearchConfigUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserProfileUpdateOneWithoutUserNestedInput = {
+    create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
+    upsert?: UserProfileUpsertWithoutUserInput
+    disconnect?: UserProfileWhereInput | boolean
+    delete?: UserProfileWhereInput | boolean
+    connect?: UserProfileWhereUniqueInput
+    update?: XOR<XOR<UserProfileUpdateToOneWithWhereWithoutUserInput, UserProfileUpdateWithoutUserInput>, UserProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserJobUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserJobCreateWithoutUserInput, UserJobUncheckedCreateWithoutUserInput> | UserJobCreateWithoutUserInput[] | UserJobUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserJobCreateOrConnectWithoutUserInput | UserJobCreateOrConnectWithoutUserInput[]
+    upsert?: UserJobUpsertWithWhereUniqueWithoutUserInput | UserJobUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserJobCreateManyUserInputEnvelope
+    set?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    disconnect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    delete?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    connect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    update?: UserJobUpdateWithWhereUniqueWithoutUserInput | UserJobUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserJobUpdateManyWithWhereWithoutUserInput | UserJobUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserJobScalarWhereInput | UserJobScalarWhereInput[]
+  }
+
+  export type GeneratedEmailUpdateManyWithoutUserNestedInput = {
+    create?: XOR<GeneratedEmailCreateWithoutUserInput, GeneratedEmailUncheckedCreateWithoutUserInput> | GeneratedEmailCreateWithoutUserInput[] | GeneratedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: GeneratedEmailCreateOrConnectWithoutUserInput | GeneratedEmailCreateOrConnectWithoutUserInput[]
+    upsert?: GeneratedEmailUpsertWithWhereUniqueWithoutUserInput | GeneratedEmailUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: GeneratedEmailCreateManyUserInputEnvelope
+    set?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
+    disconnect?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
+    delete?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
+    connect?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
+    update?: GeneratedEmailUpdateWithWhereUniqueWithoutUserInput | GeneratedEmailUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: GeneratedEmailUpdateManyWithWhereWithoutUserInput | GeneratedEmailUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: GeneratedEmailScalarWhereInput | GeneratedEmailScalarWhereInput[]
+  }
+
+  export type SubscriptionUpdateOneWithoutUserNestedInput = {
+    create?: XOR<SubscriptionCreateWithoutUserInput, SubscriptionUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SubscriptionCreateOrConnectWithoutUserInput
+    upsert?: SubscriptionUpsertWithoutUserInput
+    disconnect?: SubscriptionWhereInput | boolean
+    delete?: SubscriptionWhereInput | boolean
+    connect?: SubscriptionWhereUniqueInput
+    update?: XOR<XOR<SubscriptionUpdateToOneWithWhereWithoutUserInput, SubscriptionUpdateWithoutUserInput>, SubscriptionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SearchConfigUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<SearchConfigCreateWithoutUserInput, SearchConfigUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SearchConfigCreateOrConnectWithoutUserInput
+    upsert?: SearchConfigUpsertWithoutUserInput
+    disconnect?: SearchConfigWhereInput | boolean
+    delete?: SearchConfigWhereInput | boolean
+    connect?: SearchConfigWhereUniqueInput
+    update?: XOR<XOR<SearchConfigUpdateToOneWithWhereWithoutUserInput, SearchConfigUpdateWithoutUserInput>, SearchConfigUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserProfileUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: UserProfileCreateOrConnectWithoutUserInput
+    upsert?: UserProfileUpsertWithoutUserInput
+    disconnect?: UserProfileWhereInput | boolean
+    delete?: UserProfileWhereInput | boolean
+    connect?: UserProfileWhereUniqueInput
+    update?: XOR<XOR<UserProfileUpdateToOneWithWhereWithoutUserInput, UserProfileUpdateWithoutUserInput>, UserProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserJobUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserJobCreateWithoutUserInput, UserJobUncheckedCreateWithoutUserInput> | UserJobCreateWithoutUserInput[] | UserJobUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserJobCreateOrConnectWithoutUserInput | UserJobCreateOrConnectWithoutUserInput[]
+    upsert?: UserJobUpsertWithWhereUniqueWithoutUserInput | UserJobUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserJobCreateManyUserInputEnvelope
+    set?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    disconnect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    delete?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    connect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    update?: UserJobUpdateWithWhereUniqueWithoutUserInput | UserJobUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserJobUpdateManyWithWhereWithoutUserInput | UserJobUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserJobScalarWhereInput | UserJobScalarWhereInput[]
+  }
+
+  export type GeneratedEmailUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<GeneratedEmailCreateWithoutUserInput, GeneratedEmailUncheckedCreateWithoutUserInput> | GeneratedEmailCreateWithoutUserInput[] | GeneratedEmailUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: GeneratedEmailCreateOrConnectWithoutUserInput | GeneratedEmailCreateOrConnectWithoutUserInput[]
+    upsert?: GeneratedEmailUpsertWithWhereUniqueWithoutUserInput | GeneratedEmailUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: GeneratedEmailCreateManyUserInputEnvelope
+    set?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
+    disconnect?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
+    delete?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
+    connect?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
+    update?: GeneratedEmailUpdateWithWhereUniqueWithoutUserInput | GeneratedEmailUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: GeneratedEmailUpdateManyWithWhereWithoutUserInput | GeneratedEmailUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: GeneratedEmailScalarWhereInput | GeneratedEmailScalarWhereInput[]
+  }
+
+  export type SubscriptionUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<SubscriptionCreateWithoutUserInput, SubscriptionUncheckedCreateWithoutUserInput>
+    connectOrCreate?: SubscriptionCreateOrConnectWithoutUserInput
+    upsert?: SubscriptionUpsertWithoutUserInput
+    disconnect?: SubscriptionWhereInput | boolean
+    delete?: SubscriptionWhereInput | boolean
+    connect?: SubscriptionWhereUniqueInput
+    update?: XOR<XOR<SubscriptionUpdateToOneWithWhereWithoutUserInput, SubscriptionUpdateWithoutUserInput>, SubscriptionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserJobCreateNestedManyWithoutJobInput = {
+    create?: XOR<UserJobCreateWithoutJobInput, UserJobUncheckedCreateWithoutJobInput> | UserJobCreateWithoutJobInput[] | UserJobUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: UserJobCreateOrConnectWithoutJobInput | UserJobCreateOrConnectWithoutJobInput[]
+    createMany?: UserJobCreateManyJobInputEnvelope
+    connect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+  }
+
+  export type GeneratedEmailCreateNestedManyWithoutJobInput = {
+    create?: XOR<GeneratedEmailCreateWithoutJobInput, GeneratedEmailUncheckedCreateWithoutJobInput> | GeneratedEmailCreateWithoutJobInput[] | GeneratedEmailUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: GeneratedEmailCreateOrConnectWithoutJobInput | GeneratedEmailCreateOrConnectWithoutJobInput[]
+    createMany?: GeneratedEmailCreateManyJobInputEnvelope
+    connect?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
+  }
+
+  export type UserJobUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<UserJobCreateWithoutJobInput, UserJobUncheckedCreateWithoutJobInput> | UserJobCreateWithoutJobInput[] | UserJobUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: UserJobCreateOrConnectWithoutJobInput | UserJobCreateOrConnectWithoutJobInput[]
+    createMany?: UserJobCreateManyJobInputEnvelope
+    connect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+  }
+
+  export type GeneratedEmailUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<GeneratedEmailCreateWithoutJobInput, GeneratedEmailUncheckedCreateWithoutJobInput> | GeneratedEmailCreateWithoutJobInput[] | GeneratedEmailUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: GeneratedEmailCreateOrConnectWithoutJobInput | GeneratedEmailCreateOrConnectWithoutJobInput[]
+    createMany?: GeneratedEmailCreateManyJobInputEnvelope
+    connect?: GeneratedEmailWhereUniqueInput | GeneratedEmailWhereUniqueInput[]
   }
 
   export type NullableIntFieldUpdateOperationsInput = {
@@ -10342,16 +15133,18 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type UserJobUpdateManyWithoutJobNestedInput = {
+    create?: XOR<UserJobCreateWithoutJobInput, UserJobUncheckedCreateWithoutJobInput> | UserJobCreateWithoutJobInput[] | UserJobUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: UserJobCreateOrConnectWithoutJobInput | UserJobCreateOrConnectWithoutJobInput[]
+    upsert?: UserJobUpsertWithWhereUniqueWithoutJobInput | UserJobUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: UserJobCreateManyJobInputEnvelope
+    set?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    disconnect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    delete?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    connect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    update?: UserJobUpdateWithWhereUniqueWithoutJobInput | UserJobUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: UserJobUpdateManyWithWhereWithoutJobInput | UserJobUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: UserJobScalarWhereInput | UserJobScalarWhereInput[]
   }
 
   export type GeneratedEmailUpdateManyWithoutJobNestedInput = {
@@ -10368,6 +15161,20 @@ export namespace Prisma {
     deleteMany?: GeneratedEmailScalarWhereInput | GeneratedEmailScalarWhereInput[]
   }
 
+  export type UserJobUncheckedUpdateManyWithoutJobNestedInput = {
+    create?: XOR<UserJobCreateWithoutJobInput, UserJobUncheckedCreateWithoutJobInput> | UserJobCreateWithoutJobInput[] | UserJobUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: UserJobCreateOrConnectWithoutJobInput | UserJobCreateOrConnectWithoutJobInput[]
+    upsert?: UserJobUpsertWithWhereUniqueWithoutJobInput | UserJobUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: UserJobCreateManyJobInputEnvelope
+    set?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    disconnect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    delete?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    connect?: UserJobWhereUniqueInput | UserJobWhereUniqueInput[]
+    update?: UserJobUpdateWithWhereUniqueWithoutJobInput | UserJobUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: UserJobUpdateManyWithWhereWithoutJobInput | UserJobUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: UserJobScalarWhereInput | UserJobScalarWhereInput[]
+  }
+
   export type GeneratedEmailUncheckedUpdateManyWithoutJobNestedInput = {
     create?: XOR<GeneratedEmailCreateWithoutJobInput, GeneratedEmailUncheckedCreateWithoutJobInput> | GeneratedEmailCreateWithoutJobInput[] | GeneratedEmailUncheckedCreateWithoutJobInput[]
     connectOrCreate?: GeneratedEmailCreateOrConnectWithoutJobInput | GeneratedEmailCreateOrConnectWithoutJobInput[]
@@ -10380,6 +15187,48 @@ export namespace Prisma {
     update?: GeneratedEmailUpdateWithWhereUniqueWithoutJobInput | GeneratedEmailUpdateWithWhereUniqueWithoutJobInput[]
     updateMany?: GeneratedEmailUpdateManyWithWhereWithoutJobInput | GeneratedEmailUpdateManyWithWhereWithoutJobInput[]
     deleteMany?: GeneratedEmailScalarWhereInput | GeneratedEmailScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutUserJobsInput = {
+    create?: XOR<UserCreateWithoutUserJobsInput, UserUncheckedCreateWithoutUserJobsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserJobsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type JobCreateNestedOneWithoutUserJobsInput = {
+    create?: XOR<JobCreateWithoutUserJobsInput, JobUncheckedCreateWithoutUserJobsInput>
+    connectOrCreate?: JobCreateOrConnectWithoutUserJobsInput
+    connect?: JobWhereUniqueInput
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutUserJobsNestedInput = {
+    create?: XOR<UserCreateWithoutUserJobsInput, UserUncheckedCreateWithoutUserJobsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUserJobsInput
+    upsert?: UserUpsertWithoutUserJobsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUserJobsInput, UserUpdateWithoutUserJobsInput>, UserUncheckedUpdateWithoutUserJobsInput>
+  }
+
+  export type JobUpdateOneRequiredWithoutUserJobsNestedInput = {
+    create?: XOR<JobCreateWithoutUserJobsInput, JobUncheckedCreateWithoutUserJobsInput>
+    connectOrCreate?: JobCreateOrConnectWithoutUserJobsInput
+    upsert?: JobUpsertWithoutUserJobsInput
+    connect?: JobWhereUniqueInput
+    update?: XOR<XOR<JobUpdateToOneWithWhereWithoutUserJobsInput, JobUpdateWithoutUserJobsInput>, JobUncheckedUpdateWithoutUserJobsInput>
+  }
+
+  export type UserCreateNestedOneWithoutSearchConfigInput = {
+    create?: XOR<UserCreateWithoutSearchConfigInput, UserUncheckedCreateWithoutSearchConfigInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSearchConfigInput
+    connect?: UserWhereUniqueInput
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -10402,10 +15251,46 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type UserUpdateOneRequiredWithoutSearchConfigNestedInput = {
+    create?: XOR<UserCreateWithoutSearchConfigInput, UserUncheckedCreateWithoutSearchConfigInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSearchConfigInput
+    upsert?: UserUpsertWithoutSearchConfigInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSearchConfigInput, UserUpdateWithoutSearchConfigInput>, UserUncheckedUpdateWithoutSearchConfigInput>
+  }
+
+  export type UserCreateNestedOneWithoutProfileInput = {
+    create?: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProfileInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutProfileNestedInput = {
+    create?: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProfileInput
+    upsert?: UserUpsertWithoutProfileInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProfileInput, UserUpdateWithoutProfileInput>, UserUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type UserCreateNestedOneWithoutGeneratedEmailsInput = {
+    create?: XOR<UserCreateWithoutGeneratedEmailsInput, UserUncheckedCreateWithoutGeneratedEmailsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutGeneratedEmailsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type JobCreateNestedOneWithoutGeneratedEmailsInput = {
     create?: XOR<JobCreateWithoutGeneratedEmailsInput, JobUncheckedCreateWithoutGeneratedEmailsInput>
     connectOrCreate?: JobCreateOrConnectWithoutGeneratedEmailsInput
     connect?: JobWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutGeneratedEmailsNestedInput = {
+    create?: XOR<UserCreateWithoutGeneratedEmailsInput, UserUncheckedCreateWithoutGeneratedEmailsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutGeneratedEmailsInput
+    upsert?: UserUpsertWithoutGeneratedEmailsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutGeneratedEmailsInput, UserUpdateWithoutGeneratedEmailsInput>, UserUncheckedUpdateWithoutGeneratedEmailsInput>
   }
 
   export type JobUpdateOneRequiredWithoutGeneratedEmailsNestedInput = {
@@ -10414,6 +15299,20 @@ export namespace Prisma {
     upsert?: JobUpsertWithoutGeneratedEmailsInput
     connect?: JobWhereUniqueInput
     update?: XOR<XOR<JobUpdateToOneWithWhereWithoutGeneratedEmailsInput, JobUpdateWithoutGeneratedEmailsInput>, JobUncheckedUpdateWithoutGeneratedEmailsInput>
+  }
+
+  export type UserCreateNestedOneWithoutSubscriptionInput = {
+    create?: XOR<UserCreateWithoutSubscriptionInput, UserUncheckedCreateWithoutSubscriptionInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSubscriptionInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutSubscriptionNestedInput = {
+    create?: XOR<UserCreateWithoutSubscriptionInput, UserUncheckedCreateWithoutSubscriptionInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSubscriptionInput
+    upsert?: UserUpsertWithoutSubscriptionInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSubscriptionInput, UserUpdateWithoutSubscriptionInput>, UserUncheckedUpdateWithoutSubscriptionInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -10444,28 +15343,6 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -10475,17 +15352,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -10533,6 +15399,42 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -10549,6 +15451,17 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -10561,20 +15474,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -10649,15 +15548,397 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type GeneratedEmailCreateWithoutJobInput = {
+  export type SearchConfigCreateWithoutUserInput = {
     id?: string
+    keywords: string
+    excludeKeywords: string
+    enabledSites: string
+    daysPosted?: number | null
+    salaryMin?: number | null
+    salaryMax?: number | null
+    salaryCurrency?: string
+    jobTypes: string
+    experienceLevels: string
+    workArrangements: string
+    excludeCompanies: string
+    requiredSkills: string
+    preferredSkills: string
+    useAIMatching?: boolean
+    aiThreshold?: number
+    digestMode?: boolean
+    maxEmailsPerRun?: number
+    updatedAt?: Date | string
+  }
+
+  export type SearchConfigUncheckedCreateWithoutUserInput = {
+    id?: string
+    keywords: string
+    excludeKeywords: string
+    enabledSites: string
+    daysPosted?: number | null
+    salaryMin?: number | null
+    salaryMax?: number | null
+    salaryCurrency?: string
+    jobTypes: string
+    experienceLevels: string
+    workArrangements: string
+    excludeCompanies: string
+    requiredSkills: string
+    preferredSkills: string
+    useAIMatching?: boolean
+    aiThreshold?: number
+    digestMode?: boolean
+    maxEmailsPerRun?: number
+    updatedAt?: Date | string
+  }
+
+  export type SearchConfigCreateOrConnectWithoutUserInput = {
+    where: SearchConfigWhereUniqueInput
+    create: XOR<SearchConfigCreateWithoutUserInput, SearchConfigUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserProfileCreateWithoutUserInput = {
+    id?: string
+    name?: string
+    title?: string | null
+    summary?: string | null
+    skills: string
+    experience: string
+    education?: string | null
+    portfolioUrl?: string | null
+    linkedinUrl?: string | null
+    preferences: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserProfileUncheckedCreateWithoutUserInput = {
+    id?: string
+    name?: string
+    title?: string | null
+    summary?: string | null
+    skills: string
+    experience: string
+    education?: string | null
+    portfolioUrl?: string | null
+    linkedinUrl?: string | null
+    preferences: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserProfileCreateOrConnectWithoutUserInput = {
+    where: UserProfileWhereUniqueInput
+    create: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserJobCreateWithoutUserInput = {
+    id?: string
+    status?: string
+    aiScore?: number | null
+    aiSummary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobCreateNestedOneWithoutUserJobsInput
+  }
+
+  export type UserJobUncheckedCreateWithoutUserInput = {
+    id?: string
+    jobId: string
+    status?: string
+    aiScore?: number | null
+    aiSummary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserJobCreateOrConnectWithoutUserInput = {
+    where: UserJobWhereUniqueInput
+    create: XOR<UserJobCreateWithoutUserInput, UserJobUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserJobCreateManyUserInputEnvelope = {
+    data: UserJobCreateManyUserInput | UserJobCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GeneratedEmailCreateWithoutUserInput = {
+    id?: string
+    content: string
+    version?: number
+    createdAt?: Date | string
+    job: JobCreateNestedOneWithoutGeneratedEmailsInput
+  }
+
+  export type GeneratedEmailUncheckedCreateWithoutUserInput = {
+    id?: string
+    jobId: string
     content: string
     version?: number
     createdAt?: Date | string
   }
 
+  export type GeneratedEmailCreateOrConnectWithoutUserInput = {
+    where: GeneratedEmailWhereUniqueInput
+    create: XOR<GeneratedEmailCreateWithoutUserInput, GeneratedEmailUncheckedCreateWithoutUserInput>
+  }
+
+  export type GeneratedEmailCreateManyUserInputEnvelope = {
+    data: GeneratedEmailCreateManyUserInput | GeneratedEmailCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SubscriptionCreateWithoutUserInput = {
+    id?: string
+    plan?: string
+    status?: string
+    stripeSubId?: string | null
+    periodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SubscriptionUncheckedCreateWithoutUserInput = {
+    id?: string
+    plan?: string
+    status?: string
+    stripeSubId?: string | null
+    periodEnd?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SubscriptionCreateOrConnectWithoutUserInput = {
+    where: SubscriptionWhereUniqueInput
+    create: XOR<SubscriptionCreateWithoutUserInput, SubscriptionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SearchConfigUpsertWithoutUserInput = {
+    update: XOR<SearchConfigUpdateWithoutUserInput, SearchConfigUncheckedUpdateWithoutUserInput>
+    create: XOR<SearchConfigCreateWithoutUserInput, SearchConfigUncheckedCreateWithoutUserInput>
+    where?: SearchConfigWhereInput
+  }
+
+  export type SearchConfigUpdateToOneWithWhereWithoutUserInput = {
+    where?: SearchConfigWhereInput
+    data: XOR<SearchConfigUpdateWithoutUserInput, SearchConfigUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SearchConfigUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keywords?: StringFieldUpdateOperationsInput | string
+    excludeKeywords?: StringFieldUpdateOperationsInput | string
+    enabledSites?: StringFieldUpdateOperationsInput | string
+    daysPosted?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryMin?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryMax?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryCurrency?: StringFieldUpdateOperationsInput | string
+    jobTypes?: StringFieldUpdateOperationsInput | string
+    experienceLevels?: StringFieldUpdateOperationsInput | string
+    workArrangements?: StringFieldUpdateOperationsInput | string
+    excludeCompanies?: StringFieldUpdateOperationsInput | string
+    requiredSkills?: StringFieldUpdateOperationsInput | string
+    preferredSkills?: StringFieldUpdateOperationsInput | string
+    useAIMatching?: BoolFieldUpdateOperationsInput | boolean
+    aiThreshold?: FloatFieldUpdateOperationsInput | number
+    digestMode?: BoolFieldUpdateOperationsInput | boolean
+    maxEmailsPerRun?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SearchConfigUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    keywords?: StringFieldUpdateOperationsInput | string
+    excludeKeywords?: StringFieldUpdateOperationsInput | string
+    enabledSites?: StringFieldUpdateOperationsInput | string
+    daysPosted?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryMin?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryMax?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryCurrency?: StringFieldUpdateOperationsInput | string
+    jobTypes?: StringFieldUpdateOperationsInput | string
+    experienceLevels?: StringFieldUpdateOperationsInput | string
+    workArrangements?: StringFieldUpdateOperationsInput | string
+    excludeCompanies?: StringFieldUpdateOperationsInput | string
+    requiredSkills?: StringFieldUpdateOperationsInput | string
+    preferredSkills?: StringFieldUpdateOperationsInput | string
+    useAIMatching?: BoolFieldUpdateOperationsInput | boolean
+    aiThreshold?: FloatFieldUpdateOperationsInput | number
+    digestMode?: BoolFieldUpdateOperationsInput | boolean
+    maxEmailsPerRun?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserProfileUpsertWithoutUserInput = {
+    update: XOR<UserProfileUpdateWithoutUserInput, UserProfileUncheckedUpdateWithoutUserInput>
+    create: XOR<UserProfileCreateWithoutUserInput, UserProfileUncheckedCreateWithoutUserInput>
+    where?: UserProfileWhereInput
+  }
+
+  export type UserProfileUpdateToOneWithWhereWithoutUserInput = {
+    where?: UserProfileWhereInput
+    data: XOR<UserProfileUpdateWithoutUserInput, UserProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserProfileUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StringFieldUpdateOperationsInput | string
+    experience?: StringFieldUpdateOperationsInput | string
+    education?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    preferences?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserProfileUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: StringFieldUpdateOperationsInput | string
+    experience?: StringFieldUpdateOperationsInput | string
+    education?: NullableStringFieldUpdateOperationsInput | string | null
+    portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    preferences?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserJobUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserJobWhereUniqueInput
+    update: XOR<UserJobUpdateWithoutUserInput, UserJobUncheckedUpdateWithoutUserInput>
+    create: XOR<UserJobCreateWithoutUserInput, UserJobUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserJobUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserJobWhereUniqueInput
+    data: XOR<UserJobUpdateWithoutUserInput, UserJobUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserJobUpdateManyWithWhereWithoutUserInput = {
+    where: UserJobScalarWhereInput
+    data: XOR<UserJobUpdateManyMutationInput, UserJobUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserJobScalarWhereInput = {
+    AND?: UserJobScalarWhereInput | UserJobScalarWhereInput[]
+    OR?: UserJobScalarWhereInput[]
+    NOT?: UserJobScalarWhereInput | UserJobScalarWhereInput[]
+    id?: StringFilter<"UserJob"> | string
+    userId?: StringFilter<"UserJob"> | string
+    jobId?: StringFilter<"UserJob"> | string
+    status?: StringFilter<"UserJob"> | string
+    aiScore?: FloatNullableFilter<"UserJob"> | number | null
+    aiSummary?: StringNullableFilter<"UserJob"> | string | null
+    createdAt?: DateTimeFilter<"UserJob"> | Date | string
+    updatedAt?: DateTimeFilter<"UserJob"> | Date | string
+  }
+
+  export type GeneratedEmailUpsertWithWhereUniqueWithoutUserInput = {
+    where: GeneratedEmailWhereUniqueInput
+    update: XOR<GeneratedEmailUpdateWithoutUserInput, GeneratedEmailUncheckedUpdateWithoutUserInput>
+    create: XOR<GeneratedEmailCreateWithoutUserInput, GeneratedEmailUncheckedCreateWithoutUserInput>
+  }
+
+  export type GeneratedEmailUpdateWithWhereUniqueWithoutUserInput = {
+    where: GeneratedEmailWhereUniqueInput
+    data: XOR<GeneratedEmailUpdateWithoutUserInput, GeneratedEmailUncheckedUpdateWithoutUserInput>
+  }
+
+  export type GeneratedEmailUpdateManyWithWhereWithoutUserInput = {
+    where: GeneratedEmailScalarWhereInput
+    data: XOR<GeneratedEmailUpdateManyMutationInput, GeneratedEmailUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type GeneratedEmailScalarWhereInput = {
+    AND?: GeneratedEmailScalarWhereInput | GeneratedEmailScalarWhereInput[]
+    OR?: GeneratedEmailScalarWhereInput[]
+    NOT?: GeneratedEmailScalarWhereInput | GeneratedEmailScalarWhereInput[]
+    id?: StringFilter<"GeneratedEmail"> | string
+    userId?: StringFilter<"GeneratedEmail"> | string
+    jobId?: StringFilter<"GeneratedEmail"> | string
+    content?: StringFilter<"GeneratedEmail"> | string
+    version?: IntFilter<"GeneratedEmail"> | number
+    createdAt?: DateTimeFilter<"GeneratedEmail"> | Date | string
+  }
+
+  export type SubscriptionUpsertWithoutUserInput = {
+    update: XOR<SubscriptionUpdateWithoutUserInput, SubscriptionUncheckedUpdateWithoutUserInput>
+    create: XOR<SubscriptionCreateWithoutUserInput, SubscriptionUncheckedCreateWithoutUserInput>
+    where?: SubscriptionWhereInput
+  }
+
+  export type SubscriptionUpdateToOneWithWhereWithoutUserInput = {
+    where?: SubscriptionWhereInput
+    data: XOR<SubscriptionUpdateWithoutUserInput, SubscriptionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SubscriptionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    stripeSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubscriptionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    stripeSubId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodEnd?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserJobCreateWithoutJobInput = {
+    id?: string
+    status?: string
+    aiScore?: number | null
+    aiSummary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutUserJobsInput
+  }
+
+  export type UserJobUncheckedCreateWithoutJobInput = {
+    id?: string
+    userId: string
+    status?: string
+    aiScore?: number | null
+    aiSummary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserJobCreateOrConnectWithoutJobInput = {
+    where: UserJobWhereUniqueInput
+    create: XOR<UserJobCreateWithoutJobInput, UserJobUncheckedCreateWithoutJobInput>
+  }
+
+  export type UserJobCreateManyJobInputEnvelope = {
+    data: UserJobCreateManyJobInput | UserJobCreateManyJobInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GeneratedEmailCreateWithoutJobInput = {
+    id?: string
+    content: string
+    version?: number
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutGeneratedEmailsInput
+  }
+
   export type GeneratedEmailUncheckedCreateWithoutJobInput = {
     id?: string
+    userId: string
     content: string
     version?: number
     createdAt?: Date | string
@@ -10671,6 +15952,22 @@ export namespace Prisma {
   export type GeneratedEmailCreateManyJobInputEnvelope = {
     data: GeneratedEmailCreateManyJobInput | GeneratedEmailCreateManyJobInput[]
     skipDuplicates?: boolean
+  }
+
+  export type UserJobUpsertWithWhereUniqueWithoutJobInput = {
+    where: UserJobWhereUniqueInput
+    update: XOR<UserJobUpdateWithoutJobInput, UserJobUncheckedUpdateWithoutJobInput>
+    create: XOR<UserJobCreateWithoutJobInput, UserJobUncheckedCreateWithoutJobInput>
+  }
+
+  export type UserJobUpdateWithWhereUniqueWithoutJobInput = {
+    where: UserJobWhereUniqueInput
+    data: XOR<UserJobUpdateWithoutJobInput, UserJobUncheckedUpdateWithoutJobInput>
+  }
+
+  export type UserJobUpdateManyWithWhereWithoutJobInput = {
+    where: UserJobScalarWhereInput
+    data: XOR<UserJobUpdateManyMutationInput, UserJobUncheckedUpdateManyWithoutJobInput>
   }
 
   export type GeneratedEmailUpsertWithWhereUniqueWithoutJobInput = {
@@ -10689,15 +15986,369 @@ export namespace Prisma {
     data: XOR<GeneratedEmailUpdateManyMutationInput, GeneratedEmailUncheckedUpdateManyWithoutJobInput>
   }
 
-  export type GeneratedEmailScalarWhereInput = {
-    AND?: GeneratedEmailScalarWhereInput | GeneratedEmailScalarWhereInput[]
-    OR?: GeneratedEmailScalarWhereInput[]
-    NOT?: GeneratedEmailScalarWhereInput | GeneratedEmailScalarWhereInput[]
-    id?: StringFilter<"GeneratedEmail"> | string
-    jobId?: StringFilter<"GeneratedEmail"> | string
-    content?: StringFilter<"GeneratedEmail"> | string
-    version?: IntFilter<"GeneratedEmail"> | number
-    createdAt?: DateTimeFilter<"GeneratedEmail"> | Date | string
+  export type UserCreateWithoutUserJobsInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    searchConfig?: SearchConfigCreateNestedOneWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    generatedEmails?: GeneratedEmailCreateNestedManyWithoutUserInput
+    subscription?: SubscriptionCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutUserJobsInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    searchConfig?: SearchConfigUncheckedCreateNestedOneWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    generatedEmails?: GeneratedEmailUncheckedCreateNestedManyWithoutUserInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutUserJobsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUserJobsInput, UserUncheckedCreateWithoutUserJobsInput>
+  }
+
+  export type JobCreateWithoutUserJobsInput = {
+    id?: string
+    externalId: string
+    site: string
+    title: string
+    company: string
+    salary?: string | null
+    salaryMin?: number | null
+    salaryMax?: number | null
+    salaryCurrency?: string | null
+    description: string
+    url: string
+    jobType?: string | null
+    experienceLevel?: string | null
+    workArrangement?: string | null
+    skills?: string | null
+    location?: string | null
+    postedAt?: Date | string | null
+    scrapedAt?: Date | string
+    catalogStatus?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    generatedEmails?: GeneratedEmailCreateNestedManyWithoutJobInput
+  }
+
+  export type JobUncheckedCreateWithoutUserJobsInput = {
+    id?: string
+    externalId: string
+    site: string
+    title: string
+    company: string
+    salary?: string | null
+    salaryMin?: number | null
+    salaryMax?: number | null
+    salaryCurrency?: string | null
+    description: string
+    url: string
+    jobType?: string | null
+    experienceLevel?: string | null
+    workArrangement?: string | null
+    skills?: string | null
+    location?: string | null
+    postedAt?: Date | string | null
+    scrapedAt?: Date | string
+    catalogStatus?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    generatedEmails?: GeneratedEmailUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobCreateOrConnectWithoutUserJobsInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutUserJobsInput, JobUncheckedCreateWithoutUserJobsInput>
+  }
+
+  export type UserUpsertWithoutUserJobsInput = {
+    update: XOR<UserUpdateWithoutUserJobsInput, UserUncheckedUpdateWithoutUserJobsInput>
+    create: XOR<UserCreateWithoutUserJobsInput, UserUncheckedCreateWithoutUserJobsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUserJobsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUserJobsInput, UserUncheckedUpdateWithoutUserJobsInput>
+  }
+
+  export type UserUpdateWithoutUserJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchConfig?: SearchConfigUpdateOneWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    generatedEmails?: GeneratedEmailUpdateManyWithoutUserNestedInput
+    subscription?: SubscriptionUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUserJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchConfig?: SearchConfigUncheckedUpdateOneWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    generatedEmails?: GeneratedEmailUncheckedUpdateManyWithoutUserNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type JobUpsertWithoutUserJobsInput = {
+    update: XOR<JobUpdateWithoutUserJobsInput, JobUncheckedUpdateWithoutUserJobsInput>
+    create: XOR<JobCreateWithoutUserJobsInput, JobUncheckedCreateWithoutUserJobsInput>
+    where?: JobWhereInput
+  }
+
+  export type JobUpdateToOneWithWhereWithoutUserJobsInput = {
+    where?: JobWhereInput
+    data: XOR<JobUpdateWithoutUserJobsInput, JobUncheckedUpdateWithoutUserJobsInput>
+  }
+
+  export type JobUpdateWithoutUserJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalId?: StringFieldUpdateOperationsInput | string
+    site?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    company?: StringFieldUpdateOperationsInput | string
+    salary?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryMin?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryMax?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    jobType?: NullableStringFieldUpdateOperationsInput | string | null
+    experienceLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    workArrangement?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    catalogStatus?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedEmails?: GeneratedEmailUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutUserJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    externalId?: StringFieldUpdateOperationsInput | string
+    site?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    company?: StringFieldUpdateOperationsInput | string
+    salary?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryMin?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryMax?: NullableIntFieldUpdateOperationsInput | number | null
+    salaryCurrency?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    jobType?: NullableStringFieldUpdateOperationsInput | string | null
+    experienceLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    workArrangement?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    catalogStatus?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    generatedEmails?: GeneratedEmailUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type UserCreateWithoutSearchConfigInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    userJobs?: UserJobCreateNestedManyWithoutUserInput
+    generatedEmails?: GeneratedEmailCreateNestedManyWithoutUserInput
+    subscription?: SubscriptionCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSearchConfigInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userJobs?: UserJobUncheckedCreateNestedManyWithoutUserInput
+    generatedEmails?: GeneratedEmailUncheckedCreateNestedManyWithoutUserInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSearchConfigInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSearchConfigInput, UserUncheckedCreateWithoutSearchConfigInput>
+  }
+
+  export type UserUpsertWithoutSearchConfigInput = {
+    update: XOR<UserUpdateWithoutSearchConfigInput, UserUncheckedUpdateWithoutSearchConfigInput>
+    create: XOR<UserCreateWithoutSearchConfigInput, UserUncheckedCreateWithoutSearchConfigInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSearchConfigInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSearchConfigInput, UserUncheckedUpdateWithoutSearchConfigInput>
+  }
+
+  export type UserUpdateWithoutSearchConfigInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    userJobs?: UserJobUpdateManyWithoutUserNestedInput
+    generatedEmails?: GeneratedEmailUpdateManyWithoutUserNestedInput
+    subscription?: SubscriptionUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSearchConfigInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userJobs?: UserJobUncheckedUpdateManyWithoutUserNestedInput
+    generatedEmails?: GeneratedEmailUncheckedUpdateManyWithoutUserNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutProfileInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    searchConfig?: SearchConfigCreateNestedOneWithoutUserInput
+    userJobs?: UserJobCreateNestedManyWithoutUserInput
+    generatedEmails?: GeneratedEmailCreateNestedManyWithoutUserInput
+    subscription?: SubscriptionCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutProfileInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    searchConfig?: SearchConfigUncheckedCreateNestedOneWithoutUserInput
+    userJobs?: UserJobUncheckedCreateNestedManyWithoutUserInput
+    generatedEmails?: GeneratedEmailUncheckedCreateNestedManyWithoutUserInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutProfileInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
+  }
+
+  export type UserUpsertWithoutProfileInput = {
+    update: XOR<UserUpdateWithoutProfileInput, UserUncheckedUpdateWithoutProfileInput>
+    create: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutProfileInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutProfileInput, UserUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type UserUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchConfig?: SearchConfigUpdateOneWithoutUserNestedInput
+    userJobs?: UserJobUpdateManyWithoutUserNestedInput
+    generatedEmails?: GeneratedEmailUpdateManyWithoutUserNestedInput
+    subscription?: SubscriptionUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchConfig?: SearchConfigUncheckedUpdateOneWithoutUserNestedInput
+    userJobs?: UserJobUncheckedUpdateManyWithoutUserNestedInput
+    generatedEmails?: GeneratedEmailUncheckedUpdateManyWithoutUserNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutGeneratedEmailsInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    searchConfig?: SearchConfigCreateNestedOneWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    userJobs?: UserJobCreateNestedManyWithoutUserInput
+    subscription?: SubscriptionCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutGeneratedEmailsInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    searchConfig?: SearchConfigUncheckedCreateNestedOneWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userJobs?: UserJobUncheckedCreateNestedManyWithoutUserInput
+    subscription?: SubscriptionUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutGeneratedEmailsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutGeneratedEmailsInput, UserUncheckedCreateWithoutGeneratedEmailsInput>
   }
 
   export type JobCreateWithoutGeneratedEmailsInput = {
@@ -10719,11 +16370,10 @@ export namespace Prisma {
     location?: string | null
     postedAt?: Date | string | null
     scrapedAt?: Date | string
-    status?: string
-    aiScore?: number | null
-    aiSummary?: string | null
+    catalogStatus?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    userJobs?: UserJobCreateNestedManyWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutGeneratedEmailsInput = {
@@ -10745,16 +16395,54 @@ export namespace Prisma {
     location?: string | null
     postedAt?: Date | string | null
     scrapedAt?: Date | string
-    status?: string
-    aiScore?: number | null
-    aiSummary?: string | null
+    catalogStatus?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    userJobs?: UserJobUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutGeneratedEmailsInput = {
     where: JobWhereUniqueInput
     create: XOR<JobCreateWithoutGeneratedEmailsInput, JobUncheckedCreateWithoutGeneratedEmailsInput>
+  }
+
+  export type UserUpsertWithoutGeneratedEmailsInput = {
+    update: XOR<UserUpdateWithoutGeneratedEmailsInput, UserUncheckedUpdateWithoutGeneratedEmailsInput>
+    create: XOR<UserCreateWithoutGeneratedEmailsInput, UserUncheckedCreateWithoutGeneratedEmailsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutGeneratedEmailsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutGeneratedEmailsInput, UserUncheckedUpdateWithoutGeneratedEmailsInput>
+  }
+
+  export type UserUpdateWithoutGeneratedEmailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchConfig?: SearchConfigUpdateOneWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    userJobs?: UserJobUpdateManyWithoutUserNestedInput
+    subscription?: SubscriptionUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutGeneratedEmailsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchConfig?: SearchConfigUncheckedUpdateOneWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userJobs?: UserJobUncheckedUpdateManyWithoutUserNestedInput
+    subscription?: SubscriptionUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type JobUpsertWithoutGeneratedEmailsInput = {
@@ -10787,11 +16475,10 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
-    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    catalogStatus?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userJobs?: UserJobUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutGeneratedEmailsInput = {
@@ -10813,6 +16500,115 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     scrapedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    catalogStatus?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userJobs?: UserJobUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type UserCreateWithoutSubscriptionInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    searchConfig?: SearchConfigCreateNestedOneWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    userJobs?: UserJobCreateNestedManyWithoutUserInput
+    generatedEmails?: GeneratedEmailCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSubscriptionInput = {
+    id?: string
+    clerkId: string
+    email: string
+    plan?: string
+    stripeCustomerId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    searchConfig?: SearchConfigUncheckedCreateNestedOneWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    userJobs?: UserJobUncheckedCreateNestedManyWithoutUserInput
+    generatedEmails?: GeneratedEmailUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSubscriptionInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSubscriptionInput, UserUncheckedCreateWithoutSubscriptionInput>
+  }
+
+  export type UserUpsertWithoutSubscriptionInput = {
+    update: XOR<UserUpdateWithoutSubscriptionInput, UserUncheckedUpdateWithoutSubscriptionInput>
+    create: XOR<UserCreateWithoutSubscriptionInput, UserUncheckedCreateWithoutSubscriptionInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSubscriptionInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSubscriptionInput, UserUncheckedUpdateWithoutSubscriptionInput>
+  }
+
+  export type UserUpdateWithoutSubscriptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchConfig?: SearchConfigUpdateOneWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    userJobs?: UserJobUpdateManyWithoutUserNestedInput
+    generatedEmails?: GeneratedEmailUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSubscriptionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    plan?: StringFieldUpdateOperationsInput | string
+    stripeCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    searchConfig?: SearchConfigUncheckedUpdateOneWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    userJobs?: UserJobUncheckedUpdateManyWithoutUserNestedInput
+    generatedEmails?: GeneratedEmailUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserJobCreateManyUserInput = {
+    id?: string
+    jobId: string
+    status?: string
+    aiScore?: number | null
+    aiSummary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GeneratedEmailCreateManyUserInput = {
+    id?: string
+    jobId: string
+    content: string
+    version?: number
+    createdAt?: Date | string
+  }
+
+  export type UserJobUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutUserJobsNestedInput
+  }
+
+  export type UserJobUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
     aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10820,11 +16616,86 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserJobUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GeneratedEmailUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobUpdateOneRequiredWithoutGeneratedEmailsNestedInput
+  }
+
+  export type GeneratedEmailUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GeneratedEmailUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    version?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserJobCreateManyJobInput = {
+    id?: string
+    userId: string
+    status?: string
+    aiScore?: number | null
+    aiSummary?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type GeneratedEmailCreateManyJobInput = {
     id?: string
+    userId: string
     content: string
     version?: number
     createdAt?: Date | string
+  }
+
+  export type UserJobUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutUserJobsNestedInput
+  }
+
+  export type UserJobUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserJobUncheckedUpdateManyWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    aiScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    aiSummary?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type GeneratedEmailUpdateWithoutJobInput = {
@@ -10832,10 +16703,12 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutGeneratedEmailsNestedInput
   }
 
   export type GeneratedEmailUncheckedUpdateWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10843,6 +16716,7 @@ export namespace Prisma {
 
   export type GeneratedEmailUncheckedUpdateManyWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     version?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { UserButton } from '@clerk/nextjs';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { JobList } from '@/components/JobList';
 import { FilterPanel, type FilterState } from '@/components/FilterPanel';
@@ -241,14 +242,18 @@ function DashboardContent() {
             ))}
           </nav>
 
-          {/* Scrape Button */}
-          <div className="border-t-4 border-foreground p-4">
+          {/* Scrape + account */}
+          <div className="border-t-4 border-foreground p-4 space-y-3">
             <button
               onClick={handleOpenScrapeModal}
               className="retro-btn w-full px-4 py-2 bg-accent text-accent-foreground font-retro text-xs"
             >
               RUN SCRAPE
             </button>
+            <div className="flex items-center justify-between gap-2 px-1">
+              <span className="font-retro text-[10px] text-muted-foreground">ACCOUNT</span>
+              <UserButton />
+            </div>
           </div>
         </div>
       </aside>
@@ -264,13 +269,14 @@ function DashboardContent() {
           </svg>
         </button>
         <span className="font-retro text-xs">JOBSCOUT</span>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
           <button
             onClick={handleOpenScrapeModal}
             className="retro-btn px-3 py-1 bg-accent text-accent-foreground font-retro text-[10px]"
           >
             SCRAPE
           </button>
+          <UserButton />
         </div>
       </div>
 

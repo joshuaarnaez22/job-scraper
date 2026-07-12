@@ -1,64 +1,67 @@
 /**
  * Profile API
- * GET /api/profile - Get user profile
- * PUT /api/profile - Update user profile
+ * GET /api/profile - Get current user's profile
+ * PUT /api/profile - Update current user's profile
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { AuthRequiredError, requireCurrentUser } from '@/lib/auth-user';
+import { withUserRls } from '@/lib/rls';
+
+const defaultPreferences = {
+  tone: 'professional',
+  length: 'medium',
+  customInstructions: '',
+};
 
 export async function GET() {
   try {
-    const profile = await prisma.userProfile.findUnique({
-      where: { id: 'default' },
-    });
+    const user = await requireCurrentUser();
 
-    // If no profile exists, return empty template
-    if (!profile) {
-      return NextResponse.json({
-        id: 'default',
-        name: '',
-        title: '',
-        summary: '',
-        skills: [],
-        experience: [],
-        education: '',
-        portfolioUrl: '',
-        linkedinUrl: '',
-        preferences: {
-          tone: 'professional',
-          length: 'medium',
-          customInstructions: '',
-        },
+    return await withUserRls(user.id, async (tx) => {
+      const profile = await tx.userProfile.findUnique({
+        where: { userId: user.id },
       });
-    }
 
-    // Parse JSON fields
-    return NextResponse.json({
-      ...profile,
-      skills: JSON.parse(profile.skills),
-      experience: JSON.parse(profile.experience),
-      preferences: JSON.parse(profile.preferences),
+      if (!profile) {
+        return NextResponse.json({
+          id: null,
+          userId: user.id,
+          name: '',
+          title: '',
+          summary: '',
+          skills: [],
+          experience: [],
+          education: '',
+          portfolioUrl: '',
+          linkedinUrl: '',
+          preferences: defaultPreferences,
+        });
+      }
+
+      return NextResponse.json({
+        ...profile,
+        skills: JSON.parse(profile.skills),
+        experience: JSON.parse(profile.experience),
+        preferences: JSON.parse(profile.preferences),
+      });
     });
   } catch (error) {
+    if (error instanceof AuthRequiredError) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     console.error('[API] Error fetching profile:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch profile' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
+    const user = await requireCurrentUser();
     const body = await request.json();
 
-    // Validate required fields
     if (!body.name) {
-      return NextResponse.json(
-        { error: 'Name is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
     const data = {
@@ -70,34 +73,31 @@ export async function PUT(request: NextRequest) {
       education: body.education || null,
       portfolioUrl: body.portfolioUrl || null,
       linkedinUrl: body.linkedinUrl || null,
-      preferences: JSON.stringify(body.preferences || {
-        tone: 'professional',
-        length: 'medium',
-        customInstructions: '',
-      }),
+      preferences: JSON.stringify(body.preferences || defaultPreferences),
     };
 
-    const profile = await prisma.userProfile.upsert({
-      where: { id: 'default' },
-      update: data,
-      create: {
-        id: 'default',
-        ...data,
-      },
-    });
+    return await withUserRls(user.id, async (tx) => {
+      const profile = await tx.userProfile.upsert({
+        where: { userId: user.id },
+        update: data,
+        create: {
+          userId: user.id,
+          ...data,
+        },
+      });
 
-    // Parse JSON fields for response
-    return NextResponse.json({
-      ...profile,
-      skills: JSON.parse(profile.skills),
-      experience: JSON.parse(profile.experience),
-      preferences: JSON.parse(profile.preferences),
+      return NextResponse.json({
+        ...profile,
+        skills: JSON.parse(profile.skills),
+        experience: JSON.parse(profile.experience),
+        preferences: JSON.parse(profile.preferences),
+      });
     });
   } catch (error) {
+    if (error instanceof AuthRequiredError) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     console.error('[API] Error updating profile:', error);
-    return NextResponse.json(
-      { error: 'Failed to update profile' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
   }
 }

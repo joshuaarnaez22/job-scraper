@@ -14,10 +14,13 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:clear": "npx tsx prisma/clear.ts",
+    "db:rls": "npx tsx prisma/apply-rls.ts",
     "scrape": "curl -X POST http://localhost:3000/api/cron/scrape -H \"Authorization: Bearer $CRON_SECRET\"",
     "scrape:dry": "curl -X POST \"http://localhost:3000/api/cron/scrape?dryRun=true\" -H \"Authorization: Bearer $CRON_SECRET\""
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.5.17",
+    "@clerk/ui": "^1.25.2",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "@radix-ui/react-dialog": "^1.1.15",

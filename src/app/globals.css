@@ -182,13 +182,107 @@
   }
 }
 
-/* Override shadcn rounded corners */
+/* Override shadcn rounded corners — exclude Clerk */
 @layer components {
-  [data-slot="card"],
-  [data-slot="button"],
-  [data-slot="input"],
-  [data-slot="badge"],
-  [data-slot="dialog-content"] {
+  [data-slot="card"]:not([class*="cl-"]),
+  [data-slot="button"]:not([class*="cl-"]),
+  [data-slot="input"]:not([class*="cl-"]),
+  [data-slot="badge"]:not([class*="cl-"]),
+  [data-slot="dialog-content"]:not([class*="cl-"]) {
     border-radius: 0 !important;
   }
 }
+
+/*
+ * Isolate Clerk from JobScout retro theme:
+ * - body uses image-rendering: pixelated
+ * - --input is a dark border color (#1a1a2e), which Clerk themes use as fill
+ */
+.clerk-ui,
+.cl-rootBox,
+.cl-card,
+.cl-cardBox,
+.cl-modalContent,
+[data-clerk-component] {
+  --input: #ffffff;
+  --background: #ffffff;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+  --primary: #4a4ae8;
+  --primary-foreground: #ffffff;
+  --ring: #4a4ae8;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  color-scheme: light;
+  image-rendering: auto;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.clerk-ui *,
+.cl-rootBox *,
+.cl-card *,
+.cl-modalContent * {
+  image-rendering: auto;
+}
+
+.cl-formFieldInput,
+.cl-input,
+.cl-otpCodeFieldInput,
+input.cl-formFieldInput,
+.clerk-ui input[type='text'],
+.clerk-ui input[type='email'],
+.clerk-ui input[type='password'],
+.clerk-ui input:not([type]) {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #18181b !important;
+  border: 1px solid #d4d4d8 !important;
+  border-radius: 0.5rem !important;
+  box-shadow: none !important;
+  caret-color: #18181b;
+}
+
+.cl-formFieldInput::placeholder,
+.cl-input::placeholder,
+.clerk-ui input::placeholder {
+  color: #a1a1aa !important;
+  opacity: 1 !important;
+}
+
+.cl-formFieldInput:focus,
+.cl-input:focus,
+.clerk-ui input:focus {
+  outline: none !important;
+  border-color: #4a4ae8 !important;
+  box-shadow: 0 0 0 3px rgba(74, 74, 232, 0.2) !important;
+}
+
+/* Autofill shouldn't turn inputs dark/yellow-ugly */
+.cl-formFieldInput:-webkit-autofill,
+.cl-input:-webkit-autofill,
+.clerk-ui input:-webkit-autofill {
+  -webkit-text-fill-color: #18181b !important;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+}
+
+.cl-modalBackdrop {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+  background: rgba(24, 24, 27, 0.45) !important;
+}
+
+.cl-modalContent {
+  margin: auto !important;
+  max-height: min(92vh, 760px) !important;
+  overflow-y: auto !important;
+}
+
+

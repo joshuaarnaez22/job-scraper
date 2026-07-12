@@ -75,8 +75,13 @@ Built with Next.js 16, Tailwind CSS v4, shadcn/ui, and optionally OpenAI for int
    RESEND_API_KEY=re_xxxxxxxxxxxxx
    NOTIFICATION_EMAIL=your@email.com
 
-   # OpenAI (Optional)
-   OPENAI_API_KEY=sk-xxxxxxxxxxxxx
+   # Clerk Auth
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxx
+   CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxx
+
+   # AI — DeepSeek (scoring) + Mistral (cover letters)
+   DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxx
+   MISTRAL_API_KEY=xxxxxxxxxxxxx
 
    # Cron Security
    CRON_SECRET=your-secret-key-here

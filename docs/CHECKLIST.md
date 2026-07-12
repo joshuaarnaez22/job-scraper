@@ -18,7 +18,8 @@
 - [ ] Add `NOTIFICATION_EMAIL` (your email address)
 
 ### For AI Features (Optional)
-- [ ] Add `OPENAI_API_KEY` (for job scoring & cover letters)
+- [ ] Add `DEEPSEEK_API_KEY` (job relevance scoring)
+- [ ] Add `MISTRAL_API_KEY` (cover letter generation)
 
 ---
 
@@ -364,10 +365,10 @@ curl -X POST localhost:3000/api/jobs/abc123/generate-email
 - [ ] Digest mode batches emails correctly
 
 ### AI Features (Manual)
-- [ ] AI scoring works (if OPENAI_API_KEY set)
+- [ ] AI scoring works (if DEEPSEEK_API_KEY set)
 - [ ] AI threshold filtering works
 - [ ] User profile saves/updates correctly
-- [ ] Cover letter generates with job + profile context
+- [ ] Cover letter generates with Mistral (MISTRAL_API_KEY)
 - [ ] Cover letter regeneration creates new version
 - [ ] Generated emails saved to database
 - [ ] improveCoverLetter() works with feedback
@@ -385,7 +386,9 @@ curl -X POST localhost:3000/api/jobs/abc123/generate-email
   - [ ] `RESEND_API_KEY`
   - [ ] `NOTIFICATION_EMAIL`
   - [ ] `CRON_SECRET`
-  - [ ] `OPENAI_API_KEY` (optional)
+  - [ ] `DEEPSEEK_API_KEY` (optional — scoring)
+  - [ ] `MISTRAL_API_KEY` (optional — cover letters)
+  - [ ] `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` / `CLERK_SECRET_KEY`
 - [ ] Run `npx prisma db push` on production database
 - [ ] Neon database accessible from deployment platform
 - [ ] Cron configured (Vercel/GitHub Actions/cron-job.org)
@@ -407,7 +410,7 @@ curl -X POST localhost:3000/api/jobs/abc123/generate-email
 | Feature | Status | Action Required |
 |---------|--------|-----------------|
 | Email Notifications | ✅ Code ready | Add `RESEND_API_KEY` + `NOTIFICATION_EMAIL` |
-| AI Features | ✅ Code ready | Add `OPENAI_API_KEY` |
+| AI Features | ✅ Code ready | Add `DEEPSEEK_API_KEY` + `MISTRAL_API_KEY` |
 
 ---
 
