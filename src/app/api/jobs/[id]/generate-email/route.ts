@@ -11,6 +11,7 @@ import {
   type CoverLetterPreferences,
 } from '@/lib/ai';
 import { AuthRequiredError, requireCurrentUser } from '@/lib/auth-user';
+import { assertCoverLetterQuota, QuotaExceededError } from '@/lib/billing';
 import { withUserRls } from '@/lib/rls';
 
 interface RouteParams {
@@ -29,6 +30,22 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         { error: 'Mistral API key not configured' },
         { status: 500 }
       );
+    }
+
+    try {
+      await assertCoverLetterQuota(user);
+    } catch (err) {
+      if (err instanceof QuotaExceededError) {
+        return NextResponse.json(
+          {
+            error: err.message,
+            code: err.code,
+            upgradeRequired: err.upgradeRequired,
+          },
+          { status: 402 }
+        );
+      }
+      throw err;
     }
 
     return await withUserRls(user.id, async (tx) => {

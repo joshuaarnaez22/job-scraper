@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   Dialog,
   DialogContent,
@@ -20,6 +21,7 @@ export function CoverLetterModal({ job, isOpen, onClose }: CoverLetterModalProps
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [upgradeRequired, setUpgradeRequired] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const generateCoverLetter = async (regenerate = false) => {
@@ -27,6 +29,7 @@ export function CoverLetterModal({ job, isOpen, onClose }: CoverLetterModalProps
 
     setIsGenerating(true);
     setError(null);
+    setUpgradeRequired(false);
 
     try {
       const response = await fetch(`/api/jobs/${job.id}/generate-email`, {
@@ -35,12 +38,14 @@ export function CoverLetterModal({ job, isOpen, onClose }: CoverLetterModalProps
         body: JSON.stringify({ regenerate }),
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
+        if (data.upgradeRequired || data.code === 'QUOTA_EXCEEDED') {
+          setUpgradeRequired(true);
+        }
         throw new Error(data.error || 'Failed to generate cover letter');
       }
 
-      const data = await response.json();
       setContent(data.content);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -59,6 +64,7 @@ export function CoverLetterModal({ job, isOpen, onClose }: CoverLetterModalProps
     setContent('');
     setIsEditing(false);
     setError(null);
+    setUpgradeRequired(false);
     setCopied(false);
     onClose();
   };
@@ -79,9 +85,18 @@ export function CoverLetterModal({ job, isOpen, onClose }: CoverLetterModalProps
 
         <div className="flex-1 overflow-hidden flex flex-col">
           {error && (
-            <div className="m-4 bg-destructive/20 border-2 border-destructive p-3 text-sm">
+            <div className="m-4 bg-destructive/20 border-2 border-destructive p-3 text-sm space-y-2">
               <p className="font-retro text-[10px] text-destructive mb-1">ERROR:</p>
               <p className="text-destructive">{error}</p>
+              {upgradeRequired && (
+                <Link
+                  href="/dashboard/billing"
+                  className="inline-block retro-btn px-3 py-1.5 bg-accent text-accent-foreground font-retro text-[10px]"
+                  onClick={handleClose}
+                >
+                  UPGRADE PLAN
+                </Link>
+              )}
             </div>
           )}
 
@@ -105,10 +120,22 @@ export function CoverLetterModal({ job, isOpen, onClose }: CoverLetterModalProps
             <div className="flex-1 flex flex-col items-center justify-center py-12 px-6">
               <div className="font-retro text-2xl mb-4 animate-pulse">
                 <span className="inline-block animate-bounce">{`[`}</span>
-                <span className="inline-block animate-bounce" style={{ animationDelay: '0.1s' }}>{`=`}</span>
-                <span className="inline-block animate-bounce" style={{ animationDelay: '0.2s' }}>{`=`}</span>
-                <span className="inline-block animate-bounce" style={{ animationDelay: '0.3s' }}>{`=`}</span>
-                <span className="inline-block animate-bounce" style={{ animationDelay: '0.4s' }}>{`]`}</span>
+                <span
+                  className="inline-block animate-bounce"
+                  style={{ animationDelay: '0.1s' }}
+                >{`=`}</span>
+                <span
+                  className="inline-block animate-bounce"
+                  style={{ animationDelay: '0.2s' }}
+                >{`=`}</span>
+                <span
+                  className="inline-block animate-bounce"
+                  style={{ animationDelay: '0.3s' }}
+                >{`=`}</span>
+                <span
+                  className="inline-block animate-bounce"
+                  style={{ animationDelay: '0.4s' }}
+                >{`]`}</span>
               </div>
               <p className="font-retro text-xs text-muted-foreground">GENERATING...</p>
             </div>

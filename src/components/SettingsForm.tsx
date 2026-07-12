@@ -26,6 +26,11 @@ export type SearchSettingsData = {
 type SettingsFormProps = {
   initialData: SearchSettingsData;
   onSave: (data: SearchSettingsData) => Promise<void>;
+  planLimits?: {
+    maxSites: number;
+    aiMatching: boolean;
+    label: string;
+  };
 };
 
 const JOB_TYPE_OPTIONS = ['full-time', 'part-time', 'contract', 'freelance'];
@@ -141,12 +146,18 @@ function CheckboxGroup({
   );
 }
 
-export function SettingsForm({ initialData, onSave }: SettingsFormProps) {
+export function SettingsForm({
+  initialData,
+  onSave,
+  planLimits,
+}: SettingsFormProps) {
   const [settings, setSettings] = useState<SearchSettingsData>(initialData);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [suggestBusy, setSuggestBusy] = useState(false);
   const [suggestNote, setSuggestNote] = useState<string | null>(null);
+  const maxSites = planLimits?.maxSites ?? 99;
+  const aiAllowed = planLimits?.aiMatching ?? true;
   const [error, setError] = useState<string | null>(null);
 
   const siteOptions = useMemo(
@@ -253,15 +264,27 @@ export function SettingsForm({ initialData, onSave }: SettingsFormProps) {
         <h3 className="font-retro text-xs mb-2 pb-2 border-b-2 border-dashed border-foreground/20">
           SITES
         </h3>
+        {planLimits && (
+          <p className="text-xs text-muted-foreground">
+            {planLimits.label} plan: up to {maxSites} site
+            {maxSites === 1 ? '' : 's'}.{' '}
+            <a href="/dashboard/billing" className="underline">
+              Upgrade
+            </a>
+          </p>
+        )}
         <div className="space-y-2">
           {siteOptions.map((site) => {
             const checked = settings.enabledSites.includes(site.id);
             const locked = !site.globallyEnabled;
+            const atCap =
+              !checked && settings.enabledSites.length >= maxSites;
+            const disabled = locked || atCap;
             return (
               <label
                 key={site.id}
                 className={`flex items-center justify-between gap-3 border-2 px-3 py-2 ${
-                  locked
+                  disabled
                     ? 'border-foreground/20 opacity-50'
                     : 'border-foreground'
                 }`}
@@ -273,19 +296,30 @@ export function SettingsForm({ initialData, onSave }: SettingsFormProps) {
                       OFF IN SITES.TS
                     </span>
                   )}
+                  {!locked && atCap && (
+                    <span className="ml-2 text-[10px] font-retro text-muted-foreground">
+                      PLAN LIMIT
+                    </span>
+                  )}
                 </span>
                 <input
                   type="checkbox"
-                  disabled={locked}
+                  disabled={disabled && !checked}
                   checked={checked && !locked}
                   onChange={() => {
                     if (locked) return;
-                    patch(
-                      'enabledSites',
-                      checked
-                        ? settings.enabledSites.filter((id) => id !== site.id)
-                        : [...settings.enabledSites, site.id]
-                    );
+                    if (checked) {
+                      patch(
+                        'enabledSites',
+                        settings.enabledSites.filter((id) => id !== site.id)
+                      );
+                      return;
+                    }
+                    if (atCap) return;
+                    patch('enabledSites', [
+                      ...settings.enabledSites,
+                      site.id,
+                    ]);
                   }}
                   className="h-4 w-4"
                 />
@@ -410,15 +444,38 @@ export function SettingsForm({ initialData, onSave }: SettingsFormProps) {
         <h3 className="font-retro text-xs mb-2 pb-2 border-b-2 border-dashed border-foreground/20">
           AI & ALERTS
         </h3>
-        <label className="flex items-center justify-between gap-3 border-2 border-foreground px-3 py-2">
-          <span className="text-sm">Use AI matching (DeepSeek)</span>
+        <label
+          className={`flex items-center justify-between gap-3 border-2 px-3 py-2 ${
+            aiAllowed ? 'border-foreground' : 'border-foreground/20 opacity-60'
+          }`}
+        >
+          <span className="text-sm">
+            Use AI matching (DeepSeek)
+            {!aiAllowed && (
+              <span className="ml-2 text-[10px] font-retro text-muted-foreground">
+                PRO+
+              </span>
+            )}
+          </span>
           <input
             type="checkbox"
-            checked={settings.useAIMatching}
-            onChange={(e) => patch('useAIMatching', e.target.checked)}
+            disabled={!aiAllowed}
+            checked={settings.useAIMatching && aiAllowed}
+            onChange={(e) => {
+              if (!aiAllowed) return;
+              patch('useAIMatching', e.target.checked);
+            }}
             className="h-4 w-4"
           />
         </label>
+        {!aiAllowed && (
+          <p className="text-xs text-muted-foreground">
+            AI matching is a Pro feature.{' '}
+            <a href="/dashboard/billing" className="underline">
+              Upgrade
+            </a>
+          </p>
+        )}
         <div>
           <label className="text-[10px] font-retro text-muted-foreground block mb-2">
             AI THRESHOLD ({settings.aiThreshold.toFixed(2)})

@@ -5,9 +5,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { getPlanLimits } from '@/config/plans';
 import { defaultSearchConfig } from '@/config/search';
 import { filterEnabledSiteIds, getEnabledSiteIds } from '@/config/sites';
 import { AuthRequiredError, requireCurrentUser } from '@/lib/auth-user';
+import { applyPlanGatesToSettings } from '@/lib/billing';
 import { withUserRls } from '@/lib/rls';
 
 function parseConfig(config: {
@@ -73,7 +75,11 @@ export async function GET() {
         });
       }
 
-      return NextResponse.json(parseConfig(config));
+      return NextResponse.json({
+        ...parseConfig(config),
+        plan: user.plan,
+        planLimits: getPlanLimits(user.plan),
+      });
     });
   } catch (error) {
     if (error instanceof AuthRequiredError) {
@@ -88,6 +94,25 @@ export async function PUT(request: NextRequest) {
   try {
     const user = await requireCurrentUser();
     const body = await request.json();
+    const limits = getPlanLimits(user.plan);
+
+    const gated = applyPlanGatesToSettings(user.plan, {
+      enabledSites:
+        body.enabledSites !== undefined
+          ? filterEnabledSiteIds(body.enabledSites as string[])
+          : undefined,
+      useAIMatching:
+        body.useAIMatching !== undefined
+          ? Boolean(body.useAIMatching)
+          : undefined,
+    });
+
+    if (gated.enabledSites !== undefined) {
+      body.enabledSites = gated.enabledSites;
+    }
+    if (gated.useAIMatching !== undefined) {
+      body.useAIMatching = gated.useAIMatching;
+    }
 
     const data: Record<string, unknown> = {};
 
@@ -142,7 +167,13 @@ export async function PUT(request: NextRequest) {
           excludeKeywords: JSON.stringify(
             body.excludeKeywords || defaultSearchConfig.excludeKeywords
           ),
-          enabledSites: JSON.stringify(body.enabledSites || defaultSearchConfig.enabledSites),
+          enabledSites: JSON.stringify(
+            body.enabledSites ||
+              filterEnabledSiteIds(defaultSearchConfig.enabledSites).slice(
+                0,
+                limits.maxSites
+              )
+          ),
           daysPosted: body.daysPosted ?? defaultSearchConfig.daysPosted,
           salaryMin: body.salaryMin ?? defaultSearchConfig.salaryMin,
           salaryMax: body.salaryMax ?? defaultSearchConfig.salaryMax,
@@ -163,14 +194,21 @@ export async function PUT(request: NextRequest) {
           preferredSkills: JSON.stringify(
             body.preferredSkills || defaultSearchConfig.preferredSkills
           ),
-          useAIMatching: body.useAIMatching ?? defaultSearchConfig.useAIMatching,
+          useAIMatching:
+            body.useAIMatching ??
+            (limits.aiMatching && defaultSearchConfig.useAIMatching),
           aiThreshold: body.aiThreshold ?? defaultSearchConfig.aiMatchThreshold,
           digestMode: body.digestMode ?? defaultSearchConfig.digestMode,
           maxEmailsPerRun: body.maxEmailsPerRun ?? defaultSearchConfig.maxEmailsPerRun,
         },
       });
 
-      return NextResponse.json(parseConfig(config));
+      return NextResponse.json({
+        ...parseConfig(config),
+        planWarnings: gated.warnings,
+        plan: user.plan,
+        planLimits: limits,
+      });
     });
   } catch (error) {
     if (error instanceof AuthRequiredError) {

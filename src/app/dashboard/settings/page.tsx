@@ -11,7 +11,16 @@ export default function DashboardSettingsPage() {
     queryFn: async () => {
       const res = await fetch('/api/settings');
       if (!res.ok) throw new Error('Failed to load settings');
-      return res.json() as Promise<SearchSettingsData & { updatedAt?: string }>;
+      return res.json() as Promise<
+        SearchSettingsData & {
+          updatedAt?: string;
+          planLimits?: {
+            maxSites: number;
+            aiMatching: boolean;
+            label: string;
+          };
+        }
+      >;
     },
   });
 
@@ -48,6 +57,7 @@ export default function DashboardSettingsPage() {
         {settings && (
           <SettingsForm
             key={settings.updatedAt || 'settings'}
+            planLimits={settings.planLimits}
             initialData={{
               keywords: settings.keywords ?? [],
               excludeKeywords: settings.excludeKeywords ?? [],

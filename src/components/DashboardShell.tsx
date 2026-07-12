@@ -20,6 +20,11 @@ const navItems = [
     label: 'SETTINGS',
     match: (path: string) => path.startsWith('/dashboard/settings'),
   },
+  {
+    href: '/dashboard/billing',
+    label: 'BILLING',
+    match: (path: string) => path.startsWith('/dashboard/billing'),
+  },
 ] as const;
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
@@ -65,19 +70,54 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className="border-t-4 border-foreground p-4 space-y-3">
+          <div className="border-t-4 border-foreground p-3 space-y-3 shrink-0">
             <button
               type="button"
               onClick={() => setIsScrapeModalOpen(true)}
-              className="retro-btn w-full px-4 py-2 bg-accent text-accent-foreground font-retro text-xs"
+              className="retro-btn w-full px-3 py-2.5 bg-accent text-accent-foreground font-retro text-[11px] leading-none"
             >
               RUN SCRAPE
             </button>
-            <div className="flex items-center justify-between gap-2 px-1">
-              <span className="font-retro text-[10px] text-muted-foreground">
-                ACCOUNT
-              </span>
-              <UserButton />
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={(e) => {
+                const trigger = e.currentTarget.querySelector<HTMLElement>(
+                  '.cl-userButtonTrigger'
+                );
+                if (
+                  trigger &&
+                  trigger !== e.target &&
+                  !trigger.contains(e.target as Node)
+                ) {
+                  trigger.click();
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  e.currentTarget.querySelector<HTMLElement>('.cl-userButtonTrigger')?.click();
+                }
+              }}
+              className="flex w-full items-center gap-3 border-2 border-foreground bg-secondary px-3 py-2 text-left transition-colors hover:bg-muted cursor-pointer"
+            >
+              <UserButton
+                appearance={{
+                  elements: {
+                    rootBox: 'shrink-0',
+                    avatarBox: 'h-8 w-8 rounded-none border-2 border-foreground',
+                    userButtonTrigger: 'focus:shadow-none',
+                  },
+                }}
+              />
+              <div className="min-w-0 flex-1 pointer-events-none">
+                <div className="font-retro text-[9px] text-muted-foreground leading-none">
+                  ACCOUNT
+                </div>
+                <div className="text-[10px] text-foreground/70 truncate mt-1">
+                  Manage profile
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -105,15 +145,22 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </svg>
         </button>
         <BrandLogo size={22} wordmarkClassName="font-retro text-xs" />
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2 shrink-0">
           <button
             type="button"
             onClick={() => setIsScrapeModalOpen(true)}
-            className="retro-btn px-3 py-1 bg-accent text-accent-foreground font-retro text-[10px]"
+            className="retro-btn px-3 py-1.5 bg-accent text-accent-foreground font-retro text-[10px] leading-none"
           >
             SCRAPE
           </button>
-          <UserButton />
+          <UserButton
+            appearance={{
+              elements: {
+                rootBox: 'shrink-0',
+                avatarBox: 'h-8 w-8 rounded-none border-2 border-foreground',
+              },
+            }}
+          />
         </div>
       </div>
 

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "inngest:dev": "npx inngest-cli@latest dev",
+    "stripe:listen": "node scripts/stripe-listen.mjs",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
@@ -47,6 +48,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "resend": "^6.8.0",
+    "stripe": "^22.3.1",
     "tailwind-merge": "^3.4.0",
     "unpdf": "^1.6.2"
   },

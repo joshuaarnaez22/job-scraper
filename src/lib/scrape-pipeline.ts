@@ -3,6 +3,7 @@
  * Used by Inngest workers and (fallback) synchronous callers.
  */
 
+import { getPlanLimits } from '@/config/plans';
 import { defaultSearchConfig } from '@/config/search';
 import { filterEnabledSiteIds } from '@/config/sites';
 import {
@@ -59,13 +60,20 @@ export function parseSearchConfigRecord(
     digestMode: boolean;
     maxEmailsPerRun: number;
   },
-  notificationEmail?: string | null
+  notificationEmail?: string | null,
+  plan?: string | null
 ): ParsedSearchConfig {
+  const limits = getPlanLimits(plan);
+  const sites = (JSON.parse(record.enabledSites) as string[]).slice(
+    0,
+    limits.maxSites
+  );
+
   return {
     userId,
     keywords: JSON.parse(record.keywords) as string[],
     excludeKeywords: JSON.parse(record.excludeKeywords) as string[],
-    enabledSites: JSON.parse(record.enabledSites) as string[],
+    enabledSites: sites,
     daysPosted: record.daysPosted,
     salaryMin: record.salaryMin,
     salaryMax: record.salaryMax,
@@ -76,7 +84,7 @@ export function parseSearchConfigRecord(
     excludeCompanies: JSON.parse(record.excludeCompanies) as string[],
     requiredSkills: JSON.parse(record.requiredSkills) as string[],
     preferredSkills: JSON.parse(record.preferredSkills) as string[],
-    useAIMatching: record.useAIMatching,
+    useAIMatching: limits.aiMatching && record.useAIMatching,
     aiThreshold: record.aiThreshold,
     digestMode: record.digestMode,
     maxEmailsPerRun: record.maxEmailsPerRun,
@@ -87,10 +95,10 @@ export function parseSearchConfigRecord(
 export async function loadUserSearchConfigs(): Promise<ParsedSearchConfig[]> {
   return withServiceRls(async (tx) => {
     const configs = await tx.searchConfig.findMany({
-      include: { user: { select: { email: true } } },
+      include: { user: { select: { email: true, plan: true } } },
     });
     return configs.map((c) =>
-      parseSearchConfigRecord(c.userId, c, c.user.email)
+      parseSearchConfigRecord(c.userId, c, c.user.email, c.user.plan)
     );
   });
 }
