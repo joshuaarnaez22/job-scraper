@@ -46,30 +46,23 @@ export interface SearchConfig {
 }
 
 export const defaultSearchConfig: SearchConfig = {
-  // Keywords & Search
+  // Keywords & Search — keep few; each one triggers a full site search
   keywords: [
-    'react',
-    'nextjs',
-    'frontend developer',
-    'typescript',
-    'full stack',
+    'react developer',
+    'next.js',
+    'typescript frontend',
   ],
   excludeKeywords: [
-    'senior',
-    'lead',
+    'virtual assistant',
+    'data entry',
+    'customer service',
     '10+ years',
-    'principal',
+    'principal architect',
   ],
 
-  // Job Sites to Scrape (shows in UI, actual enabled status from sites.ts)
+  // Job Sites to Scrape (intersected with sites.ts enabled flags)
   enabledSites: [
     'onlinejobs',
-    'jobstreet',
-    'kalibrr',
-    'linkedin',
-    'indeed',
-    'weworkremotely',
-    'remoteok',
   ],
 
   // Date Filter

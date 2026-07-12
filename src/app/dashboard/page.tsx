@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useState, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { UserButton } from '@clerk/nextjs';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -111,18 +111,38 @@ function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [page, setPage] = useState(() => {
-    const p = searchParams.get('page');
-    return p ? parseInt(p) : 1;
-  });
-
   const filters = getFiltersFromParams(searchParams);
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1);
 
-  const setFilters = useCallback((newFilters: FilterState) => {
-    const params = filtersToParams(newFilters);
-    params.set('page', '1');
-    router.push(`/dashboard?${params.toString()}`, { scroll: false });
-  }, [router]);
+  const pushFilters = useCallback(
+    (nextFilters: FilterState, nextPage: number) => {
+      const params = filtersToParams(nextFilters);
+      if (nextPage > 1) params.set('page', String(nextPage));
+      const qs = params.toString();
+      const href = qs ? `/dashboard?${qs}` : '/dashboard';
+      const current = searchParams.toString()
+        ? `/dashboard?${searchParams.toString()}`
+        : '/dashboard';
+      if (href === current) return;
+      router.replace(href, { scroll: false });
+    },
+    [router, searchParams]
+  );
+
+  const setFilters = useCallback(
+    (newFilters: FilterState) => {
+      pushFilters(newFilters, 1);
+    },
+    [pushFilters]
+  );
+
+  const setPage = useCallback(
+    (updater: number | ((current: number) => number)) => {
+      const next = typeof updater === 'function' ? updater(page) : updater;
+      pushFilters(filters, Math.max(1, next));
+    },
+    [filters, page, pushFilters]
+  );
 
   const [selectedJob, setSelectedJob] = useState<JobData | null>(null);
   const [isCoverLetterOpen, setIsCoverLetterOpen] = useState(false);
@@ -130,13 +150,6 @@ function DashboardContent() {
   const [activeView, setActiveView] = useState<ActiveView>('jobs');
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Sync page changes to URL
-  useEffect(() => {
-    const params = filtersToParams(filters);
-    if (page > 1) params.set('page', String(page));
-    router.push(`/dashboard?${params.toString()}`, { scroll: false });
-  }, [page]);
 
   // Queries
   const { data: jobsData, isLoading: isLoadingJobs } = useQuery({

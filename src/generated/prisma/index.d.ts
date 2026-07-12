@@ -8819,8 +8819,18 @@ export namespace Prisma {
 
   export type AggregateUserProfile = {
     _count: UserProfileCountAggregateOutputType | null
+    _avg: UserProfileAvgAggregateOutputType | null
+    _sum: UserProfileSumAggregateOutputType | null
     _min: UserProfileMinAggregateOutputType | null
     _max: UserProfileMaxAggregateOutputType | null
+  }
+
+  export type UserProfileAvgAggregateOutputType = {
+    cvSizeBytes: number | null
+  }
+
+  export type UserProfileSumAggregateOutputType = {
+    cvSizeBytes: number | null
   }
 
   export type UserProfileMinAggregateOutputType = {
@@ -8835,6 +8845,11 @@ export namespace Prisma {
     portfolioUrl: string | null
     linkedinUrl: string | null
     preferences: string | null
+    cvKey: string | null
+    cvFileName: string | null
+    cvContentType: string | null
+    cvSizeBytes: number | null
+    cvUploadedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8851,6 +8866,11 @@ export namespace Prisma {
     portfolioUrl: string | null
     linkedinUrl: string | null
     preferences: string | null
+    cvKey: string | null
+    cvFileName: string | null
+    cvContentType: string | null
+    cvSizeBytes: number | null
+    cvUploadedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8867,11 +8887,24 @@ export namespace Prisma {
     portfolioUrl: number
     linkedinUrl: number
     preferences: number
+    cvKey: number
+    cvFileName: number
+    cvContentType: number
+    cvSizeBytes: number
+    cvUploadedAt: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
+
+  export type UserProfileAvgAggregateInputType = {
+    cvSizeBytes?: true
+  }
+
+  export type UserProfileSumAggregateInputType = {
+    cvSizeBytes?: true
+  }
 
   export type UserProfileMinAggregateInputType = {
     id?: true
@@ -8885,6 +8918,11 @@ export namespace Prisma {
     portfolioUrl?: true
     linkedinUrl?: true
     preferences?: true
+    cvKey?: true
+    cvFileName?: true
+    cvContentType?: true
+    cvSizeBytes?: true
+    cvUploadedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8901,6 +8939,11 @@ export namespace Prisma {
     portfolioUrl?: true
     linkedinUrl?: true
     preferences?: true
+    cvKey?: true
+    cvFileName?: true
+    cvContentType?: true
+    cvSizeBytes?: true
+    cvUploadedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8917,6 +8960,11 @@ export namespace Prisma {
     portfolioUrl?: true
     linkedinUrl?: true
     preferences?: true
+    cvKey?: true
+    cvFileName?: true
+    cvContentType?: true
+    cvSizeBytes?: true
+    cvUploadedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -8960,6 +9008,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: UserProfileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserProfileSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserProfileMinAggregateInputType
@@ -8990,6 +9050,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserProfileCountAggregateInputType | true
+    _avg?: UserProfileAvgAggregateInputType
+    _sum?: UserProfileSumAggregateInputType
     _min?: UserProfileMinAggregateInputType
     _max?: UserProfileMaxAggregateInputType
   }
@@ -9006,9 +9068,16 @@ export namespace Prisma {
     portfolioUrl: string | null
     linkedinUrl: string | null
     preferences: string
+    cvKey: string | null
+    cvFileName: string | null
+    cvContentType: string | null
+    cvSizeBytes: number | null
+    cvUploadedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: UserProfileCountAggregateOutputType | null
+    _avg: UserProfileAvgAggregateOutputType | null
+    _sum: UserProfileSumAggregateOutputType | null
     _min: UserProfileMinAggregateOutputType | null
     _max: UserProfileMaxAggregateOutputType | null
   }
@@ -9039,6 +9108,11 @@ export namespace Prisma {
     portfolioUrl?: boolean
     linkedinUrl?: boolean
     preferences?: boolean
+    cvKey?: boolean
+    cvFileName?: boolean
+    cvContentType?: boolean
+    cvSizeBytes?: boolean
+    cvUploadedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9056,6 +9130,11 @@ export namespace Prisma {
     portfolioUrl?: boolean
     linkedinUrl?: boolean
     preferences?: boolean
+    cvKey?: boolean
+    cvFileName?: boolean
+    cvContentType?: boolean
+    cvSizeBytes?: boolean
+    cvUploadedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9073,6 +9152,11 @@ export namespace Prisma {
     portfolioUrl?: boolean
     linkedinUrl?: boolean
     preferences?: boolean
+    cvKey?: boolean
+    cvFileName?: boolean
+    cvContentType?: boolean
+    cvSizeBytes?: boolean
+    cvUploadedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9090,11 +9174,16 @@ export namespace Prisma {
     portfolioUrl?: boolean
     linkedinUrl?: boolean
     preferences?: boolean
+    cvKey?: boolean
+    cvFileName?: boolean
+    cvContentType?: boolean
+    cvSizeBytes?: boolean
+    cvUploadedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "title" | "summary" | "skills" | "experience" | "education" | "portfolioUrl" | "linkedinUrl" | "preferences" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+  export type UserProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "title" | "summary" | "skills" | "experience" | "education" | "portfolioUrl" | "linkedinUrl" | "preferences" | "cvKey" | "cvFileName" | "cvContentType" | "cvSizeBytes" | "cvUploadedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
   export type UserProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -9122,6 +9211,11 @@ export namespace Prisma {
       portfolioUrl: string | null
       linkedinUrl: string | null
       preferences: string
+      cvKey: string | null
+      cvFileName: string | null
+      cvContentType: string | null
+      cvSizeBytes: number | null
+      cvUploadedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["userProfile"]>
@@ -9559,6 +9653,11 @@ export namespace Prisma {
     readonly portfolioUrl: FieldRef<"UserProfile", 'String'>
     readonly linkedinUrl: FieldRef<"UserProfile", 'String'>
     readonly preferences: FieldRef<"UserProfile", 'String'>
+    readonly cvKey: FieldRef<"UserProfile", 'String'>
+    readonly cvFileName: FieldRef<"UserProfile", 'String'>
+    readonly cvContentType: FieldRef<"UserProfile", 'String'>
+    readonly cvSizeBytes: FieldRef<"UserProfile", 'Int'>
+    readonly cvUploadedAt: FieldRef<"UserProfile", 'DateTime'>
     readonly createdAt: FieldRef<"UserProfile", 'DateTime'>
     readonly updatedAt: FieldRef<"UserProfile", 'DateTime'>
   }
@@ -12320,6 +12419,11 @@ export namespace Prisma {
     portfolioUrl: 'portfolioUrl',
     linkedinUrl: 'linkedinUrl',
     preferences: 'preferences',
+    cvKey: 'cvKey',
+    cvFileName: 'cvFileName',
+    cvContentType: 'cvContentType',
+    cvSizeBytes: 'cvSizeBytes',
+    cvUploadedAt: 'cvUploadedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -13032,6 +13136,11 @@ export namespace Prisma {
     portfolioUrl?: StringNullableFilter<"UserProfile"> | string | null
     linkedinUrl?: StringNullableFilter<"UserProfile"> | string | null
     preferences?: StringFilter<"UserProfile"> | string
+    cvKey?: StringNullableFilter<"UserProfile"> | string | null
+    cvFileName?: StringNullableFilter<"UserProfile"> | string | null
+    cvContentType?: StringNullableFilter<"UserProfile"> | string | null
+    cvSizeBytes?: IntNullableFilter<"UserProfile"> | number | null
+    cvUploadedAt?: DateTimeNullableFilter<"UserProfile"> | Date | string | null
     createdAt?: DateTimeFilter<"UserProfile"> | Date | string
     updatedAt?: DateTimeFilter<"UserProfile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -13049,6 +13158,11 @@ export namespace Prisma {
     portfolioUrl?: SortOrderInput | SortOrder
     linkedinUrl?: SortOrderInput | SortOrder
     preferences?: SortOrder
+    cvKey?: SortOrderInput | SortOrder
+    cvFileName?: SortOrderInput | SortOrder
+    cvContentType?: SortOrderInput | SortOrder
+    cvSizeBytes?: SortOrderInput | SortOrder
+    cvUploadedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -13069,6 +13183,11 @@ export namespace Prisma {
     portfolioUrl?: StringNullableFilter<"UserProfile"> | string | null
     linkedinUrl?: StringNullableFilter<"UserProfile"> | string | null
     preferences?: StringFilter<"UserProfile"> | string
+    cvKey?: StringNullableFilter<"UserProfile"> | string | null
+    cvFileName?: StringNullableFilter<"UserProfile"> | string | null
+    cvContentType?: StringNullableFilter<"UserProfile"> | string | null
+    cvSizeBytes?: IntNullableFilter<"UserProfile"> | number | null
+    cvUploadedAt?: DateTimeNullableFilter<"UserProfile"> | Date | string | null
     createdAt?: DateTimeFilter<"UserProfile"> | Date | string
     updatedAt?: DateTimeFilter<"UserProfile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -13086,11 +13205,18 @@ export namespace Prisma {
     portfolioUrl?: SortOrderInput | SortOrder
     linkedinUrl?: SortOrderInput | SortOrder
     preferences?: SortOrder
+    cvKey?: SortOrderInput | SortOrder
+    cvFileName?: SortOrderInput | SortOrder
+    cvContentType?: SortOrderInput | SortOrder
+    cvSizeBytes?: SortOrderInput | SortOrder
+    cvUploadedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserProfileCountOrderByAggregateInput
+    _avg?: UserProfileAvgOrderByAggregateInput
     _max?: UserProfileMaxOrderByAggregateInput
     _min?: UserProfileMinOrderByAggregateInput
+    _sum?: UserProfileSumOrderByAggregateInput
   }
 
   export type UserProfileScalarWhereWithAggregatesInput = {
@@ -13108,6 +13234,11 @@ export namespace Prisma {
     portfolioUrl?: StringNullableWithAggregatesFilter<"UserProfile"> | string | null
     linkedinUrl?: StringNullableWithAggregatesFilter<"UserProfile"> | string | null
     preferences?: StringWithAggregatesFilter<"UserProfile"> | string
+    cvKey?: StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+    cvFileName?: StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+    cvContentType?: StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+    cvSizeBytes?: IntNullableWithAggregatesFilter<"UserProfile"> | number | null
+    cvUploadedAt?: DateTimeNullableWithAggregatesFilter<"UserProfile"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
   }
@@ -13920,6 +14051,11 @@ export namespace Prisma {
     portfolioUrl?: string | null
     linkedinUrl?: string | null
     preferences: string
+    cvKey?: string | null
+    cvFileName?: string | null
+    cvContentType?: string | null
+    cvSizeBytes?: number | null
+    cvUploadedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProfileInput
@@ -13937,6 +14073,11 @@ export namespace Prisma {
     portfolioUrl?: string | null
     linkedinUrl?: string | null
     preferences: string
+    cvKey?: string | null
+    cvFileName?: string | null
+    cvContentType?: string | null
+    cvSizeBytes?: number | null
+    cvUploadedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13952,6 +14093,11 @@ export namespace Prisma {
     portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
     preferences?: StringFieldUpdateOperationsInput | string
+    cvKey?: NullableStringFieldUpdateOperationsInput | string | null
+    cvFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    cvContentType?: NullableStringFieldUpdateOperationsInput | string | null
+    cvSizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    cvUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
@@ -13969,6 +14115,11 @@ export namespace Prisma {
     portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
     preferences?: StringFieldUpdateOperationsInput | string
+    cvKey?: NullableStringFieldUpdateOperationsInput | string | null
+    cvFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    cvContentType?: NullableStringFieldUpdateOperationsInput | string | null
+    cvSizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    cvUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13985,6 +14136,11 @@ export namespace Prisma {
     portfolioUrl?: string | null
     linkedinUrl?: string | null
     preferences: string
+    cvKey?: string | null
+    cvFileName?: string | null
+    cvContentType?: string | null
+    cvSizeBytes?: number | null
+    cvUploadedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -14000,6 +14156,11 @@ export namespace Prisma {
     portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
     preferences?: StringFieldUpdateOperationsInput | string
+    cvKey?: NullableStringFieldUpdateOperationsInput | string | null
+    cvFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    cvContentType?: NullableStringFieldUpdateOperationsInput | string | null
+    cvSizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    cvUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14016,6 +14177,11 @@ export namespace Prisma {
     portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
     preferences?: StringFieldUpdateOperationsInput | string
+    cvKey?: NullableStringFieldUpdateOperationsInput | string | null
+    cvFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    cvContentType?: NullableStringFieldUpdateOperationsInput | string | null
+    cvSizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    cvUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14797,8 +14963,17 @@ export namespace Prisma {
     portfolioUrl?: SortOrder
     linkedinUrl?: SortOrder
     preferences?: SortOrder
+    cvKey?: SortOrder
+    cvFileName?: SortOrder
+    cvContentType?: SortOrder
+    cvSizeBytes?: SortOrder
+    cvUploadedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type UserProfileAvgOrderByAggregateInput = {
+    cvSizeBytes?: SortOrder
   }
 
   export type UserProfileMaxOrderByAggregateInput = {
@@ -14813,6 +14988,11 @@ export namespace Prisma {
     portfolioUrl?: SortOrder
     linkedinUrl?: SortOrder
     preferences?: SortOrder
+    cvKey?: SortOrder
+    cvFileName?: SortOrder
+    cvContentType?: SortOrder
+    cvSizeBytes?: SortOrder
+    cvUploadedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14829,8 +15009,17 @@ export namespace Prisma {
     portfolioUrl?: SortOrder
     linkedinUrl?: SortOrder
     preferences?: SortOrder
+    cvKey?: SortOrder
+    cvFileName?: SortOrder
+    cvContentType?: SortOrder
+    cvSizeBytes?: SortOrder
+    cvUploadedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type UserProfileSumOrderByAggregateInput = {
+    cvSizeBytes?: SortOrder
   }
 
   export type GeneratedEmailCountOrderByAggregateInput = {
@@ -15608,6 +15797,11 @@ export namespace Prisma {
     portfolioUrl?: string | null
     linkedinUrl?: string | null
     preferences: string
+    cvKey?: string | null
+    cvFileName?: string | null
+    cvContentType?: string | null
+    cvSizeBytes?: number | null
+    cvUploadedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15623,6 +15817,11 @@ export namespace Prisma {
     portfolioUrl?: string | null
     linkedinUrl?: string | null
     preferences: string
+    cvKey?: string | null
+    cvFileName?: string | null
+    cvContentType?: string | null
+    cvSizeBytes?: number | null
+    cvUploadedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15790,6 +15989,11 @@ export namespace Prisma {
     portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
     preferences?: StringFieldUpdateOperationsInput | string
+    cvKey?: NullableStringFieldUpdateOperationsInput | string | null
+    cvFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    cvContentType?: NullableStringFieldUpdateOperationsInput | string | null
+    cvSizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    cvUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15805,6 +16009,11 @@ export namespace Prisma {
     portfolioUrl?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
     preferences?: StringFieldUpdateOperationsInput | string
+    cvKey?: NullableStringFieldUpdateOperationsInput | string | null
+    cvFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    cvContentType?: NullableStringFieldUpdateOperationsInput | string | null
+    cvSizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    cvUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

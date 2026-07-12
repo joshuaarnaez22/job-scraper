@@ -16,6 +16,7 @@ export interface EmailOptions {
 
 export interface JobAlertOptions {
   jobs: Job[];
+  to?: string;
   digestMode?: boolean;
   maxEmails?: number;
 }
@@ -25,10 +26,10 @@ export interface JobAlertOptions {
  */
 export async function sendJobAlert(options: JobAlertOptions): Promise<void> {
   const { jobs, digestMode = true, maxEmails = 10 } = options;
-  const to = process.env.NOTIFICATION_EMAIL;
+  const to = options.to || process.env.NOTIFICATION_EMAIL;
 
   if (!to) {
-    console.warn('[Email] NOTIFICATION_EMAIL not set, skipping email');
+    console.warn('[Email] No recipient (NOTIFICATION_EMAIL / user email), skipping');
     return;
   }
 
@@ -64,16 +65,21 @@ export async function sendJobAlert(options: JobAlertOptions): Promise<void> {
 async function sendEmail(options: EmailOptions): Promise<void> {
   try {
     const result = await resend.emails.send({
-      from: 'Job Scraper <notifications@resend.dev>',
+      from: 'JobScout <notifications@resend.dev>',
       to: options.to,
       subject: options.subject,
       html: options.html,
     });
 
-    console.log('[Email] Sent:', result);
+    if (result.error) {
+      console.warn('[Email] Resend rejected send:', result.error.message);
+      return;
+    }
+
+    console.log('[Email] Sent:', result.data?.id ?? result);
   } catch (error) {
     console.error('[Email] Failed to send:', error);
-    throw error;
+    // Don't fail the scrape pipeline on email errors
   }
 }
 

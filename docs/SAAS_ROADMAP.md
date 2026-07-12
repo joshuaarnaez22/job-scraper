@@ -253,9 +253,9 @@ flowchart TD
 
 ## Implementation todos
 
-- [ ] Phase 0: Clerk auth, user-scoped schema, RLS policies + `withUserRls`, protect routes/APIs
-- [ ] Phase 0b: Swap AI — DeepSeek for scoring, Mistral for cover letters (`src/lib/ai.ts`)
-- [ ] Phase 1: Inngest queue, shared Job catalog, per-user match fan-out, Tier-1 sites
+- [x] Phase 0: Clerk auth, user-scoped schema, RLS policies + `withUserRls`, protect routes/APIs
+- [x] Phase 0b: Swap AI — DeepSeek for scoring, Mistral for cover letters (`src/lib/ai.ts`)
+- [x] Phase 1: Inngest queue, shared Job catalog, per-user match fan-out, Tier-1 sites
 - [ ] Phase 2: Settings UI, Stripe plans, webhooks, quota gates
 - [ ] Phase 3: Marketing landing + pricing CTAs
 - [ ] Phase 4: Multi-search, application tracker, notification channels, job expiry

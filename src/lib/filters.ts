@@ -25,6 +25,11 @@ export interface FilterConfig {
 
   // Skills
   requiredSkills?: string[];
+
+  /** Scrape / match keywords — job should relate to at least one */
+  keywords?: string[];
+  /** If true (default when keywords set), require a keyword hit in the title */
+  requireKeywordInTitle?: boolean;
 }
 
 /**
@@ -39,7 +44,51 @@ export function applyFilters(jobs: Job[], config: FilterConfig): Job[] {
     .filter((job) => filterByWorkArrangement(job, config.workArrangements))
     .filter((job) => !isExcludedCompany(job, config.excludeCompanies))
     .filter((job) => !containsExcludedKeywords(job, config.excludeKeywords))
-    .filter((job) => hasRequiredSkills(job, config.requiredSkills));
+    .filter((job) => hasRequiredSkills(job, config.requiredSkills))
+    .filter((job) => matchesScrapeKeywords(job, config));
+}
+
+/**
+ * Keep only jobs that clearly relate to scrape keywords (cuts OnlineJobs noise).
+ * Prefer title matches — listing pages often dump unrelated roles into keyword search.
+ */
+export function matchesScrapeKeywords(
+  job: Job,
+  config: Pick<FilterConfig, 'keywords' | 'requireKeywordInTitle'>
+): boolean {
+  const keywords = config.keywords;
+  if (!keywords || keywords.length === 0) return true;
+
+  const titleOnly = config.requireKeywordInTitle !== false;
+  const title = job.title.toLowerCase();
+  const haystack = titleOnly
+    ? title
+    : `${title} ${job.description || ''}`.toLowerCase();
+
+  return keywords.some((keyword) => keywordMatchesText(keyword, haystack));
+}
+
+function keywordMatchesText(keyword: string, text: string): boolean {
+  const normalized = keyword.toLowerCase().trim();
+  if (!normalized) return false;
+  if (text.includes(normalized)) return true;
+
+  // Multi-word: require every meaningful token (len > 2)
+  const tokens = normalized.split(/\s+/).filter((t) => t.length > 2);
+  if (tokens.length <= 1) return false;
+  return tokens.every((t) => text.includes(t));
+}
+
+/**
+ * Prefer fewer, more specific queries — each keyword is a full site search.
+ */
+export function selectScrapeKeywords(keywords: string[], max = 3): string[] {
+  const unique = [
+    ...new Set(keywords.map((k) => k.trim()).filter(Boolean)),
+  ];
+  return unique
+    .sort((a, b) => b.length - a.length || a.localeCompare(b))
+    .slice(0, max);
 }
 
 /**

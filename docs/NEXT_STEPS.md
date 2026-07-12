@@ -1,48 +1,43 @@
-# Next Steps — Phase 0 Sprint Checklist
+# Next Steps
 
 Source roadmap: [`SAAS_ROADMAP.md`](./SAAS_ROADMAP.md)
 
-## Goal
+## Done
 
-Authenticated multi-user app: each Clerk user has isolated config/profile/matches; Postgres RLS blocks cross-user reads; AI uses DeepSeek + Mistral.
+- **Phase 0** — Clerk auth, multi-tenant schema, RLS, DeepSeek + Mistral
+- **Phase 1** — Inngest scrape queue, shared catalog pipeline, OnlineJobs-first testing
+- **Relevance** — keyword cap + title gate; tighter defaults
+- **CV storage** — Cloudflare R2 (`jobscout-cvs`) + Profile upload UI
 
-## Setup after pull
+## Recommended next (Phase 2a)
 
-1. Add Clerk keys to `.env.local` (see `.env.example`)
-2. Add `DEEPSEEK_API_KEY` / `MISTRAL_API_KEY` (optional until you use AI)
-3. Reset schema (personal DB — wipe is supported when leaving singleton `"default"` rows):
+**Settings UI + profile→keywords** — highest leverage before paywall.
+
+1. Settings page: edit keywords, exclude list, sites, days posted, salary, AI threshold
+2. Button: **Suggest keywords from profile/CV** → `suggestKeywordsFromProfile()` (parse CV text from R2 later)
+3. Save to `SearchConfig` so scrapes stay narrow and relevant
+4. Optional: enable AI matching toggle with DeepSeek scoring
+
+## Then
+
+| Order | Work | Why |
+|-------|------|-----|
+| **2b** | Stripe Checkout + quotas (scrapes / cover letters / AI) | Monetization |
+| **3** | Marketing landing + pricing | Acquisition |
+| Later | Re-enable RemoteOK / Upwork; digests per user email | Catalog breadth |
+| Later | Deploy Inngest Cloud + unset `INNGEST_DEV` | Production queue |
+
+## Local checklist before 2a
 
 ```bash
-npx tsx prisma/wipe-schema.ts   # DROP SCHEMA public — destroys all data
-npx prisma db push
-npm run db:rls                  # apply FORCE RLS policies
 npm run dev
+npm run inngest:dev
 ```
 
-4. Sign up at `/sign-up` → lands on `/dashboard` with seeded SearchConfig + UserProfile
+- [ ] Profile → upload CV works
+- [ ] Run scrape → only `onlinejobs`, relevant titles
+- [ ] Digest email arrives at your Resend-verified address
 
-## Checklist
+## Suggested start
 
-- [x] Clerk (`@clerk/nextjs`), middleware, `/sign-in` `/sign-up`, `ClerkProvider`
-- [x] Schema: `User`, `UserJob`, user-scoped `SearchConfig` / `UserProfile`, `Subscription` stub
-- [x] Global `Job` catalog (no per-user status on Job)
-- [x] `prisma/sql/rls.sql` + `withUserRls` / `withServiceRls`
-- [x] Optional `DATABASE_URL_SERVICE` documented
-- [x] APIs scoped: jobs, settings, profile, generate-email
-- [x] Cron uses service RLS; creates catalog jobs + per-user `UserJob` matches
-- [x] Stream scrape requires Clerk; matches jobs to current user
-- [x] DeepSeek scoring + Mistral cover letters
-- [x] Dashboard `UserButton`
-- [x] `.env.example` / checklist / README updated
-
-## Done when (verify manually)
-
-- Unauthenticated `GET /api/jobs` → 401 (or Clerk redirect)
-- Two Clerk users cannot see each other’s matches/settings
-- Cover letter works with `MISTRAL_API_KEY`
-- Scoring path checks `DEEPSEEK_API_KEY`
-- `curl` cron with `CRON_SECRET` still works
-
-## Not in this sprint
-
-Inngest scraper revamp, Stripe paywall, marketing landing, settings UI polish → Phases 1–3 in the roadmap.
+Implement **Phase 2a Settings UI** with “Suggest from profile” wired to DeepSeek. Say the word and we’ll build it.

@@ -13,16 +13,12 @@ interface ScrapeStatusModalProps {
   onComplete: (result: { newJobs: number; error?: string }) => void;
 }
 
-interface StreamedJob {
-  id: string;
-  externalId: string;
+interface StatusLog {
   site: string;
-  title: string;
-  company: string;
-  salary?: string;
-  url: string;
-  jobType?: string;
-  postedAt?: string;
+  status: string;
+  jobsFound: number;
+  newJobs: number;
+  error: string | null;
 }
 
 const DATE_OPTIONS = [
@@ -35,136 +31,125 @@ const DATE_OPTIONS = [
 export function ScrapeStatusModal({ isOpen, onClose, onComplete }: ScrapeStatusModalProps) {
   const [status, setStatus] = useState<'idle' | 'running' | 'success' | 'error'>('idle');
   const [daysPosted, setDaysPosted] = useState('7');
-  const [fetchFullDetails, setFetchFullDetails] = useState(false);
-  const [jobs, setJobs] = useState<StreamedJob[]>([]);
-  const [currentSite, setCurrentSite] = useState<string | null>(null);
-  const [stats, setStats] = useState({ totalFound: 0, newJobs: 0, filtered: 0, duplicates: 0 });
+  const [logs, setLogs] = useState<StatusLog[]>([]);
+  const [stats, setStats] = useState({ newJobs: 0, sitesDone: 0 });
   const [error, setError] = useState<string | null>(null);
-  const jobsContainerRef = useRef<HTMLDivElement>(null);
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const [mode, setMode] = useState<'queued' | 'sync'>('queued');
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Reset state when modal opens
   useEffect(() => {
     if (isOpen) {
       setStatus('idle');
-      setJobs([]);
-      setCurrentSite(null);
-      setStats({ totalFound: 0, newJobs: 0, filtered: 0, duplicates: 0 });
+      setLogs([]);
+      setStats({ newJobs: 0, sitesDone: 0 });
       setError(null);
-    } else {
-      // Close SSE connection when modal closes
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
-      }
+      setMode('queued');
+    } else if (pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
     }
   }, [isOpen]);
 
-  // Auto-scroll to bottom when new jobs arrive
   useEffect(() => {
-    if (jobsContainerRef.current) {
-      jobsContainerRef.current.scrollTop = jobsContainerRef.current.scrollHeight;
-    }
-  }, [jobs]);
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, []);
 
-  const runScrape = () => {
+  const stopPolling = () => {
+    if (pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
+  };
+
+  const runScrape = async () => {
     setStatus('running');
-    setJobs([]);
-    setStats({ totalFound: 0, newJobs: 0, filtered: 0, duplicates: 0 });
+    setLogs([]);
+    setStats({ newJobs: 0, sitesDone: 0 });
     setError(null);
 
-    const params = new URLSearchParams();
-    if (daysPosted) params.set('daysPosted', daysPosted);
-    if (fetchFullDetails) params.set('fetchFullDetails', 'true');
-
-    const eventSource = new EventSource(`/api/cron/scrape/stream?${params}`);
-    eventSourceRef.current = eventSource;
-
-    eventSource.addEventListener('start', (e) => {
-      const data = JSON.parse(e.data);
-      console.log('[Scrape] Started:', data);
-    });
-
-    eventSource.addEventListener('site-start', (e) => {
-      const data = JSON.parse(e.data);
-      setCurrentSite(data.site);
-    });
-
-    eventSource.addEventListener('site-complete', (e) => {
-      const data = JSON.parse(e.data);
-      console.log('[Scrape] Site complete:', data.site);
-    });
-
-    eventSource.addEventListener('job', (e) => {
-      const job = JSON.parse(e.data) as StreamedJob;
-      setJobs((prev) => [...prev, job]);
-      setStats((prev) => ({
-        ...prev,
-        totalFound: prev.totalFound + 1,
-        newJobs: prev.newJobs + 1,
-      }));
-    });
-
-    eventSource.addEventListener('job-filtered', (e) => {
-      setStats((prev) => ({
-        ...prev,
-        totalFound: prev.totalFound + 1,
-        filtered: prev.filtered + 1,
-      }));
-    });
-
-    eventSource.addEventListener('job-duplicate', (e) => {
-      setStats((prev) => ({
-        ...prev,
-        totalFound: prev.totalFound + 1,
-        duplicates: prev.duplicates + 1,
-      }));
-    });
-
-    eventSource.addEventListener('complete', (e) => {
-      const data = JSON.parse(e.data);
-      setStats({
-        totalFound: data.totalFound,
-        newJobs: data.newJobs,
-        filtered: data.filtered,
-        duplicates: data.totalFound - data.newJobs - data.filtered,
+    try {
+      const res = await fetch('/api/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ daysPosted: Number(daysPosted) }),
       });
-      setStatus('success');
-      setCurrentSite(null);
-      eventSource.close();
-      onComplete({ newJobs: data.newJobs });
-    });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to start scrape');
 
-    eventSource.addEventListener('error', (e: Event) => {
-      const messageEvent = e as MessageEvent;
-      if (messageEvent.data) {
+      // Sync / fallback finished immediately
+      if (!data.queued) {
+        setMode('sync');
+        setStats({
+          newJobs: data.newCatalogJobs ?? data.userMatchesCreated ?? 0,
+          sitesDone: data.results?.length ?? 0,
+        });
+        setLogs(
+          (data.results || []).map(
+            (r: {
+              site: string;
+              jobsFound: number;
+              newJobs: number;
+              error?: string;
+            }) => ({
+              site: r.site,
+              status: r.error ? 'error' : 'success',
+              jobsFound: r.jobsFound,
+              newJobs: r.newJobs,
+              error: r.error ?? null,
+            })
+          )
+        );
+        setStatus(data.error ? 'error' : 'success');
+        onComplete({ newJobs: data.newCatalogJobs ?? data.userMatchesCreated ?? 0 });
+        return;
+      }
+
+      setMode('queued');
+      const since = data.enqueuedAt || new Date().toISOString();
+      let ticks = 0;
+
+      pollRef.current = setInterval(async () => {
+        ticks += 1;
         try {
-          const data = JSON.parse(messageEvent.data);
-          setError(data.message);
-        } catch {
-          setError('Connection lost');
-        }
-      } else {
-        setError('Connection lost');
-      }
-      setStatus('error');
-      eventSource.close();
-    });
+          const statusRes = await fetch(
+            `/api/scrape?since=${encodeURIComponent(since)}`
+          );
+          const statusData = await statusRes.json();
+          if (statusData.logs) {
+            setLogs(statusData.logs);
+            setStats({
+              newJobs: statusData.newJobs ?? 0,
+              sitesDone: statusData.logs.length,
+            });
+          }
 
-    eventSource.onerror = () => {
-      if (status === 'running') {
-        setError('Connection lost');
-        setStatus('error');
-      }
-      eventSource.close();
-    };
+          // Complete once we have logs, or after ~3 minutes
+          if (statusData.complete || ticks >= 36) {
+            stopPolling();
+            if (statusData.hasError && statusData.newJobs === 0) {
+              setStatus('error');
+              setError('Scrape finished with errors');
+              onComplete({ newJobs: 0, error: 'Scrape finished with errors' });
+            } else {
+              setStatus('success');
+              onComplete({ newJobs: statusData.newJobs ?? 0 });
+            }
+          }
+        } catch {
+          // keep polling
+        }
+      }, 5000);
+    } catch (err) {
+      setStatus('error');
+      setError(err instanceof Error ? err.message : 'Scrape failed');
+    }
   };
 
   const handleClose = () => {
     if (status === 'running') return;
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-    }
+    stopPolling();
     onClose();
   };
 
@@ -173,26 +158,25 @@ export function ScrapeStatusModal({ isOpen, onClose, onComplete }: ScrapeStatusM
       <DialogContent className="max-w-lg p-0 gap-0 border-4 border-foreground bg-card !rounded-none max-h-[90vh] flex flex-col">
         <DialogTitle className="sr-only">Job Scraper</DialogTitle>
 
-        {/* Header */}
         <div className="px-4 py-3 border-b-4 border-foreground bg-primary text-primary-foreground shrink-0">
           <h2 className="font-retro text-sm">{`> SCRAPER`}</h2>
         </div>
 
         <div className="p-6 overflow-y-auto flex-1">
-          {/* Idle State - Configuration */}
           {status === 'idle' && (
             <>
               <div className="text-center mb-6">
                 <div className="font-retro text-4xl text-primary mb-4">{`[>>]`}</div>
                 <p className="font-retro text-xs mb-2">READY TO SCRAPE</p>
                 <p className="text-sm text-muted-foreground">
-                  Configure options and start scraping
+                  Queues a background job via Inngest (Tier-1 sites)
                 </p>
               </div>
 
-              {/* Date Range Selector */}
               <div className="mb-6">
-                <p className="text-[10px] font-retro text-muted-foreground mb-2">JOBS POSTED WITHIN:</p>
+                <p className="text-[10px] font-retro text-muted-foreground mb-2">
+                  JOBS POSTED WITHIN:
+                </p>
                 <div className="grid grid-cols-2 gap-2">
                   {DATE_OPTIONS.map((option) => (
                     <button
@@ -210,49 +194,22 @@ export function ScrapeStatusModal({ isOpen, onClose, onComplete }: ScrapeStatusM
                 </div>
               </div>
 
-              {/* Fetch Full Details Toggle */}
               <div className="mb-6">
-                <button
-                  onClick={() => setFetchFullDetails(!fetchFullDetails)}
-                  className={`w-full px-4 py-3 text-left border-2 transition-colors flex items-center justify-between ${
-                    fetchFullDetails
-                      ? 'bg-primary/10 border-primary'
-                      : 'bg-secondary border-foreground/20 hover:border-foreground'
-                  }`}
-                >
-                  <div>
-                    <p className="text-xs font-retro">FETCH FULL DETAILS</p>
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      {fetchFullDetails
-                        ? 'Slower - fetches each job page for complete description'
-                        : 'Faster - uses listing data only (recommended)'}
-                    </p>
-                  </div>
-                  <div
-                    className={`w-10 h-6 border-2 border-foreground relative transition-colors ${
-                      fetchFullDetails ? 'bg-primary' : 'bg-muted'
-                    }`}
-                  >
+                <p className="text-[10px] font-retro text-muted-foreground mb-2">
+                  TIER-1 SITES:
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {['ONLINEJOBS', 'REMOTEOK', 'UPWORK'].map((s) => (
                     <div
-                      className={`absolute top-0.5 w-4 h-4 bg-foreground transition-all ${
-                        fetchFullDetails ? 'left-4' : 'left-0.5'
-                      }`}
-                    />
-                  </div>
-                </button>
-              </div>
-
-              {/* Site Info */}
-              <div className="mb-6">
-                <p className="text-[10px] font-retro text-muted-foreground mb-2">TARGET SITE:</p>
-                <div className="flex justify-center">
-                  <div className="px-6 py-3 border-2 border-foreground/20 bg-muted/30 text-center">
-                    <div className="font-retro text-sm">ONLINEJOBS.PH</div>
-                  </div>
+                      key={s}
+                      className="px-3 py-2 border-2 border-foreground/20 bg-muted/30 font-retro text-[10px]"
+                    >
+                      {s}
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Start Button */}
               <div className="text-center">
                 <button
                   onClick={runScrape}
@@ -264,145 +221,71 @@ export function ScrapeStatusModal({ isOpen, onClose, onComplete }: ScrapeStatusM
             </>
           )}
 
-          {/* Running State */}
           {status === 'running' && (
             <>
-              {/* Stats Bar */}
-              <div className="grid grid-cols-4 gap-2 mb-4">
+              <div className="grid grid-cols-2 gap-2 mb-4">
                 <div className="p-2 border-2 border-foreground/20 text-center">
                   <p className="font-retro text-lg text-primary">{stats.newJobs}</p>
                   <p className="text-[8px] font-retro text-muted-foreground">NEW</p>
                 </div>
                 <div className="p-2 border-2 border-foreground/20 text-center">
-                  <p className="font-retro text-lg">{stats.duplicates}</p>
-                  <p className="text-[8px] font-retro text-muted-foreground">DUPES</p>
-                </div>
-                <div className="p-2 border-2 border-foreground/20 text-center">
-                  <p className="font-retro text-lg">{stats.filtered}</p>
-                  <p className="text-[8px] font-retro text-muted-foreground">FILTERED</p>
-                </div>
-                <div className="p-2 border-2 border-foreground/20 text-center">
-                  <p className="font-retro text-lg">{stats.totalFound}</p>
-                  <p className="text-[8px] font-retro text-muted-foreground">TOTAL</p>
+                  <p className="font-retro text-lg">{stats.sitesDone}</p>
+                  <p className="text-[8px] font-retro text-muted-foreground">SITE LOGS</p>
                 </div>
               </div>
 
-              {/* Current Activity */}
               <div className="flex items-center gap-3 mb-4 p-3 border-2 border-primary bg-primary/10">
                 <div className="font-retro text-xl animate-spin">@</div>
                 <div>
-                  <p className="text-xs font-retro">SCRAPING...</p>
-                  {currentSite && (
-                    <p className="text-[10px] text-muted-foreground">{currentSite.toUpperCase()}</p>
-                  )}
+                  <p className="text-xs font-retro">
+                    {mode === 'queued' ? 'QUEUED / RUNNING...' : 'RUNNING...'}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">
+                    Polling scrape status
+                  </p>
                 </div>
               </div>
 
-              {/* Live Job Feed */}
               <div className="mb-4">
-                <p className="text-[10px] font-retro text-muted-foreground mb-2">LIVE FEED:</p>
-                <div
-                  ref={jobsContainerRef}
-                  className="h-48 overflow-y-auto border-2 border-foreground/20 bg-muted/30"
-                >
-                  {jobs.length === 0 ? (
+                <p className="text-[10px] font-retro text-muted-foreground mb-2">
+                  SITE STATUS:
+                </p>
+                <div className="h-40 overflow-y-auto border-2 border-foreground/20 bg-muted/30">
+                  {logs.length === 0 ? (
                     <div className="p-4 text-center text-muted-foreground text-xs">
-                      Waiting for jobs...
+                      Waiting for workers...
                     </div>
                   ) : (
                     <div className="divide-y divide-foreground/10">
-                      {jobs.map((job, idx) => (
-                        <div key={job.id || idx} className="p-2 hover:bg-muted/50">
-                          <p className="text-xs font-medium truncate">{job.title}</p>
-                          <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                            <span>{job.company}</span>
-                            {job.salary && (
-                              <>
-                                <span>•</span>
-                                <span className="text-primary">{job.salary}</span>
-                              </>
-                            )}
-                          </div>
+                      {logs.map((log, idx) => (
+                        <div key={`${log.site}-${idx}`} className="p-2">
+                          <p className="text-xs font-medium">
+                            {log.site.toUpperCase()} — {log.status}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground">
+                            found {log.jobsFound} / new {log.newJobs}
+                            {log.error ? ` / ${log.error}` : ''}
+                          </p>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
               </div>
-
-              <div className="text-center">
-                <p className="text-xs text-muted-foreground font-retro animate-pulse">
-                  PLEASE WAIT...
-                </p>
-              </div>
             </>
           )}
 
-          {/* Success State */}
           {status === 'success' && (
             <>
               <div className="text-center mb-6">
                 <div className="font-retro text-4xl text-[#6bcb77]">{`[OK]`}</div>
-              </div>
-
-              <div className="text-center mb-6">
-                <p className="font-retro text-xs text-[#6bcb77] mb-2">COMPLETE!</p>
+                <p className="font-retro text-xs text-[#6bcb77] mt-4 mb-2">COMPLETE!</p>
                 <p className="text-sm text-muted-foreground">
-                  Found <span className="font-retro text-foreground">{stats.newJobs}</span> new jobs
+                  Matched{' '}
+                  <span className="font-retro text-foreground">{stats.newJobs}</span>{' '}
+                  new jobs
                 </p>
               </div>
-
-              {/* Final Stats */}
-              <div className="grid grid-cols-4 gap-2 mb-4">
-                <div className="p-2 border-2 border-[#6bcb77] bg-[#6bcb77]/10 text-center">
-                  <p className="font-retro text-lg text-[#6bcb77]">{stats.newJobs}</p>
-                  <p className="text-[8px] font-retro text-muted-foreground">NEW</p>
-                </div>
-                <div className="p-2 border-2 border-foreground/20 text-center">
-                  <p className="font-retro text-lg">{stats.duplicates}</p>
-                  <p className="text-[8px] font-retro text-muted-foreground">DUPES</p>
-                </div>
-                <div className="p-2 border-2 border-foreground/20 text-center">
-                  <p className="font-retro text-lg">{stats.filtered}</p>
-                  <p className="text-[8px] font-retro text-muted-foreground">FILTERED</p>
-                </div>
-                <div className="p-2 border-2 border-foreground/20 text-center">
-                  <p className="font-retro text-lg">{stats.totalFound}</p>
-                  <p className="text-[8px] font-retro text-muted-foreground">TOTAL</p>
-                </div>
-              </div>
-
-              {/* Jobs Found List */}
-              {jobs.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-[10px] font-retro text-muted-foreground mb-2">NEW JOBS FOUND:</p>
-                  <div className="h-32 overflow-y-auto border-2 border-foreground/20 bg-muted/30">
-                    <div className="divide-y divide-foreground/10">
-                      {jobs.map((job, idx) => (
-                        <a
-                          key={job.id || idx}
-                          href={job.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block p-2 hover:bg-muted/50"
-                        >
-                          <p className="text-xs font-medium truncate">{job.title}</p>
-                          <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                            <span>{job.company}</span>
-                            {job.salary && (
-                              <>
-                                <span>•</span>
-                                <span className="text-primary">{job.salary}</span>
-                              </>
-                            )}
-                          </div>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
               <div className="text-center">
                 <button
                   onClick={handleClose}
@@ -414,27 +297,13 @@ export function ScrapeStatusModal({ isOpen, onClose, onComplete }: ScrapeStatusM
             </>
           )}
 
-          {/* Error State */}
           {status === 'error' && (
             <>
               <div className="text-center mb-6">
                 <div className="font-retro text-4xl text-destructive">{`[!!]`}</div>
-              </div>
-
-              <div className="text-center mb-6">
-                <p className="font-retro text-xs text-destructive mb-2">FAILED</p>
+                <p className="font-retro text-xs text-destructive mt-4 mb-2">FAILED</p>
                 <p className="text-sm text-muted-foreground">{error}</p>
               </div>
-
-              {/* Show any jobs that were found before error */}
-              {jobs.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-[10px] font-retro text-muted-foreground mb-2">
-                    JOBS FOUND BEFORE ERROR: {jobs.length}
-                  </p>
-                </div>
-              )}
-
               <div className="text-center">
                 <button
                   onClick={handleClose}
@@ -447,10 +316,9 @@ export function ScrapeStatusModal({ isOpen, onClose, onComplete }: ScrapeStatusM
           )}
         </div>
 
-        {/* Footer */}
         <div className="px-4 py-2 border-t-2 border-dashed border-foreground/20 bg-muted/30 shrink-0">
           <p className="text-[10px] text-muted-foreground text-center font-retro">
-            {status === 'idle' && 'JOBS STREAM IN REAL-TIME AS THEY ARE FOUND'}
+            {status === 'idle' && 'BACKGROUND QUEUE VIA INNGEST'}
             {status === 'running' && 'DO NOT CLOSE THIS WINDOW'}
             {(status === 'success' || status === 'error') && 'SCRAPE SESSION ENDED'}
           </p>

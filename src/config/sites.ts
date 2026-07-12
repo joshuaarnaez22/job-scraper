@@ -19,8 +19,10 @@ export const siteConfigs: Record<string, SiteConfig> = {
     name: 'OnlineJobs.ph',
     enabled: true,
     baseUrl: 'https://www.onlinejobs.ph',
-    rateLimit: 2000,
-    maxPages: 5,
+    // List pages only (no per-job detail fetch in default path).
+    // 5 keywords × 5 pages × 2s delay ≈ 50s+ of waits alone — keep modest for tests.
+    rateLimit: 1000,
+    maxPages: 2,
     settings: {
       categories: ['web-development', 'software-development'],
     },
@@ -81,7 +83,7 @@ export const siteConfigs: Record<string, SiteConfig> = {
   remoteok: {
     id: 'remoteok',
     name: 'RemoteOK',
-    enabled: false,       // Disabled - use onlinejobs only
+    enabled: false, // Temporarily off — OnlineJobs-only testing
     baseUrl: 'https://remoteok.com',
     rateLimit: 1000,
     maxPages: 5,
@@ -93,7 +95,7 @@ export const siteConfigs: Record<string, SiteConfig> = {
   upwork: {
     id: 'upwork',
     name: 'Upwork',
-    enabled: false,       // Disabled - RSS feed only
+    enabled: false, // Temporarily off — OnlineJobs-only testing
     baseUrl: 'https://www.upwork.com',
     rateLimit: 1000,
     maxPages: 1,
@@ -116,6 +118,20 @@ export function getSiteConfig(siteId: string): SiteConfig | undefined {
  */
 export function getEnabledSites(): SiteConfig[] {
   return Object.values(siteConfigs).filter((site) => site.enabled);
+}
+
+/**
+ * Site IDs currently enabled in sites.ts (ops / test kill switch)
+ */
+export function getEnabledSiteIds(): string[] {
+  return getEnabledSites().map((site) => site.id);
+}
+
+/**
+ * Intersect requested site IDs with globally enabled scrapers
+ */
+export function filterEnabledSiteIds(siteIds: string[]): string[] {
+  return [...new Set(siteIds)].filter((id) => getSiteConfig(id)?.enabled);
 }
 
 /**

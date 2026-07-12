@@ -36,6 +36,11 @@ export async function GET() {
           portfolioUrl: '',
           linkedinUrl: '',
           preferences: defaultPreferences,
+          cvFileName: null,
+          cvContentType: null,
+          cvSizeBytes: null,
+          cvUploadedAt: null,
+          hasCv: false,
         });
       }
 
@@ -44,6 +49,9 @@ export async function GET() {
         skills: JSON.parse(profile.skills),
         experience: JSON.parse(profile.experience),
         preferences: JSON.parse(profile.preferences),
+        hasCv: Boolean(profile.cvKey),
+        // Never expose raw storage key to the client
+        cvKey: undefined,
       });
     });
   } catch (error) {
@@ -91,6 +99,8 @@ export async function PUT(request: NextRequest) {
         skills: JSON.parse(profile.skills),
         experience: JSON.parse(profile.experience),
         preferences: JSON.parse(profile.preferences),
+        hasCv: Boolean(profile.cvKey),
+        cvKey: undefined,
       });
     });
   } catch (error) {

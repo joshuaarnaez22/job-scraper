@@ -288,3 +288,103 @@ Rewrite the cover letter incorporating the feedback while maintaining the overal
     throw error;
   }
 }
+
+// ===========================================
+// Profile → scrape keywords (DeepSeek)
+// Future Settings UI: "Suggest keywords from my profile"
+// ===========================================
+
+export type ProfileKeywordSuggestion = {
+  keywords: string[];
+  excludeKeywords: string[];
+  rationale: string;
+};
+
+/**
+ * Derive scrape keywords + exclusions from a user profile / CV-like summary.
+ * Call from Settings later; scrapers use SearchConfig.keywords today.
+ */
+export async function suggestKeywordsFromProfile(profile: {
+  name?: string;
+  title?: string;
+  summary?: string;
+  skills?: string[];
+  experience?: WorkExperience[];
+  education?: string;
+}): Promise<ProfileKeywordSuggestion> {
+  if (!process.env.DEEPSEEK_API_KEY) {
+    const fromSkills = (profile.skills || []).slice(0, 3);
+    const fromTitle = profile.title ? [profile.title.toLowerCase()] : [];
+    return {
+      keywords: selectFallbackKeywords([...fromTitle, ...fromSkills]),
+      excludeKeywords: ['virtual assistant', 'data entry', 'customer service'],
+      rationale: 'DeepSeek not configured — used skills/title fallback',
+    };
+  }
+
+  const experienceText = (profile.experience || [])
+    .slice(0, 5)
+    .map(
+      (e) =>
+        `- ${e.role} @ ${e.company} (${e.duration}): ${(e.highlights || []).slice(0, 3).join('; ')}`
+    )
+    .join('\n');
+
+  const prompt = `
+You help a job seeker pick SEARCH KEYWORDS for Philippine remote job boards (e.g. OnlineJobs.ph).
+Each keyword triggers a separate search — return 2–4 high-signal phrases only (not single generic words like "developer").
+
+PROFILE:
+Name: ${profile.name || 'n/a'}
+Title: ${profile.title || 'n/a'}
+Summary: ${profile.summary || 'n/a'}
+Skills: ${(profile.skills || []).join(', ') || 'n/a'}
+Education: ${profile.education || 'n/a'}
+Experience:
+${experienceText || 'n/a'}
+
+Respond JSON only:
+{
+  "keywords": ["phrase1", "phrase2"],
+  "excludeKeywords": ["role or phrase to skip"],
+  "rationale": "one sentence"
+}
+`;
+
+  try {
+    const response = await deepseek.chat.completions.create({
+      model: 'deepseek-chat',
+      messages: [{ role: 'user', content: prompt }],
+      response_format: { type: 'json_object' },
+      max_tokens: 400,
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) throw new Error('No response from DeepSeek');
+
+    const parsed = JSON.parse(content) as ProfileKeywordSuggestion;
+    return {
+      keywords: (parsed.keywords || []).slice(0, 4),
+      excludeKeywords: parsed.excludeKeywords || [],
+      rationale: parsed.rationale || '',
+    };
+  } catch (error) {
+    console.error('[AI] Error suggesting keywords:', error);
+    return {
+      keywords: selectFallbackKeywords([
+        profile.title || '',
+        ...(profile.skills || []),
+      ]),
+      excludeKeywords: ['virtual assistant', 'data entry'],
+      rationale: 'AI failed — used skills/title fallback',
+    };
+  }
+}
+
+function selectFallbackKeywords(parts: string[]): string[] {
+  return [
+    ...new Set(
+      parts.map((p) => p.trim().toLowerCase()).filter((p) => p.length > 2)
+    ),
+  ].slice(0, 3);
+}

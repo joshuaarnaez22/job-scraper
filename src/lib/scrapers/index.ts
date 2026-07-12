@@ -86,6 +86,16 @@ export async function runAllScrapers(options: ScrapeOptions): Promise<ScrapeResu
 }
 
 /**
+ * Scrape a single site (exported for Inngest per-site workers)
+ */
+export async function scrapeSingleSite(
+  siteId: string,
+  keywords: string[]
+): Promise<ScraperResult> {
+  return scrapeSite(siteId, keywords);
+}
+
+/**
  * Scrape a single site
  */
 async function scrapeSite(siteId: string, keywords: string[]): Promise<ScraperResult> {

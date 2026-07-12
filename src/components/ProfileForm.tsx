@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { CvUploadSection } from '@/components/CvUploadSection';
 
 export interface UserProfileData {
   name: string;
@@ -16,6 +17,11 @@ export interface UserProfileData {
     length: 'short' | 'medium' | 'long';
     customInstructions: string;
   };
+  hasCv?: boolean;
+  cvFileName?: string | null;
+  cvContentType?: string | null;
+  cvSizeBytes?: number | null;
+  cvUploadedAt?: string | null;
 }
 
 interface WorkExperience {
@@ -126,6 +132,8 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <CvUploadSection profile={initialData} />
+
       {/* Basic Info */}
       <div className="pixel-border bg-card p-4">
         <h3 className="font-retro text-xs mb-4 pb-2 border-b-2 border-dashed border-foreground/20">

@@ -223,6 +223,11 @@ exports.Prisma.UserProfileScalarFieldEnum = {
   portfolioUrl: 'portfolioUrl',
   linkedinUrl: 'linkedinUrl',
   preferences: 'preferences',
+  cvKey: 'cvKey',
+  cvFileName: 'cvFileName',
+  cvContentType: 'cvContentType',
+  cvSizeBytes: 'cvSizeBytes',
+  cvUploadedAt: 'cvUploadedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

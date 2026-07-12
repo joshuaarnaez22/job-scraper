@@ -186,8 +186,16 @@ model UserProfile {
   portfolioUrl String?
   linkedinUrl  String?
   preferences  String // JSON: { tone, length, customInstructions }
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+
+  // CV stored in Cloudflare R2 (private object; download via presigned URL)
+  cvKey         String?
+  cvFileName    String?
+  cvContentType String?
+  cvSizeBytes   Int?
+  cvUploadedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ===========================================

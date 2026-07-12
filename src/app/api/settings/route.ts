@@ -6,6 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { defaultSearchConfig } from '@/config/search';
+import { filterEnabledSiteIds, getEnabledSiteIds } from '@/config/sites';
 import { AuthRequiredError, requireCurrentUser } from '@/lib/auth-user';
 import { withUserRls } from '@/lib/rls';
 
@@ -21,11 +22,14 @@ function parseConfig(config: {
   preferredSkills: string;
   [key: string]: unknown;
 }) {
+  const enabledSites = filterEnabledSiteIds(
+    JSON.parse(config.enabledSites) as string[]
+  );
   return {
     ...config,
     keywords: JSON.parse(config.keywords),
     excludeKeywords: JSON.parse(config.excludeKeywords),
-    enabledSites: JSON.parse(config.enabledSites),
+    enabledSites: enabledSites.length > 0 ? enabledSites : getEnabledSiteIds(),
     jobTypes: JSON.parse(config.jobTypes),
     experienceLevels: JSON.parse(config.experienceLevels),
     workArrangements: JSON.parse(config.workArrangements),
