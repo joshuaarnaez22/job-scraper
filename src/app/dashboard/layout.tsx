@@ -1,8 +1,9 @@
 import { auth } from '@clerk/nextjs/server';
+import { DashboardShell } from '@/components/DashboardShell';
 
 /**
  * Resource-level auth (Clerk recommended).
- * Signed-out users are redirected to sign-in.
+ * Shared chrome: sidebar + scrape controls for all /dashboard/* routes.
  */
 export default async function DashboardLayout({
   children,
@@ -10,5 +11,5 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   await auth.protect();
-  return children;
+  return <DashboardShell>{children}</DashboardShell>;
 }

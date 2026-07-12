@@ -20,17 +20,39 @@ export function CvUploadSection({ profile }: { profile?: CvMeta | null }) {
 
   const hasCv = Boolean(profile?.hasCv && profile?.cvFileName);
 
+  const fillFromCv = async () => {
+    const res = await fetch('/api/profile/cv/parse', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ apply: true }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to fill profile from CV');
+    }
+    await queryClient.invalidateQueries({ queryKey: ['profile'] });
+    return data;
+  };
+
   const upload = async (file: File) => {
     setBusy(true);
     setError(null);
     setOk(null);
     try {
+      const contentType =
+        file.type ||
+        (file.name.toLowerCase().endsWith('.pdf')
+          ? 'application/pdf'
+          : file.name.toLowerCase().endsWith('.docx')
+            ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            : 'application/msword');
+
       const presignRes = await fetch('/api/profile/cv', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fileName: file.name,
-          contentType: file.type || 'application/pdf',
+          contentType,
           size: file.size,
         }),
       });
@@ -63,8 +85,20 @@ export function CvUploadSection({ profile }: { profile?: CvMeta | null }) {
         throw new Error(complete.error || 'Failed to save CV metadata');
       }
 
-      setOk('CV uploaded');
+      setOk('CV uploaded — filling Basic Info…');
       await queryClient.invalidateQueries({ queryKey: ['profile'] });
+
+      try {
+        await fillFromCv();
+        setOk('CV uploaded and Basic Info filled. Review and Save.');
+      } catch (parseErr) {
+        setOk('CV uploaded');
+        setError(
+          parseErr instanceof Error
+            ? `Upload OK, but fill failed: ${parseErr.message}`
+            : 'Upload OK, but could not fill profile from CV'
+        );
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
@@ -84,6 +118,20 @@ export function CvUploadSection({ profile }: { profile?: CvMeta | null }) {
       window.open(data.cv.downloadUrl, '_blank', 'noopener,noreferrer');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Download failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const fillProfile = async () => {
+    setBusy(true);
+    setError(null);
+    setOk(null);
+    try {
+      await fillFromCv();
+      setOk('Basic Info filled from CV. Review and Save if needed.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Fill failed');
     } finally {
       setBusy(false);
     }
@@ -112,8 +160,8 @@ export function CvUploadSection({ profile }: { profile?: CvMeta | null }) {
         CV / RESUME
       </h3>
       <p className="text-xs text-muted-foreground mb-4">
-        Stored privately on Cloudflare R2 (PDF or Word, max 5MB). Used later for
-        AI keyword suggestions from your CV.
+        PDF or DOCX (max 5MB) on Cloudflare R2. After upload we extract text with
+        AI and fill Basic Info / skills / experience.
       </p>
 
       {hasCv ? (
@@ -130,6 +178,14 @@ export function CvUploadSection({ profile }: { profile?: CvMeta | null }) {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={fillProfile}
+              className="retro-btn px-3 py-1.5 bg-accent text-accent-foreground font-retro text-[10px]"
+            >
+              {busy ? '…' : 'FILL PROFILE'}
+            </button>
             <button
               type="button"
               disabled={busy}
@@ -163,14 +219,14 @@ export function CvUploadSection({ profile }: { profile?: CvMeta | null }) {
           onClick={() => inputRef.current?.click()}
           className="retro-btn px-4 py-2 bg-accent text-accent-foreground font-retro text-xs"
         >
-          {busy ? 'UPLOADING…' : 'UPLOAD CV'}
+          {busy ? 'WORKING…' : 'UPLOAD CV'}
         </button>
       )}
 
       <input
         ref={inputRef}
         type="file"
-        accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
@@ -178,9 +234,7 @@ export function CvUploadSection({ profile }: { profile?: CvMeta | null }) {
         }}
       />
 
-      {error && (
-        <p className="mt-3 text-xs text-destructive">{error}</p>
-      )}
+      {error && <p className="mt-3 text-xs text-destructive">{error}</p>}
       {ok && <p className="mt-3 text-xs text-green-700">{ok}</p>}
     </div>
   );

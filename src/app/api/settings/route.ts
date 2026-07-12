@@ -116,7 +116,13 @@ export async function PUT(request: NextRequest) {
 
     for (const field of jsonFields) {
       if (body[field] !== undefined) {
-        data[field] = JSON.stringify(body[field]);
+        if (field === 'enabledSites') {
+          data[field] = JSON.stringify(
+            filterEnabledSiteIds(body[field] as string[])
+          );
+        } else {
+          data[field] = JSON.stringify(body[field]);
+        }
       }
     }
 

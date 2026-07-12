@@ -85,6 +85,29 @@ export async function createCvDownloadUrl(
   return getSignedUrl(client, command, { expiresIn });
 }
 
+export async function getCvObjectBuffer(key: string): Promise<{
+  body: Buffer;
+  contentType?: string;
+}> {
+  const client = getR2Client();
+  const result = await client.send(
+    new GetObjectCommand({
+      Bucket: bucket(),
+      Key: key,
+    })
+  );
+
+  if (!result.Body) {
+    throw new Error('CV object is empty');
+  }
+
+  const bytes = await result.Body.transformToByteArray();
+  return {
+    body: Buffer.from(bytes),
+    contentType: result.ContentType,
+  };
+}
+
 export async function deleteCvObject(key: string): Promise<void> {
   const client = getR2Client();
   await client.send(

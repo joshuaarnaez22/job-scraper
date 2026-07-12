@@ -2,42 +2,28 @@
 
 Source roadmap: [`SAAS_ROADMAP.md`](./SAAS_ROADMAP.md)
 
-## Done
+## Done (local — commit/push pending)
 
-- **Phase 0** — Clerk auth, multi-tenant schema, RLS, DeepSeek + Mistral
-- **Phase 1** — Inngest scrape queue, shared catalog pipeline, OnlineJobs-first testing
-- **Relevance** — keyword cap + title gate; tighter defaults
-- **CV storage** — Cloudflare R2 (`jobscout-cvs`) + Profile upload UI
+- **Phase 2a** — Settings UI + Suggest from profile
+- **CV → profile** — `unpdf` + DeepSeek fill Basic Info
+- **Routes** — `/dashboard`, `/dashboard/profile`, `/dashboard/settings`
 
-## Recommended next (Phase 2a)
+Pushed earlier: Phase 0–1, Inngest, R2 bucket wiring (`aba25d5`).
 
-**Settings UI + profile→keywords** — highest leverage before paywall.
+## Recommended next
 
-1. Settings page: edit keywords, exclude list, sites, days posted, salary, AI threshold
-2. Button: **Suggest keywords from profile/CV** → `suggestKeywordsFromProfile()` (parse CV text from R2 later)
-3. Save to `SearchConfig` so scrapes stay narrow and relevant
-4. Optional: enable AI matching toggle with DeepSeek scoring
-
-## Then
+**Commit + push** the Phase 2a / CV / routes work, then:
 
 | Order | Work | Why |
 |-------|------|-----|
-| **2b** | Stripe Checkout + quotas (scrapes / cover letters / AI) | Monetization |
+| **2b** | Stripe Checkout + Customer Portal + plan quotas | Monetization |
 | **3** | Marketing landing + pricing | Acquisition |
-| Later | Re-enable RemoteOK / Upwork; digests per user email | Catalog breadth |
-| Later | Deploy Inngest Cloud + unset `INNGEST_DEV` | Production queue |
+| Later | Suggest keywords from CV text (not only profile fields) | Better scrape targeting |
+| Later | Re-enable RemoteOK / Upwork | Broader catalog |
+| Later | Inngest Cloud (drop `INNGEST_DEV` in prod) | Durable production queue |
 
-## Local checklist before 2a
+## Quick verify before 2b
 
-```bash
-npm run dev
-npm run inngest:dev
-```
-
-- [ ] Profile → upload CV works
-- [ ] Run scrape → only `onlinejobs`, relevant titles
-- [ ] Digest email arrives at your Resend-verified address
-
-## Suggested start
-
-Implement **Phase 2a Settings UI** with “Suggest from profile” wired to DeepSeek. Say the word and we’ll build it.
+1. `/dashboard/profile` — upload CV → fields fill
+2. `/dashboard/settings` — Suggest from profile → Save
+3. Run scrape → relevant OnlineJobs only

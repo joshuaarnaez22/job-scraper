@@ -388,3 +388,102 @@ function selectFallbackKeywords(parts: string[]): string[] {
     ),
   ].slice(0, 3);
 }
+
+// ===========================================
+// CV text → profile fields (DeepSeek)
+// ===========================================
+
+export type ParsedCvProfile = {
+  name: string;
+  title: string;
+  summary: string;
+  skills: string[];
+  experience: WorkExperience[];
+  education: string;
+  portfolioUrl: string;
+  linkedinUrl: string;
+};
+
+/**
+ * Parse resume text into structured profile fields for the dashboard form.
+ */
+export async function extractProfileFromCvText(
+  cvText: string
+): Promise<ParsedCvProfile> {
+  const truncated = cvText.slice(0, 12000).trim();
+  if (!truncated) {
+    throw new Error('Could not read any text from the CV');
+  }
+
+  if (!process.env.DEEPSEEK_API_KEY) {
+    throw new Error('DEEPSEEK_API_KEY is required to parse CVs');
+  }
+
+  const prompt = `
+Extract structured profile fields from this resume / CV text.
+Return JSON only (no markdown). Use empty string or [] when unknown.
+Keep summary to 2–4 sentences. Skills: 5–15 concrete skills.
+Experience: up to 5 roles; highlights are short bullet strings (max 4 each).
+Prefer https URLs for portfolio/linkedin when present.
+
+CV TEXT:
+"""
+${truncated}
+"""
+
+JSON shape:
+{
+  "name": "",
+  "title": "",
+  "summary": "",
+  "skills": ["..."],
+  "experience": [
+    { "company": "", "role": "", "duration": "", "highlights": ["..."] }
+  ],
+  "education": "",
+  "portfolioUrl": "",
+  "linkedinUrl": ""
+}
+`;
+
+  try {
+    const response = await deepseek.chat.completions.create({
+      model: 'deepseek-chat',
+      messages: [{ role: 'user', content: prompt }],
+      response_format: { type: 'json_object' },
+      max_tokens: 1500,
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) throw new Error('No response from DeepSeek');
+
+    const parsed = JSON.parse(content) as Partial<ParsedCvProfile>;
+    const experience = Array.isArray(parsed.experience)
+      ? parsed.experience.slice(0, 5).map((e) => ({
+          company: String(e?.company || ''),
+          role: String(e?.role || ''),
+          duration: String(e?.duration || ''),
+          highlights: Array.isArray(e?.highlights)
+            ? e.highlights.map(String).slice(0, 4)
+            : [],
+        }))
+      : [];
+
+    return {
+      name: String(parsed.name || ''),
+      title: String(parsed.title || ''),
+      summary: String(parsed.summary || ''),
+      skills: Array.isArray(parsed.skills)
+        ? parsed.skills.map(String).filter(Boolean).slice(0, 20)
+        : [],
+      experience,
+      education: String(parsed.education || ''),
+      portfolioUrl: String(parsed.portfolioUrl || ''),
+      linkedinUrl: String(parsed.linkedinUrl || ''),
+    };
+  } catch (error) {
+    console.error('[AI] Error extracting profile from CV:', error);
+    if (error instanceof Error) throw error;
+    throw new Error('Failed to extract profile from CV');
+  }
+}
